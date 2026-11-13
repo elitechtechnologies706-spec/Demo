@@ -12,7 +12,7 @@ paths = [ "/" ]
 localPort = 22729
 
 [services.development]
-run = "pnpm --filter @workspace/crvpf-demo run dev"
+run = "python ../../main.py"
 
 [services.production]
 build = [ "pnpm", "--filter", "@workspace/crvpf-demo", "run", "build" ]

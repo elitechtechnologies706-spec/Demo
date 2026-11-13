@@ -27,6 +27,21 @@ if (!basePath) {
   );
 }
 
+const pageEntries = {
+  index: 'index.html',
+  about: 'about.html',
+  programmes: 'programmes.html',
+  pvac: 'pvac.html',
+  agpp: 'agpp.html',
+  eydcd: 'eydcd.html',
+  coordinated: 'coordinated.html',
+  joint: 'joint.html',
+  impact: 'impact.html',
+  whereWeWork: 'where-we-work.html',
+  resources: 'resources.html',
+  getInvolved: 'get-involved.html',
+};
+
 export default defineConfig({
   base: basePath,
   plugins: [
@@ -63,6 +78,14 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, 'dist/public'),
     emptyOutDir: true,
+    rollupOptions: {
+      input: Object.fromEntries(
+        Object.entries(pageEntries).map(([name, file]) => [
+          name,
+          path.resolve(import.meta.dirname, file),
+        ]),
+      ),
+    },
   },
   server: {
     port,
