@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "CRVPF — Proposed Redesign"
+description = "A responsive proposed website redesign for the Children’s Rights and Violence Prevention Fund, featuring its programs, stories, publications, regional impact, and demonstration partner tools."
+version = "1.0.0"
+id = "artifacts/crvpf-demo"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22729
+
+[services.development]
+run = "pnpm --filter @workspace/crvpf-demo run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/crvpf-demo", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/crvpf-demo/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22729"
+BASE_PATH = "/"
