@@ -251,22 +251,22 @@ function Home({lang}:{lang:'EN'|'SW'}){
         </div>
       </div>
       <div className="home-hero-image">
-        <SourcePhoto src="https://crvpf.org/wp-content/uploads/elementor/thumbs/g4-r45jk88io3s6brnc62htrycwefcr0hlk2fdu0yjbdk.jpg" alt="Three smiling children in school uniform, from CRVPF" className="hero-photo"/>
+       <SourcePhoto src={`${APP_BASE_PATH}crvpf-home-hero.jpg`} alt="Three smiling children in school uniform, from CRVPF" className="hero-photo"/>
       </div>
     </section>
     <section className="home-trust-bar" aria-label="CRVPF at a glance">
       <span><ShieldCheck size={17}/> Established April 2015 • Kampala, Uganda</span>
       <span><HeartHandshake size={17}/> Co-Created with Youth</span>
-      <span><MapPin size={17}/> 4 Countries + USA Office</span>
+      <span><MapPin size={17}/> <ScrollCount value={4} className="home-trust-count"/> Countries + USA Office</span>
     </section>
     <section className="home-stats" aria-label="Demonstration impact statistics">
       <article className="home-stat-card">
-        <span className="home-stat-value">251</span>
+        <span className="home-stat-value"><ScrollCount value={251}/></span>
         <strong>Partner Organisations</strong>
         <small>DEMO • AWAITING VERIFICATION</small>
       </article>
       <article className="home-stat-card">
-        <span className="home-stat-value">400,000+</span>
+        <span className="home-stat-value"><ScrollCount value={400000} suffix="+"/></span>
         <strong>Youth Reached</strong>
         <small>DEMO • AWAITING VERIFICATION</small>
       </article>
@@ -437,9 +437,10 @@ function ResourceCentre(){
     </article>)}</div>:<p className="home-no-stories" role="status">No resources match these filters.</p>}
   </div>
 }
-function SourcePhoto({src,alt,className}:{src:string;alt:string;className:string}){const[failed,setFailed]=useState(false);return <figure className={`local-image ${className}`}>{failed?<div className="photo-fallback" role="img" aria-label={alt}>CRVPF photo unavailable</div>:<img src={src} alt={alt} loading={className==='hero-photo'?'eager':'lazy'} decoding="async" onError={()=>setFailed(true)}/>}<figcaption>{failed?'Source: crvpf.org - photo unavailable; caption to be confirmed by CRVPF':'Photo: CRVPF / Partner Organisation'}</figcaption></figure>}
+function SourcePhoto({src,alt,className}:{src:string;alt:string;className:string}){const[failed,setFailed]=useState(false);return <figure className={`local-image ${className}`}>{failed?<div className="photo-fallback" role="img" aria-label={alt}>CRVPF photo unavailable</div>:<img src={src} alt={alt} loading={className==='hero-photo'?'eager':'lazy'} fetchPriority={className==='hero-photo'?'high':'auto'} decoding="async" onError={()=>setFailed(true)}/>}<figcaption>{failed?'Source: crvpf.org - photo unavailable; caption to be confirmed by CRVPF':'Photo: CRVPF / Partner Organisation'}</figcaption></figure>}
 function EditionPhoto({className}:{className:string}){return <SourcePhoto src="https://crvpf.org/wp-content/uploads/2026/06/joanna-768x503.jpg" alt="CRVPF photo from the Bold Movements Edition 2, 2026 page" className={className}/>}
 function AnimatedMetric({value}:{value:number}){const [shown,setShown]=useState(0);useEffect(()=>{const element=document.querySelector(`[data-metric="${value}"]`);if(!element)return;let frame=0;let observer:IntersectionObserver|undefined;const finish=()=>setShown(value);const start=()=>{if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){finish();return}const duration=400,started=performance.now();const tick=(now:number)=>{const progress=Math.min(1,(now-started)/duration);setShown(Math.round(value*(1-Math.pow(1-progress,3))));if(progress<1)frame=requestAnimationFrame(tick)};frame=requestAnimationFrame(tick)};if('IntersectionObserver' in window){observer=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){start();observer?.disconnect()}},{threshold:.4});observer.observe(element)}else start();return()=>{observer?.disconnect();cancelAnimationFrame(frame)}},[value]);return <strong data-metric={value} aria-label={value.toLocaleString()}><span aria-hidden="true">{shown.toLocaleString()}</span></strong>}
+function ScrollCount({value,suffix='',className=''}:{value:number;suffix?:string;className?:string}){const node=useRef<HTMLSpanElement>(null);const[count,setCount]=useState(0);useEffect(()=>{const element=node.current;if(!element)return;let frame=0;let observer:IntersectionObserver|undefined;const finish=()=>setCount(value);const start=()=>{if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){finish();return}const duration=900,started=performance.now();const tick=(now:number)=>{const progress=Math.min(1,(now-started)/duration);setCount(Math.round(value*(1-Math.pow(1-progress,3))));if(progress<1)frame=requestAnimationFrame(tick)};frame=requestAnimationFrame(tick)};if('IntersectionObserver' in window){observer=new IntersectionObserver(entries=>{if(entries.some(entry=>entry.isIntersecting)){start();observer?.disconnect()}},{threshold:.35});observer.observe(element)}else start();return()=>{observer?.disconnect();cancelAnimationFrame(frame)}},[value]);return <span ref={node} className={className} aria-label={`${value.toLocaleString()}${suffix}`}><span aria-hidden="true">{count.toLocaleString()}{suffix}</span></span>}
 function ProgramCard({p,i}:{p:Program;i:number}){return <article className="program-card"><span className="number">0{i+1} / {p.short}</span><h3>{p.name}</h3><p>{p.summary}</p><Link className="arrow-link" href={p.slug}>Explore programme <ArrowRight size={15}/></Link></article>}
   function StoryCard({s,i}:{s:typeof storyData[number];i:number}){const[open,setOpen]=useState(false);const label=s.country?`${s.program} · ${s.country}`:s.program;return <article className="story-card"><div className="story-icon">{i%2===0?<HeartHandshake size={25}/>:<Sparkles size={25}/>}</div><div><span className="tag">{label}</span><h3 style={{marginTop:12}}>{s.name}</h3><p>{s.text}</p>{s.quote&&<blockquote className="story-quote">“{s.quote}”</blockquote>}<small className="source-note"><a href={s.href} target="_blank" rel="noopener noreferrer">Source: crvpf.org</a></small><button className="arrow-link story-read-more" onClick={()=>setOpen(true)}>Read More <ArrowRight size={15}/></button></div>{open&&<Modal title={s.name} onClose={()=>setOpen(false)}><span className="tag">{label}</span><p>{s.text}</p>{s.quote&&<blockquote>“{s.quote}”</blockquote>}<small className="source-note"><a href={s.href} target="_blank" rel="noopener noreferrer">Source: crvpf.org</a></small><a className="btn btn-blue" href={s.href} target="_blank" rel="noopener noreferrer">Read story on CRVPF <ArrowRight size={15}/></a></Modal>}</article>}
 function MapPanel({onPin,selectedCountry,timelineYear}:{onPin:(c:string)=>void;selectedCountry?:string;timelineYear?:number}){

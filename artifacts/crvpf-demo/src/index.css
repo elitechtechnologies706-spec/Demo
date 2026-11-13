@@ -1755,3 +1755,157 @@ a:hover:not(.btn):not(.active){
   text-align:center!important;
 }
 .site-footer .footer-social{justify-content:center}
+
+/* In-place finish: preserve the existing CRVPF structure and palette. */
+html{scroll-behavior:smooth}
+.container{width:min(1200px,calc(100% - 48px));margin-inline:auto}
+.desktop-nav{margin-inline:auto}
+
+main p,
+.page-hero p,
+.section-head p,
+.home-hero-copy p,
+.home-section-heading p,
+.home-programme-card p,
+.home-voice-card p,
+.home-resource-card p,
+.story-card p,
+.soft-card p,
+.result-card p,
+.timeline-item p,
+.newsletter p,
+.home-newsletter-copy p{
+  font-size:17px;
+  line-height:1.6;
+}
+main h1,main h2,main h3{
+  font-weight:800;
+  line-height:1.08;
+}
+.home-stat-value{
+  font-weight:900;
+  font-variant-numeric:tabular-nums;
+  min-width:7ch;
+}
+.home-trust-count{
+  display:inline-block;
+  min-width:1ch;
+  font-weight:900;
+  font-variant-numeric:tabular-nums;
+}
+
+.btn,
+a.btn,
+button:not(.static-africa-pin){
+  min-height:48px!important;
+  box-shadow:0 2px 9px rgba(26,31,46,.10)!important;
+  transition:transform .18s ease,box-shadow .18s ease,background-color .18s ease,color .18s ease;
+}
+.icon-btn,.menu-toggle{
+  width:48px!important;
+  min-width:48px!important;
+  height:48px!important;
+}
+.btn:hover,
+a.btn:hover,
+button:not(.static-africa-pin):hover{
+  transform:translateY(-2px) scale(1.02);
+  box-shadow:0 6px 14px rgba(26,31,46,.16)!important;
+}
+.btn:active,
+a.btn:active,
+button:not(.static-africa-pin):active{
+  transform:scale(.98);
+}
+a,a:hover,a:focus,a:focus-visible,
+a *{
+  text-decoration:none!important;
+}
+.mobile-bottom a,.mobile-bottom button{
+  min-height:48px!important;
+  transition:background-color .2s ease,color .2s ease,transform .2s ease;
+}
+
+.program-grid,.story-grid,.content-grid,.impact-grid,.home-programme-grid,
+.home-story-grid,.home-resource-grid,.elitech-grid,.financial-milestones,
+.handover-grid{
+  align-items:stretch;
+}
+.program-card,.story-card,.soft-card,.result-card,.archive-card,.impact-card,
+.annual-chart-card,.annual-chapter,.newsletter,.dashboard-stats article,
+.dashboard-chart-card,.dashboard-cms-card,.dashboard-tabs-card,
+.dashboard-side>section,.annual-actions,.published-story,.district-result,
+.financial-milestones article,.elitech-card,.home-stat-card,.home-programme-card,
+.home-voice-card,.home-resource-card,.map-country-label,.map-details-box{
+  border-radius:16px!important;
+  box-shadow:0 4px 16px rgba(26,31,46,.08)!important;
+  transition:transform .18s ease,box-shadow .18s ease;
+}
+.elitech-grid{align-items:stretch}
+.elitech-grid .elitech-card{
+  display:flex;
+  flex-direction:column;
+  height:100%;
+}
+.elitech-grid .elitech-card a{
+  min-height:48px;
+  margin-top:auto;
+}
+.local-image img,
+.home-hero-image .hero-photo img{
+  object-fit:cover;
+  object-position:center;
+}
+.static-africa-svg{object-fit:contain}
+
+@media (hover:hover){
+  .program-card:hover,.story-card:hover,.soft-card:hover,.result-card:hover,
+  .archive-card:hover,.impact-card:hover,.annual-chart-card:hover,
+  .annual-chapter:hover,.dashboard-stats article:hover,
+  .dashboard-chart-card:hover,.dashboard-cms-card:hover,
+  .dashboard-tabs-card:hover,.dashboard-side>section:hover,
+  .published-story:hover,.district-result:hover,
+  .financial-milestones article:hover,.elitech-card:hover,
+  .home-stat-card:hover,.home-programme-card:hover,.home-voice-card:hover,
+  .home-resource-card:hover,.map-details-box:hover{
+    transform:translateY(-3px);
+    box-shadow:0 9px 22px rgba(26,31,46,.13)!important;
+  }
+}
+
+.static-africa-pin svg{
+  transform-origin:50% 50%;
+  animation:crvpf-pin-pulse 2.8s ease-in-out infinite;
+}
+@keyframes crvpf-pin-pulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.055)}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .static-africa-pin svg{animation:none}
+}
+
+@media (min-width:1024px){
+  .section,.section.tight{padding-top:80px;padding-bottom:80px}
+  .home-section{
+    padding-top:80px;
+    padding-bottom:80px;
+    padding-left:max(24px,calc((100% - 1200px)/2));
+    padding-right:max(24px,calc((100% - 1200px)/2));
+  }
+  .home-newsletter-section{
+    padding-left:max(24px,calc((100% - 1200px)/2));
+    padding-right:max(24px,calc((100% - 1200px)/2));
+  }
+}
+@media (max-width:599px){
+  .container{width:calc(100% - 32px)}
+  .home-section{padding-left:16px;padding-right:16px}
+  .home-hero-copy{padding-left:16px;padding-right:16px}
+  .home-trust-bar{padding-left:16px;padding-right:16px}
+  .home-newsletter-section{padding-left:16px;padding-right:16px}
+}
+
+h1,h2,h3,h4,h5,h6{font-weight:800!important}
