@@ -1,0 +1,18 @@
+{
+  "name": "CRVPF",
+  "short_name": "CRVPF",
+  "description": "Children's Rights and Violence Prevention Fund",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F7F8F5",
+  "theme_color": "#0B2A6B",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
