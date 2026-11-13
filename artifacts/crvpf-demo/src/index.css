@@ -1717,3 +1717,18 @@ a:hover:not(.btn):not(.active){
   align-items:center!important;
   text-align:center!important;
 }
+.site-footer .btn{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+}
+.site-footer .footer-message-link{
+  width:100%;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:6px;
+  text-align:center!important;
+}
+.site-footer .footer-social{justify-content:center}
