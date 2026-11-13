@@ -63,6 +63,9 @@ class CRVPFRequestHandler(SimpleHTTPRequestHandler):
             pathname = pathname[len(BASE_PATH) :] or "/"
         pathname = "/" + pathname.lstrip("/")
 
+        if pathname == "/favicon.ico":
+            return str(PUBLIC_DIR / "crvpf-official-logo.png")
+
         route_file = ROUTE_FILES.get(pathname.rstrip("/") or "/")
         if route_file:
             return str(PUBLIC_DIR / route_file)
