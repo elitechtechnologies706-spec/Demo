@@ -764,7 +764,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 @media(max-width:767px){.story-image-feature{grid-template-columns:1fr;gap:18px;padding:14px}.story-photo,.story-photo .local-image-fallback{height:220px;min-height:220px}.hero-photo figcaption{max-width:70%}}
 
 /* CRVPF old-site palette and responsive support for the existing pages. */
-:root{--green:#1E7A3C;--blue:#0B2A6B;--orange:#F97316;--cream:#F7F8F5;--sky:#F7F8F5;--ink:#1A1F2E;--white:#FFFFFF;--app-font-sans:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--app-font-serif:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+:root{--green:#8CC63F;--blue:#8CC63F;--orange:#FCEE21;--cream:#DCEED0;--sky:#DCEED0;--ink:#1A1A1A;--white:#FFFFFF;--app-font-sans:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--app-font-serif:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 body{background:var(--cream);color:var(--ink);font-family:var(--app-font-sans)}
 button,input,textarea,select{font-family:var(--app-font-sans)}
 .top-banner{background:var(--blue);color:var(--cream)}
@@ -1076,7 +1076,7 @@ button,input,textarea,select{font-family:var(--app-font-sans)}
 @media(max-width:767px){.footer-social a,.drawer-social a{min-width:44px;min-height:44px}.system-table th,.system-table td{padding:9px;font-size:12px}.footer-operations{line-height:1.5}}
 
 /* Preserve the original CRVPF logo and frame it with the site's own green. */
-:root{--crvpf-logo-backing:#92C84A}
+:root{--crvpf-logo-backing:#8CC63F}
 .brand{min-width:0;flex:0 0 auto;gap:0;padding:12px 16px;border-radius:5px;background:var(--crvpf-logo-backing)}
 .brand-logo{display:block;width:auto;height:48px;max-width:none;max-height:none;object-fit:contain;mix-blend-mode:normal;filter:none;box-shadow:none;border-radius:0}
 .footer-brand{width:max-content;justify-content:center;margin:0 auto 14px}
@@ -1087,3 +1087,133 @@ button,input,textarea,select{font-family:var(--app-font-sans)}
  .header-inner{gap:12px}
  .footer-brand{margin-left:auto;margin-right:auto}
 }
+
+/* Uniform CRVPF palette across every existing route; layout and typography stay unchanged. */
+:root,.dark{
+  --background:96 47% 87%;
+  --foreground:0 0% 10%;
+  --border:86 53% 51%;
+  --card:0 0% 100%;
+  --card-foreground:0 0% 10%;
+  --card-border:86 53% 51%;
+  --sidebar:86 53% 51%;
+  --sidebar-foreground:0 0% 10%;
+  --sidebar-border:86 53% 51%;
+  --sidebar-primary:56 97% 56%;
+  --sidebar-primary-foreground:0 0% 10%;
+  --sidebar-accent:96 47% 87%;
+  --sidebar-accent-foreground:0 0% 10%;
+  --sidebar-ring:86 53% 51%;
+  --popover:0 0% 100%;
+  --popover-foreground:0 0% 10%;
+  --popover-border:86 53% 51%;
+  --primary:56 97% 56%;
+  --primary-foreground:0 0% 10%;
+  --secondary:0 0% 100%;
+  --secondary-foreground:0 0% 10%;
+  --muted:96 47% 87%;
+  --muted-foreground:0 0% 10%;
+  --accent:86 53% 51%;
+  --accent-foreground:0 0% 10%;
+  --destructive:56 97% 56%;
+  --destructive-foreground:0 0% 10%;
+  --input:86 53% 51%;
+  --ring:86 53% 51%;
+  --chart-1:86 53% 51%;
+  --chart-2:56 97% 56%;
+  --chart-3:96 47% 87%;
+  --chart-4:0 0% 10%;
+  --chart-5:0 0% 100%;
+  --shadow-2xs:none;
+  --shadow-xs:none;
+  --shadow-sm:none;
+  --shadow:none;
+  --shadow-md:none;
+  --shadow-lg:none;
+  --shadow-xl:none;
+  --shadow-2xl:none;
+}
+*,*::before,*::after{
+  color:#1A1A1A!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  border-color:#8CC63F!important;
+  box-shadow:none!important;
+  text-shadow:none!important;
+}
+body,#root,.app-shell,main,.section,.story-strip,.low-network-banner,.mobile-bottom,.mobile-drawer,.site-footer{
+  background-color:#DCEED0!important;
+  color:#1A1A1A!important;
+}
+.top-banner,.site-header,.hero,.hero-copy,.metrics{
+  background-color:#8CC63F!important;
+}
+.page-hero{background-color:#DCEED0!important;color:#1A1A1A!important}
+.brand,.brand:hover,.brand:focus{background-color:#8CC63F!important}
+.program-card,.story-card,.soft-card,.result-card,.archive-card,.impact-card,.annual-chart-card,.annual-chapter,.newsletter,.filter-toolbar,.dashboard-stats article,.dashboard-chart-card,.dashboard-cms-card,.dashboard-tabs-card,.dashboard-side>section,.annual-actions,.social-cards>.soft-card,.published-story,.district-result,.modal,.analytics-preview article,.financial-milestones article,.elitech-card,.table-scroll,.system-table-wrap,.handover-grid>.soft-card,.contact-grid>.soft-card{
+  background-color:#FFFFFF!important;
+  border-top:2px solid #8CC63F!important;
+}
+.hero h1,.hero h1 em,.hero .hero-vision,.hero .eyebrow,.hero-art .art-label{
+  color:#FFFFFF!important;
+}
+.section-head h2,.page-title,.prose h2,.prose h3,.program-card h3,.soft-card h3,.soft-card h2,.result-card h3,.timeline-item h3,.story-card h3,.impact-card h2,.annual-intro h2,.annual-chart-card h2,.programme-summary-grid h2,.programme-content h2,.dashboard-chart-card h2,.dashboard-cms-card h2,.dashboard-side h2,.modal h2,.section-kicker,.site-footer h4,.annual-chapter span{
+  color:#8CC63F!important;
+}
+.section-head p,.prose,.soft-card p,.story-card p,.program-card p,.newsletter p,.result-card p,.timeline-item p,.page-hero p,.breadcrumbs,.showing-count,.source-note,.site-footer,.site-footer p,.site-footer a,.footer-bottom,.footer-operations{
+  color:#1A1A1A!important;
+}
+.site-footer h4{color:#8CC63F!important}
+.btn,.btn-orange,.btn-blue,.btn-green,.report-action,.header-actions .btn-orange,.mobile-drawer .btn-orange,.newsletter .btn-orange,.social-cards .btn-orange,.dashboard-cms-card .btn-orange,.donate-tab,.cms-publish-button:not(:disabled){
+  background-color:#FCEE21!important;
+  color:#1A1A1A!important;
+  border:2px solid #FFFFFF!important;
+}
+.btn-outline,.icon-btn,.menu-toggle,.story-read-more,.pin-buttons button,.pill,.story-country-filter button,.usa-office-pin,.lang-toggle button,.tabs button,.timeline-year{
+  background-color:#FFFFFF!important;
+  color:#1A1A1A!important;
+  border:1px solid #8CC63F!important;
+}
+.btn:disabled,.cms-publish-button:disabled{
+  background-color:#DCEED0!important;
+  color:#1A1A1A!important;
+  border:2px solid #8CC63F!important;
+  cursor:not-allowed;
+  filter:none!important;
+}
+.btn-outline:hover,.pill.selected,.story-country-filter button.active,.pin-buttons button.active,.tabs button.active,.lang-toggle button.selected{
+  background-color:#8CC63F!important;
+  color:#1A1A1A!important;
+}
+.hero .btn-outline{background-color:#FFFFFF!important;color:#1A1A1A!important;border-color:#FFFFFF!important}
+.map-panel,.map-copy,.map-visual,.report-banner,.dashboard-callout,.dashboard-targets .dashboard-callout,.chart,.timeline-chart,.template-preview,.story-icon,.tag,.empty-state,.district-result,.notice,.safeguarding-checks,.audit-log,.photo-fallback,.local-image figcaption,.timeline-year,.timeline-year.documented,.timeline-year.selected{
+  background-color:#DCEED0!important;
+  color:#1A1A1A!important;
+}
+.map-panel,.report-banner{background-color:#FFFFFF!important;border-top:2px solid #8CC63F!important}
+.map-copy h2,.map-copy p,.report-banner p,.report-banner .eyebrow,.report-banner a,.report-disclaimer,.pin-label,.local-image figcaption{
+  color:#1A1A1A!important;
+}
+.hero-art:before{background-color:rgba(26,26,26,.18)!important}
+.pin:before{background-color:#FCEE21!important;border-color:#FFFFFF!important}
+.pin.selected:before,.chart-bar.target,.timeline-year.selected{background-color:#FCEE21!important}
+.chart-bar,.timeline-year.documented,.eyebrow:before,.check-list li:before,.nav-link:after{background-color:#8CC63F!important}
+.field,.field:focus,.archive-controls .field,.search-modal .field{
+  background-color:#FFFFFF!important;
+  color:#1A1A1A!important;
+  border-color:#8CC63F!important;
+}
+input::placeholder,textarea::placeholder{color:#1A1A1A!important;opacity:.7}
+input[type="checkbox"],input[type="radio"],input[type="range"]{accent-color:#8CC63F}
+.modal-backdrop{background-color:rgba(26,26,26,.5)!important}
+.toast,.error-box,.safeguarding-warning{background-color:#FCEE21!important;color:#1A1A1A!important;border-color:#8CC63F!important}
+.success-box{background-color:#DCEED0!important;color:#1A1A1A!important;border-color:#8CC63F!important}
+.site-footer .footer-social a,.social-links a,.desktop-nav,.nav-link,.program-trigger,.header-actions,.header-actions button,.mobile-bottom a,.mobile-bottom button,.footer-grid a,.footer-bottom a{
+  color:#1A1A1A!important;
+}
+.brand-logo{filter:none!important;mix-blend-mode:normal!important;box-shadow:none!important}
+.footer-brand{margin-left:auto;margin-right:auto}
+.annual-bar-row>div{background-color:#DCEED0!important}
+.annual-bar-row i{background-color:#8CC63F!important}
+.chart-period-values strong,.dashboard-stats strong,.metric strong,.metric span,.metric .metric-value{color:#1A1A1A!important}
+@media(max-width:767px){.site-header,.mobile-drawer,.mobile-bottom{background-color:#8CC63F!important}.footer-brand{margin-left:auto;margin-right:auto}}
