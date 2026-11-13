@@ -1,0 +1,1 @@
+- [CRVPF logo source mismatch](crvpf-logo-source.md) — the supplied URL displays a TIDES mark; user chose the CRVPF homepage logo instead.

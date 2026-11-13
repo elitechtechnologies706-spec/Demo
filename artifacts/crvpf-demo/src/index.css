@@ -1037,11 +1037,40 @@ button,input,textarea,select{font-family:var(--app-font-sans)}
  .site-footer{padding-bottom:100px}.footer-grid{grid-template-columns:1fr 1fr;gap:20px}.footer-grid>div:first-child{grid-column:1/-1}
  .footer-bottom{overflow-wrap:anywhere;line-height:1.6}.footer-brand{min-height:32px}
  .annual-actions{align-items:stretch}.annual-actions .btn{width:100%}
- .archive-controls .pill-row{overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px}
- .filter-toolbar .pill-row{overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px}
+  .archive-controls .pill-row,.filter-toolbar .pill-row{overflow:visible;flex-wrap:wrap;padding-bottom:4px}
  .cms-workflow{gap:6px;font-size:12px}
  .cms-workflow span{display:inline-flex;gap:6px;align-items:center}
  .dashboard-mobile-links{display:grid;gap:10px;margin-top:14px}
  .dashboard-mobile-links .soft-card{display:flex;justify-content:space-between}
  .contact-grid,.content-grid{grid-template-columns:1fr}
 }
+
+/* Text and interaction additions; keep the existing CRVPF layout intact. */
+.brand-logo{mix-blend-mode:normal}
+.social-links{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.social-links a{display:inline-grid;place-items:center;min-width:34px;min-height:34px;border-radius:8px;color:var(--blue);text-decoration:none}
+.social-links a:hover{background:var(--cream);color:var(--green)}
+.footer-social{margin:18px 0}
+.footer-social a{min-width:44px;min-height:44px;color:#fff}
+.footer-social a:hover{background:rgba(255,255,255,.12);color:#fff}
+.drawer-social{padding:14px 0 8px}
+.drawer-social a{min-width:44px;min-height:44px}
+.drawer-actions{margin-top:auto;display:flex;gap:12px;align-items:center;padding-top:24px}
+.footer-operations{margin:10px 0;color:#fff;font-size:12px}
+.whatsapp-link{margin:8px 0;min-height:44px}
+.source-note{display:block;margin:8px 0;color:var(--blue);font-size:12px;line-height:1.45}
+.story-quote{margin:12px 0;padding:12px;border-left:3px solid var(--green);background:var(--cream);color:var(--blue)}
+.photo-fallback{display:flex;align-items:center;justify-content:center;min-height:100%;height:100%;padding:20px;background:var(--cream);color:var(--blue);text-align:center}
+.local-image figcaption{background:var(--blue);color:#fff}
+.cms-publish-button-wrap{width:max-content;max-width:100%;cursor:not-allowed}
+.cms-publish-button:disabled{pointer-events:none}
+.safeguarding-warning{padding:12px 14px;border-left:4px solid #B42318;border-radius:8px;background:var(--cream);color:#B42318;font-weight:800}
+.audit-log{padding:10px 12px;border-left:3px solid var(--green);background:var(--cream);color:var(--blue);font-size:12px}
+.system-architecture{font-weight:800;color:var(--blue);overflow-wrap:anywhere}
+.system-table{width:100%;table-layout:fixed}
+.system-table th,.system-table td{white-space:normal;overflow-wrap:anywhere}
+.top-banner{line-height:1.45;overflow-wrap:anywhere}
+@media(min-width:1024px){.header-social a{min-width:28px;min-height:32px}}
+@media(min-width:1024px) and (max-width:1199px){.header-social{gap:0;flex-wrap:nowrap}.header-social a{min-width:22px;min-height:30px}.header-social svg{width:13px;height:13px}}
+@media(max-width:1023px){.header-social{display:none}}
+@media(max-width:767px){.footer-social a,.drawer-social a{min-width:44px;min-height:44px}.system-table th,.system-table td{padding:9px;font-size:12px}.footer-operations{line-height:1.5}}
