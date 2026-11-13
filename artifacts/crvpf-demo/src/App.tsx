@@ -69,7 +69,7 @@ function App(){
  const [path,setPath]=useLocation();
  const [lang,setLang]=useState<'EN'|'SW'>(()=>(localStorage.getItem('crvpf-lang') as 'EN'|'SW')||'EN');
   const [showPageBack,setShowPageBack]=useState(false);
- const [menu,setMenu]=useState(false),[programOpen,setProgramOpen]=useState(false),[search,setSearch]=useState(false),[searchText,setSearchText]=useState('');
+  const [menu,setMenu]=useState(false),[search,setSearch]=useState(false),[searchText,setSearchText]=useState('');
  const [donate,setDonate]=useState(false),[toast,setToast]=useState(''),[selectedCountry,setSelectedCountry]=useState('All'),[selectedProgram,setSelectedProgram]=useState('All');
   const [year,setYear]=useState(2026),[portalTab,setPortalTab]=useState('My Grants'),[login,setLogin]=useState(false);
   const [adminItems,setAdminItems]=useState<AdminStory[]>(loadAdminStories);
@@ -106,7 +106,7 @@ function App(){
     document.addEventListener('click',recordNavigation,true);
     return()=>document.removeEventListener('click',recordNavigation,true);
   },[]);
- useEffect(()=>{setMenu(false);setProgramOpen(false);if(window.location.hash){const id=decodeURIComponent(window.location.hash.slice(1));requestAnimationFrame(()=>document.getElementById(id)?.scrollIntoView({block:'start'}))}},[path]);
+ useEffect(()=>{setMenu(false);if(window.location.hash){const id=decodeURIComponent(window.location.hash.slice(1));requestAnimationFrame(()=>document.getElementById(id)?.scrollIntoView({block:'start'}))}},[path]);
  useEffect(()=>{localStorage.setItem('crvpf-lang',lang)},[lang]);
   const filteredPages=useMemo(()=>{
     const source=[...pages.map(([url,label])=>({url,label,text:`${url} ${label} ${programs.find(p=>p.slug===url)?.name||''}`})),...programs.map(p=>({url:p.slug,label:p.short,text:`${p.name} ${p.summary} ${p.details.join(' ')}`})),{url:'/programmes/coordinated',label:'Coordinated',text:`${approachContent.coordinated.title} ${approachContent.coordinated.summary}`}, {url:'/programmes/joint',label:'Joint',text:`${approachContent.joint.title} ${approachContent.joint.summary}`},...storyData.map(s=>({url:`/impact#story-${s.name.toLowerCase().replaceAll(' ','-')}`,label:s.name,text:`${s.name} ${s.country} ${s.program} ${s.text}`})),...countries.map(c=>({url:`/impact#filter-country-${c.toLowerCase()}`,label:c,text:c}))];
@@ -118,9 +118,9 @@ function App(){
   <div className="app-shell">
       <div className="top-banner" data-testid="text-demo-banner">DEMO — STAGING ONLY — NOT FOR LIVE PUBLICATION</div>
      <LowNetworkBanner />
-      <Header path={path} lang={lang} menuOpen={menu} programOpen={programOpen} onProgramToggle={()=>setProgramOpen(v=>!v)} onLanguage={setLang} onSearch={()=>setSearch(true)} onMenu={()=>setMenu(v=>!v)} />
+       <Header path={path} lang={lang} menuOpen={menu} onLanguage={setLang} onSearch={()=>setSearch(true)} onMenu={()=>setMenu(v=>!v)} />
       <PageNavigation path={path} showBack={showPageBack}/>
-      {menu&&<MobileDrawer lang={lang} onLanguage={setLang} onClose={()=>setMenu(false)} onSearch={()=>{setMenu(false);setSearch(true)}}/>}
+      {menu&&<MobileDrawer path={path} lang={lang} onLanguage={setLang} onClose={()=>setMenu(false)} onSearch={()=>{setMenu(false);setSearch(true)}}/>}
    <Switch>
        <Route path="/"><Home lang={lang}/></Route>
     <Route path="/about"><About /></Route>
@@ -150,10 +150,10 @@ function App(){
    </Switch>
    {footer}
    <nav className="mobile-bottom" aria-label="Quick navigation">
-     <Link href="/" aria-label="Home" data-testid="mobile-home"><HomeIcon size={18}/><span>Home</span></Link>
-      <Link href="/programmes" aria-label="Programmes" data-testid="mobile-programmes"><Shield size={18}/><span>Programmes</span></Link>
-     <Link href="/where-we-work" aria-label="Where We Work" data-testid="mobile-where"><MapPin size={18}/><span>Where We Work</span></Link>
-      <Link href="/get-involved#donate" className="donate-tab" aria-label="Donate" data-testid="mobile-donate"><HandHeart size={18}/><span>Donate</span></Link>
+     <Link href="/" className={!menu&&path==='/'?'active':''} aria-current={!menu&&path==='/'?'page':undefined} aria-label="Home" data-testid="mobile-home"><HomeIcon size={18}/><span>Home</span></Link>
+      <Link href="/programmes" className={!menu&&path.startsWith('/programmes')?'active':''} aria-current={!menu&&path.startsWith('/programmes')?'page':undefined} aria-label="Programmes" data-testid="mobile-programmes"><Shield size={18}/><span>Programmes</span></Link>
+     <Link href="/where-we-work" className={!menu&&path==='/where-we-work'?'active':''} aria-current={!menu&&path==='/where-we-work'?'page':undefined} aria-label="Where We Work" data-testid="mobile-where"><MapPin size={18}/><span>Where We Work</span></Link>
+      <Link href="/get-involved#donate" className={`donate-tab ${!menu&&path==='/get-involved'?'active':''}`} aria-current={!menu&&path==='/get-involved'?'page':undefined} aria-label="Donate" data-testid="mobile-donate"><HandHeart size={18}/><span>Donate</span></Link>
    </nav>
     {search&&<SearchModal value={searchText} setValue={setSearchText} results={filteredPages} onStorySelect={()=>{setSelectedCountry('All');setSelectedProgram('All')}} onClose={()=>{setSearch(false);setSearchText('')}}/>}
    {donate&&<DonateModal onClose={()=>setDonate(false)} notify={notify}/>}
@@ -163,21 +163,21 @@ function App(){
  </WouterRouter>
 }
 
-function Header({path,lang,menuOpen,programOpen,onProgramToggle,onLanguage,onSearch,onMenu}:{path:string;lang:'EN'|'SW';menuOpen:boolean;programOpen:boolean;onProgramToggle:()=>void;onLanguage:(v:'EN'|'SW')=>void;onSearch:()=>void;onMenu:()=>void}){
+function Header({path,lang,menuOpen,onLanguage,onSearch,onMenu}:{path:string;lang:'EN'|'SW';menuOpen:boolean;onLanguage:(v:'EN'|'SW')=>void;onSearch:()=>void;onMenu:()=>void}){
  const sw=lang==='SW';
- const link=(url:string,label:string,translated:string=label)=><Link href={url} className={`nav-link ${path===url?'active':''}`} data-testid={`nav-${label.toLowerCase().replaceAll(' ','-')}`}>{sw?translated:label}</Link>;
+  const link=(url:string,label:string,translated:string=label,active=false)=><Link href={url} className={`nav-link ${active?'active':''}`} aria-current={active?'page':undefined} data-testid={`nav-${label.toLowerCase().replaceAll(' ','-')}`}>{sw?translated:label}</Link>;
  return <header className="site-header"><div className="header-inner">
      <Link href="/" className="brand" aria-label="CRVPF home" data-testid="link-brand"><img className="brand-logo" src={CRVPF_LOGO_URL} data-source={CRVPF_LOGO_SOURCE} alt="CRVPF logo" width="11309" height="4010" fetchPriority="high" decoding="async"/></Link>
   <nav className="desktop-nav" aria-label="Main navigation">
-     {link('/','Home','Nyumbani')}{link('/about','About','Kuhusu')}
-      <div className={`program-wrap ${programOpen?'open':''}`} onBlur={e=>{if(programOpen&&!e.currentTarget.contains(e.relatedTarget as Node|null))onProgramToggle()}} onKeyDown={e=>{if(e.key==='Escape'&&programOpen){onProgramToggle();(e.currentTarget.querySelector('.program-trigger') as HTMLButtonElement|null)?.focus()}}}><button type="button" className={`nav-link program-trigger ${path.includes('/programmes')?'active':''}`} onClick={onProgramToggle} aria-expanded={programOpen} aria-haspopup="true" data-testid="nav-our-work">{sw?'Kazi Yetu':'Our Work'}</button><div className="program-menu"><Link href="/programmes" data-testid="nav-programmes-hub">All Programmes</Link>{[...programs.map(p=>({url:p.slug,label:`${p.short} · ${p.name}`})),{url:'/programmes/coordinated',label:'Coordinated Program Approach'},{url:'/programmes/joint',label:'Joint Action & Resourcing'}].map(p=><Link key={p.url} href={p.url} data-testid={`nav-program-${p.url.split('/').pop()}`}>{p.label}</Link>)}</div></div>
-        {link('/impact','Impact','Athari')}{link('/resources','Resources','Rasilimali')}{link('/where-we-work','Where We Work','Mahali Tunapofanya Kazi')}{link('/get-involved','Get Involved','Shiriki')}
+      {link('/','Home','Nyumbani',path==='/')}{link('/about','About','Kuhusu')}
+       <div className="program-wrap"><Link href="/programmes" className={`nav-link ${path.startsWith('/programmes')?'active':''}`} aria-current={path.startsWith('/programmes')?'page':undefined} aria-haspopup="true" data-testid="nav-programmes">{sw?'Programu':'Programmes'} <ChevronDown size={13} aria-hidden="true"/></Link><div className="program-menu"><Link href="/programmes" data-testid="nav-programmes-hub">All Programmes</Link>{[...programs.map(p=>({url:p.slug,label:`${p.short} · ${p.name}`})),{url:'/programmes/coordinated',label:'Coordinated Program Approach'},{url:'/programmes/joint',label:'Joint Action & Resourcing'}].map(p=><Link key={p.url} href={p.url} data-testid={`nav-program-${p.url.split('/').pop()}`}>{p.label}</Link>)}</div></div>
+         {link('/impact','Impact','Athari')}{link('/resources','Resources','Rasilimali')}{link('/where-we-work','Where We Work','Mahali Tunapofanya Kazi',path==='/where-we-work')}{link('/get-involved','Get Involved','Shiriki')}
   </nav>
-     <div className="header-actions"><button className="icon-btn" aria-label="Search site" onClick={onSearch} data-testid="button-search"><Search size={19}/></button><Link className={`btn btn-orange header-donate ${path==='/get-involved'?'active':''}`} href="/get-involved#donate" aria-label="Donate to CRVPF" data-testid="button-donate">{sw?'Changia':'Donate'}</Link><button className="icon-btn menu-toggle" aria-label={menuOpen?'Close navigation menu':'Open navigation menu'} aria-expanded={menuOpen} onClick={onMenu} data-testid="button-menu"><Menu size={24}/></button></div>
+      <div className="header-actions"><button className="icon-btn" aria-label="Search site" onClick={onSearch} data-testid="button-search"><Search size={19}/></button><Link className="btn btn-orange header-donate" data-current={path==='/get-involved'} href="/get-involved#donate" aria-label="Donate to CRVPF" data-testid="button-donate">{sw?'Changia':'Donate'}</Link><button className="icon-btn menu-toggle" aria-label={menuOpen?'Close navigation menu':'Open navigation menu'} aria-expanded={menuOpen} onClick={onMenu} data-testid="button-menu"><Menu size={24}/></button></div>
  </div></header>
 }
 
-function MobileDrawer({onClose,onSearch,lang,onLanguage}:{onClose:()=>void;onSearch:()=>void;lang:'EN'|'SW';onLanguage:(v:'EN'|'SW')=>void}){
+function MobileDrawer({path,onClose,onSearch,lang,onLanguage}:{path:string;onClose:()=>void;onSearch:()=>void;lang:'EN'|'SW';onLanguage:(v:'EN'|'SW')=>void}){
   const [open,setOpen]=useState(false);const sw=lang==='SW';
   const closeRef=useRef(onClose);closeRef.current=onClose;
   useEffect(()=>{
@@ -187,13 +187,13 @@ function MobileDrawer({onClose,onSearch,lang,onLanguage}:{onClose:()=>void;onSea
     document.querySelector<HTMLButtonElement>('.mobile-drawer [aria-label="Close menu"]')?.focus();
     return()=>{window.removeEventListener('keydown',onKey);opener?.focus({preventScroll:true})};
   },[]);
-     return <div className="mobile-drawer" role="dialog" aria-modal="true" aria-label="Navigation menu" onClick={event=>{if(event.target===event.currentTarget)onClose()}}><div className="drawer-head"><Link href="/" className="brand" onClick={onClose}><img className="brand-logo" src={CRVPF_LOGO_URL} data-source={CRVPF_LOGO_SOURCE} alt="CRVPF logo" width="11309" height="4010" decoding="async"/></Link><button className="icon-btn" onClick={onClose} aria-label="Close menu" data-testid="button-close-menu"><X size={24}/></button></div>
+      return <div className="mobile-drawer" role="dialog" aria-modal="true" aria-label="Navigation menu" onClick={event=>{if(event.target===event.currentTarget)onClose()}}><div className="drawer-head"><Link href="/" className="brand" onClick={onClose}><img className="brand-logo" src={CRVPF_LOGO_URL} data-source={CRVPF_LOGO_SOURCE} alt="CRVPF logo" width="11309" height="4010" decoding="async"/></Link><button className="icon-btn" onClick={onClose} aria-label="Close menu" data-testid="button-close-menu"><X size={24}/></button></div>
    <div className="drawer-links">
     <button className="drawer-accordion" onClick={onSearch} data-testid="drawer-search"><span>{sw?'Tafuta':'Search'}</span><Search size={18}/></button>
-       <Link href="/" onClick={onClose} data-testid="drawer-home">{sw?'Nyumbani':'Home'}</Link><Link href="/about" onClick={onClose} data-testid="drawer-about">{sw?'Kuhusu':'About'}</Link><button className="drawer-accordion" onClick={()=>setOpen(!open)} aria-expanded={open} data-testid="drawer-programmes">{sw?'Kazi Yetu':'Our Work'} <ChevronDown size={18}/></button>{open&&<div className="drawer-sub"><Link href="/programmes" onClick={onClose}>All Programmes</Link>{[...programs.map(p=>({url:p.slug,label:`${p.short} — ${p.name}`})),{url:'/programmes/coordinated',label:'Coordinated Program'},{url:'/programmes/joint',label:'Joint Action & Resourcing'}].map(p=><Link key={p.url} href={p.url} onClick={onClose}>{p.label}</Link>)}</div>}
-        <Link href="/impact" onClick={onClose} data-testid="drawer-impact">{sw?'Athari':'Impact'}</Link><Link href="/resources" onClick={onClose} data-testid="drawer-resources">{sw?'Rasilimali':'Resources'}</Link><Link href="/where-we-work" onClick={onClose} data-testid="drawer-where-we-work">{sw?'Mahali Tunapofanya Kazi':'Where We Work'}</Link><Link href="/get-involved" onClick={onClose} data-testid="drawer-get-involved">{sw?'Shiriki':'Get Involved'}</Link>
+        <Link href="/" className={path==='/'?'active':''} aria-current={path==='/'?'page':undefined} onClick={onClose} data-testid="drawer-home">{sw?'Nyumbani':'Home'}</Link><Link href="/about" onClick={onClose} data-testid="drawer-about">{sw?'Kuhusu':'About'}</Link><button className={`drawer-accordion ${path.startsWith('/programmes')?'active':''}`} aria-current={path.startsWith('/programmes')?'page':undefined} onClick={()=>setOpen(!open)} aria-expanded={open} data-testid="drawer-programmes">{sw?'Programu':'Programmes'} <ChevronDown size={18}/></button>{open&&<div className="drawer-sub"><Link href="/programmes" onClick={onClose}>All Programmes</Link>{[...programs.map(p=>({url:p.slug,label:`${p.short} — ${p.name}`})),{url:'/programmes/coordinated',label:'Coordinated Program'},{url:'/programmes/joint',label:'Joint Action & Resourcing'}].map(p=><Link key={p.url} href={p.url} onClick={onClose}>{p.label}</Link>)}</div>}
+         <Link href="/impact" onClick={onClose} data-testid="drawer-impact">{sw?'Athari':'Impact'}</Link><Link href="/resources" onClick={onClose} data-testid="drawer-resources">{sw?'Rasilimali':'Resources'}</Link><Link href="/where-we-work" className={path==='/where-we-work'?'active':''} aria-current={path==='/where-we-work'?'page':undefined} onClick={onClose} data-testid="drawer-where-we-work">{sw?'Mahali Tunapofanya Kazi':'Where We Work'}</Link><Link href="/get-involved" onClick={onClose} data-testid="drawer-get-involved">{sw?'Shiriki':'Get Involved'}</Link>
    </div>
-    <div className="drawer-actions"><Link className="btn btn-orange" href="/get-involved#donate" onClick={onClose} aria-label="Donate to CRVPF">{sw?'Changia':'Donate'} <HandHeart size={16}/></Link><div className="lang-toggle"><button className={lang==='EN'?'selected':''} onClick={()=>onLanguage('EN')}>EN</button><button className={lang==='SW'?'selected':''} onClick={()=>onLanguage('SW')}>SW</button></div></div><SocialLinks className="drawer-social"/>
+     <div className="drawer-actions"><Link className={`btn btn-orange ${path==='/get-involved'?'active':''}`} href="/get-involved#donate" onClick={onClose} aria-current={path==='/get-involved'?'page':undefined} aria-label="Donate to CRVPF">{sw?'Changia':'Donate'} <HandHeart size={16}/></Link><div className="lang-toggle"><button className={lang==='EN'?'selected':''} onClick={()=>onLanguage('EN')}>EN</button><button className={lang==='SW'?'selected':''} onClick={()=>onLanguage('SW')}>SW</button></div></div><SocialLinks className="drawer-social"/>
  </div>
 }
 function SocialLinks({className=''}:{className?:string}){return <div className={`social-links ${className}`}>{socialLinks.map(({name,url,icon:Icon})=><a key={name} href={url} target="_blank" rel="noopener noreferrer" aria-label={`CRVPF on ${name}`} title={name}><Icon size={16}/></a>)}</div>}
@@ -391,10 +391,10 @@ const homeProgrammeCards=[
   {code:'JOINT',title:'Joint Action & Resourcing',description:'Connects PVAC and AGPP partners working in the same geographic area.',slug:'/programmes/joint'},
 ];
 const mapLocations=[
-  {id:'ethiopia',country:'Ethiopia',city:'Addis Ababa',kind:'country',lat:9.0054,lng:38.7636,partners:62,youth:'92k',programmes:['EYDCD','PVAC'],story:''},
-  {id:'kenya',country:'Kenya',city:'Nairobi',kind:'country',lat:-1.2921,lng:36.8219,partners:78,youth:'118k',programmes:['AGPP','PVAC'],story:''},
-  {id:'uganda',country:'Uganda',city:'Kampala',kind:'country',lat:0.3476,lng:32.5825,partners:71,youth:'105k',programmes:['EYDCD','AGPP','PVAC'],story:'Safe Schools Initiative'},
-  {id:'tanzania',country:'Tanzania',city:'Dodoma',kind:'country',lat:-6.1630,lng:35.7516,partners:40,youth:'85k',programmes:['EYDCD','AGPP'],story:'Youth Council Launched - Dar es Salaam'},
+  {id:'ethiopia',country:'Ethiopia',city:'Addis Ababa',mapX:80,mapY:34,partners:62,youth:'92k',programmes:['EYDCD','PVAC'],story:''},
+  {id:'kenya',country:'Kenya',city:'Nairobi',mapX:83,mapY:50,partners:78,youth:'118k',programmes:['AGPP','PVAC'],story:''},
+  {id:'uganda',country:'Uganda',city:'Kampala',mapX:71,mapY:53,partners:71,youth:'105k',programmes:['EYDCD','AGPP','PVAC'],story:'Safe Schools Initiative'},
+  {id:'tanzania',country:'Tanzania',city:'Dodoma',mapX:78,mapY:67,partners:40,youth:'85k',programmes:['EYDCD','AGPP'],story:'Youth Council Launched - Dar es Salaam'},
 ];
 function findEydcdLocations(query:string){
   const normalized=query.trim().toLowerCase();
@@ -442,7 +442,10 @@ function EditionPhoto({className}:{className:string}){return <SourcePhoto src="h
 function AnimatedMetric({value}:{value:number}){const [shown,setShown]=useState(0);useEffect(()=>{const element=document.querySelector(`[data-metric="${value}"]`);if(!element)return;let frame=0;let observer:IntersectionObserver|undefined;const finish=()=>setShown(value);const start=()=>{if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){finish();return}const duration=400,started=performance.now();const tick=(now:number)=>{const progress=Math.min(1,(now-started)/duration);setShown(Math.round(value*(1-Math.pow(1-progress,3))));if(progress<1)frame=requestAnimationFrame(tick)};frame=requestAnimationFrame(tick)};if('IntersectionObserver' in window){observer=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){start();observer?.disconnect()}},{threshold:.4});observer.observe(element)}else start();return()=>{observer?.disconnect();cancelAnimationFrame(frame)}},[value]);return <strong data-metric={value} aria-label={value.toLocaleString()}><span aria-hidden="true">{shown.toLocaleString()}</span></strong>}
 function ProgramCard({p,i}:{p:Program;i:number}){return <article className="program-card"><span className="number">0{i+1} / {p.short}</span><h3>{p.name}</h3><p>{p.summary}</p><Link className="arrow-link" href={p.slug}>Explore programme <ArrowRight size={15}/></Link></article>}
   function StoryCard({s,i}:{s:typeof storyData[number];i:number}){const[open,setOpen]=useState(false);const label=s.country?`${s.program} · ${s.country}`:s.program;return <article className="story-card"><div className="story-icon">{i%2===0?<HeartHandshake size={25}/>:<Sparkles size={25}/>}</div><div><span className="tag">{label}</span><h3 style={{marginTop:12}}>{s.name}</h3><p>{s.text}</p>{s.quote&&<blockquote className="story-quote">“{s.quote}”</blockquote>}<small className="source-note"><a href={s.href} target="_blank" rel="noopener noreferrer">Source: crvpf.org</a></small><button className="arrow-link story-read-more" onClick={()=>setOpen(true)}>Read More <ArrowRight size={15}/></button></div>{open&&<Modal title={s.name} onClose={()=>setOpen(false)}><span className="tag">{label}</span><p>{s.text}</p>{s.quote&&<blockquote>“{s.quote}”</blockquote>}<small className="source-note"><a href={s.href} target="_blank" rel="noopener noreferrer">Source: crvpf.org</a></small><a className="btn btn-blue" href={s.href} target="_blank" rel="noopener noreferrer">Read story on CRVPF <ArrowRight size={15}/></a></Modal>}</article>}
-function MapPanel({onPin,selectedCountry,timelineYear,onOffice}:{onPin:(c:string)=>void;selectedCountry?:string;timelineYear?:number;onOffice?:()=>void}){const positions=[['Uganda','35%','42%'],['Kenya','62%','50%'],['Tanzania','53%','70%'],['Ethiopia','69%','27%']];return <div className="map-panel"><div className="map-copy"><div className="eyebrow">Across East Africa</div><h2>Our Reach From 2021 - 2023</h2><p>CRVPF operates in Uganda, Kenya, Tanzania and Ethiopia.</p><div className="pin-buttons">{countries.map(c=><button id={`filter-country-${c.toLowerCase()}`} key={c} className={selectedCountry===c?'active':''} onClick={()=>onPin(c)} data-testid={`map-${c.toLowerCase()}`}>{c}</button>)}</div>{onOffice&&<button type="button" className="usa-office-pin" onClick={onOffice} data-testid="map-usa-office"><MapPin size={18}/>Grants and Administration Office in Washington DC</button>}{timelineYear&&<div className="map-year-caption"><strong>Selected timeline year: {timelineYear}</strong><span>Country locations are illustrative. No country-specific annual totals were supplied.</span><div className="map-year-rail" aria-label={`Timeline year ${timelineYear}`}><span className="map-year-dot" style={{left:`${((timelineYear-2015)/11)*100}%`}}/><span>2015</span><span>2026</span></div></div>}</div><div className="map-visual" aria-label="Illustrative map, not a geographic boundary map">{positions.map(([c,l,t])=><button key={c} className={`pin ${selectedCountry===c?'selected':''}`} style={{left:l,top:t}} aria-label={`Explore ${c}`} onClick={()=>onPin(c)} data-testid={`map-pin-${c.toLowerCase()}`}><span className="pin-label" style={{transform:'rotate(45deg)',left:12,top:-7}}>{c}</span></button>)}</div></div>}
+function MapPanel({onPin,selectedCountry,timelineYear}:{onPin:(c:string)=>void;selectedCountry?:string;timelineYear?:number}){
+ const selectedLocation=mapLocations.find(location=>location.country===selectedCountry);
+ return <div className="map-panel"><div className="map-copy"><div className="eyebrow">Across East Africa</div><h2>Our Reach From 2021 - 2023</h2><p>CRVPF operates in Uganda, Kenya, Tanzania and Ethiopia.</p><div className="pin-buttons">{countries.map(c=><button id={`filter-country-${c.toLowerCase()}`} key={c} className={selectedCountry===c?'active':''} onClick={()=>onPin(c)} data-testid={`map-${c.toLowerCase()}`}>{c}</button>)}</div>{timelineYear&&<div className="map-year-caption"><strong>Selected timeline year: {timelineYear}</strong><span>Country-level pins remain fixed for all selected years.</span><div className="map-year-rail" aria-label={`Timeline year ${timelineYear}`}><span className="map-year-dot" style={{left:`${((timelineYear-2015)/11)*100}%`}}/><span>2015</span><span>2026</span></div></div>}</div><StaticAfricanMap selectedId={selectedLocation?.id||null} onSelect={id=>{const location=mapLocations.find(item=>item.id===id);if(location)onPin(location.country)}} testPrefix="dashboard-map-pin" className="dashboard-static-map"/></div>
+}
 function PageHero({eyebrow,title,description}:{eyebrow:string;title:string;description:string}){return <section className="page-hero"><div className="container"><div className="eyebrow">{eyebrow}</div><h1 className="page-title">{title}</h1><p>{description}</p></div></section>}
 function About(){
  const clusterText='Our principles of partnership with community organizations revolve around a place-based Cluster Partnership model that brings together 2–5 community organizations in one geographic area to implement CRVPF’s interventions. This ensures clear and transparent working relationships that are inclusive and mutually beneficial, grounded in equity, respect, and shared passion. To support this collaboration, CRVPF offers a Planning and Learning Grant that enables cluster partners to build strong relationships that strengthen the management and implementation of violence against children (VAC) prevention programs. The grant provides space for partners to listen to the community, co-create relevant interventions, and conduct joint situation and power analyses. This helps ensure that the solutions are grounded in the lived experiences, challenges, and resources of the specific communities. This approach promotes programmatic synergy, enables economies of scale in capacity building and funding eligibility, and creates safe and supportive environments for children and young people.';
@@ -453,150 +456,40 @@ function About(){
 const approachContent={coordinated:{title:'Coordinated Program approach for integrated holistic programs',summary:'In our mission to build power of young people to make informed decisions and access dignified, fulfilling work, CRVPF developed a coordinated approach that maximizes the skills provided by our community partners while bridging the gap between young people and the private sector, particularly financial institutions, to develop financial products tailored for young people. The approach brings together CRVPF’s three programs, AGPP, EYDCD, and PVAC, community organizations, financial institutions, telecommunication providers for digital solutions, and alternative credit facilities, among others, to provide program participants with a comprehensive and integrated package of services.',activities:['Our community partners bring their unique expertise to work with the same youth in the same geographical areas, offering life skills training, parenting skills training, and inclusive financial education. By leveraging the strength of each program, the coordinated approach aims to create an enabling environment for young people to thrive in a safe environment free from violence and sexual violence.'],partnerships:['Community organizations','Financial institutions','Telecommunication providers','Private sector'],resources:[]},joint:{title:'Joint Program Approach',summary:'Initially, CRVPF’s programs, the Prevention of Violence against Children (PVAC) and the Adolescent Girls’ Power Program (AGPP), supported partners in different locations. Even when partners operated within the same geographical area, there was no intentional or strategic coordination between them. Recognizing the unique strengths of each program in addressing violence and sexual violence against children and young people, CRVPF adopted a Joint Program Approach. By integrating the two programs within the same geographical area, the initiative aims to enhance partner interventions for greater impact.',activities:['In this collaborative model, PVAC contributes expertise in strengthening parenting skills and spousal relationships, reducing family economic stress through Village Savings and Loan Associations (VSLAs), and fostering an enabling school environment where young people can thrive. Meanwhile, AGPP brings its experience in building power for adolescent girls and transforming structural barriers that limit their choices and agency, using its life skills manual as a key tool.'],partnerships:['PVAC and AGPP partners in the same geographical area'],resources:[]}};
 function ProgrammesHub(){return <main><PageHero eyebrow="Our Work" title="Our Programmes" description="Explore CRVPF programmes and approaches."/><section className="section"><div className="container"><div className="home-programme-grid">{homeProgrammeCards.map(item=><article className="home-programme-card" key={item.slug}><span className="home-programme-code">{item.code}</span><h3>{item.title}</h3><p>{item.description}</p><Link className="home-learn-link" href={item.slug}>Learn more <ArrowRight size={15}/></Link></article>)}</div></div></section></main>}
 function ResourcesPage(){return <main><PageHero eyebrow="Resources" title="Resource Centre" description="Search and filter CRVPF resources. Items without a confirmed public source are marked clearly."/><section className="section"><div className="container"><ResourceCentre/></div></section></main>}
-type LeafletMarker={addTo:(group:LeafletLayerGroup)=>LeafletMarker;bindPopup:(text:string)=>LeafletMarker;on:(event:string,callback:()=>void)=>LeafletMarker;openPopup:()=>LeafletMarker};
-type LeafletLayerGroup={addTo:(map:LeafletMap)=>LeafletLayerGroup;clearLayers:()=>void;addLayer:(marker:LeafletMarker)=>void};
-type LeafletMap={setView:(center:[number,number],zoom:number,options?:Record<string,unknown>)=>LeafletMap;invalidateSize:()=>void;remove:()=>void};
-type LeafletLibrary={
-  map:(container:HTMLElement,options?:Record<string,unknown>)=>LeafletMap;
-  tileLayer:(url:string,options:{attribution:string})=>{addTo:(map:LeafletMap)=>unknown};
-  layerGroup:()=>LeafletLayerGroup;
-  marker:(position:[number,number],options?:Record<string,unknown>)=>LeafletMarker;
-  divIcon:(options:Record<string,unknown>)=>unknown;
-  geoJSON:(data:unknown,options?:{filter?:(feature:GeoFeature)=>boolean;style?:(feature:GeoFeature)=>Record<string,unknown>})=>{addTo:(map:LeafletMap)=>unknown};
-};
-type GeoFeature={type:string;properties:Record<string,string>;geometry:{coordinates:unknown}};
-type GeoCollection={type:string;features:GeoFeature[]};
-declare global { interface Window { L?:LeafletLibrary } }
-let leafletPromise:Promise<LeafletLibrary>|undefined;
-let countryBoundariesPromise:Promise<GeoCollection>|undefined;
-function loadCountryBoundaries(){
-  countryBoundariesPromise??=fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson')
-    .then(response=>{if(!response.ok)throw new Error('Country boundaries could not be loaded.');return response.json() as Promise<GeoCollection>})
-    .catch(error=>{countryBoundariesPromise=undefined;throw error});
-  return countryBoundariesPromise;
-}
-const africaBoundaryNames=new Set(['Algeria','Angola','Benin','Botswana','Burkina Faso','Burundi','Cameroon','Central African Republic','Chad','Comoros','Democratic Republic of the Congo','Djibouti','Egypt','Equatorial Guinea','Eritrea','Eswatini','Swaziland','Ethiopia','Gabon','Gambia','Ghana','Guinea','Guinea-Bissau','Guinea Bissau','Ivory Coast','Kenya','Lesotho','Liberia','Libya','Madagascar','Malawi','Mali','Mauritania','Mauritius','Morocco','Mozambique','Namibia','Niger','Nigeria','Republic of the Congo','Rwanda','Senegal','Sierra Leone','Somalia','Somaliland','South Africa','South Sudan','Sudan','United Republic of Tanzania','Tanzania','Togo','Tunisia','Uganda','Western Sahara','Zambia','Zimbabwe','Sao Tome and Principe','Côte d’Ivoire']);
-function loadLeaflet():Promise<LeafletLibrary>{
-  if(window.L)return Promise.resolve(window.L);
-  if(leafletPromise)return leafletPromise;
-  leafletPromise=new Promise<LeafletLibrary>((resolve,reject)=>{
-    if(!document.querySelector('link[data-crvpf-leaflet]')){
-      const stylesheet=document.createElement('link');
-      stylesheet.rel='stylesheet';
-      stylesheet.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-      stylesheet.crossOrigin='anonymous';
-      stylesheet.dataset.crvpfLeaflet='true';
-      document.head.appendChild(stylesheet);
-    }
-    const script=document.createElement('script');
-    script.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-    script.crossOrigin='anonymous';
-    script.async=true;
-    script.onload=()=>window.L?resolve(window.L):reject(new Error('Leaflet loaded without its map API.'));
-    script.onerror=()=>reject(new Error('Leaflet CDN could not be reached.'));
-    document.head.appendChild(script);
-  }).catch(error=>{leafletPromise=undefined;throw error});
-  return leafletPromise!;
-}
-function LeafletLocationsMap({programme,onSelect}:{programme:string;onSelect:(id:string)=>void}){
-  const containerRef=useRef<HTMLDivElement|null>(null);
-  const mapRef=useRef<LeafletMap|null>(null);
-  const markerGroupRef=useRef<LeafletLayerGroup|null>(null);
-  const markersRef=useRef<Map<string,LeafletMarker>>(new Map());
-  const [status,setStatus]=useState<'loading'|'ready'|'error'>('loading');
-  useEffect(()=>{
-    const container=containerRef.current;
-    if(!container)return;
-    let cancelled=false;
-    let observer:IntersectionObserver|undefined;
-    const initialise=()=>{
-      setStatus('loading');
-      loadLeaflet().then(L=>{
-        if(cancelled||!container.isConnected)return;
-        const showContinent=container.clientWidth>=520;
-        const map=L.map(container,{scrollWheelZoom:false,attributionControl:true,zoomControl:true,zoomSnap:.5}).setView(showContinent?[2,20]:[0.5,35.0],showContinent?3:4);
-        mapRef.current=map;
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors'}).addTo(map);
-        markerGroupRef.current=L.layerGroup().addTo(map);
-        const shades=['#8CC63F','#6FBF3A','#A8D97A','#4A9E2F','#C9E8A8'];
-        const focusColors:Record<string,string>={Ethiopia:shades[0],Kenya:shades[1],Uganda:shades[2],Tanzania:shades[3],'United Republic of Tanzania':shades[3]};
-        loadCountryBoundaries().then(data=>{
-          if(cancelled||!mapRef.current)return;
-          const africanFeatures=data.features.filter(feature=>africaBoundaryNames.has(feature.properties.name));
-          const africaCollection:GeoCollection={type:'FeatureCollection',features:africanFeatures};
-          L.geoJSON(africaCollection,{
-            filter:feature=>africaBoundaryNames.has(feature.properties.name),
-            style:feature=>({color:'#EAF6DC',weight:1,fillColor:focusColors[feature.properties.name]||shades[(africanFeatures.indexOf(feature)%shades.length)],fillOpacity:.82}),
-          }).addTo(map);
-        }).catch(()=>{/* Real OSM tiles and pins remain available if the boundary source is offline. */});
-        setStatus('ready');
-        requestAnimationFrame(()=>map.invalidateSize());
-      }).catch(()=>{if(!cancelled)setStatus('error')});
-    };
-    if('IntersectionObserver'in window){
-      observer=new IntersectionObserver(entries=>{
-        if(entries.some(entry=>entry.isIntersecting)){observer?.disconnect();initialise()}
-      },{rootMargin:'250px 0px'});
-      observer.observe(container);
-    }else initialise();
-    return()=>{cancelled=true;observer?.disconnect();mapRef.current?.remove();mapRef.current=null;markerGroupRef.current=null;markersRef.current.clear()};
-  },[]);
-  useEffect(()=>{
-    const L=window.L;
-    const group=markerGroupRef.current;
-    if(!L||!group)return;
-    group.clearLayers();
-    markersRef.current.clear();
-    const icon=L.divIcon({
-      className:'crvpf-leaflet-marker',
-      html:'<svg viewBox="0 0 28 36" width="44" height="44" aria-hidden="true"><path d="M14 1C6.8 1 1 6.8 1 14c0 9.1 13 21 13 21s13-11.9 13-21C27 6.8 21.2 1 14 1Z" fill="#FCEE21" stroke="#1A1A1A" stroke-width="2"/><circle cx="14" cy="14" r="4" fill="#1A1A1A"/></svg>',
-      iconSize:[44,44],iconAnchor:[22,44],popupAnchor:[0,-42],
-    });
-    mapLocations.forEach(location=>{
-      const matches=programme==='All'||location.programmes.includes(programme);
-      const marker=L.marker([location.lat,location.lng],{icon,title:`${location.city}, ${location.country}`,alt:`${location.city}, ${location.country}`,opacity:matches?1:.28,keyboard:true});
-      const popup=`${location.country} · ${location.city}<br>${location.partners} partners · ${location.youth} youth<br>Programmes: ${location.programmes.join(', ')}`;
-      marker.bindPopup(popup).on('click',()=>{onSelect(location.id);marker.openPopup()});
-      group.addLayer(marker);
-      markersRef.current.set(location.id,marker);
-    });
-  },[programme,onSelect,status]);
-  return <div className="leaflet-map-component">
-    <div className="leaflet-map" ref={containerRef} role="application" aria-label="Interactive map of CRVPF country locations"/>
-    {status==='loading'&&<div className="leaflet-map-status" role="status">Loading OpenStreetMap…</div>}
-    {status==='error'&&<div className="leaflet-map-status map-load-error" role="alert">The interactive map could not load. Check your connection, or use the country list.</div>}
-  </div>
+function StaticAfricanMap({programme='All',selectedId,onSelect,testPrefix='map-pin',className=''}:{programme?:string;selectedId:string|null;onSelect:(id:string)=>void;testPrefix?:string;className?:string}){
+ const point=(location:(typeof mapLocations)[number])=>({left:`${location.mapX}%`,top:`${location.mapY}%`});
+ return <div className={`static-africa-stage ${className}`} aria-label="Static map of Africa with country-level CRVPF locations">
+   <img className="static-africa-svg" src={`${APP_BASE_PATH}africa-map.svg`} alt="Africa with country boundaries. The four CRVPF pins mark Ethiopia, Kenya, Uganda, and Tanzania." draggable={false} decoding="async"/>
+    {mapLocations.map(location=>{const matches=programme==='All'||location.programmes.includes(programme);return <button type="button" key={location.id} className={`static-africa-pin ${selectedId===location.id?'selected':''}`} style={{...point(location),opacity:matches?1:.28}} aria-label={`Select ${location.country} country details`} aria-pressed={selectedId===location.id} title={`${location.country} — country-level information`} data-testid={`${testPrefix}-${location.id}`} onClick={()=>onSelect(location.id)}><svg viewBox="0 0 28 36" aria-hidden="true" focusable="false"><path d="M14 1C6.8 1 1 6.8 1 14c0 9.1 13 21 13 21s13-11.9 13-21C27 6.8 21.2 1 14 1Z" fill="#FCEE21" stroke="#1A1A1A" strokeWidth="2"/><circle cx="14" cy="14" r="4" fill="#1A1A1A"/></svg></button>})}
+ </div>
 }
 function InteractiveLocations(){
   const[programme,setProgramme]=useState('All');
-  const[locationId,setLocationId]=useState('uganda');
+  const[locationId,setLocationId]=useState<string|null>(null);
   const selected=mapLocations.find(location=>location.id===locationId);
   const programmes=['All','EYDCD','AGPP','PVAC'];
   return <div className="interactive-locations map-reference-layout">
     <div className="home-map-filters" role="group" aria-label="Filter map by programme">{programmes.map(value=><button type="button" key={value} className={programme===value?'is-active active':''} aria-pressed={programme===value} data-testid={`map-filter-${value.toLowerCase()}`} onClick={()=>setProgramme(value)}>{value}</button>)}</div>
     <div className="map-reference-grid">
-      <div className="home-map-card"><LeafletLocationsMap programme={programme} onSelect={setLocationId}/></div>
+      <div className="home-map-card"><StaticAfricanMap programme={programme} selectedId={locationId} onSelect={setLocationId}/>
+        <p className="home-map-caveat map-reference-caveat">Country-level pins only. No school, village, or individual locations are shown.</p>
+      </div>
       <aside className="map-reference-side">
-        <div className="map-country-labels" aria-label="Country locations">{mapLocations.map(location=><button type="button" className={`map-country-label ${locationId===location.id?'selected':''}`} key={location.id} onClick={()=>setLocationId(location.id)} aria-pressed={locationId===location.id} data-testid={`map-label-${location.id}`}><span className="map-label-main"><strong>{location.country} - {location.partners} partners - {location.youth} youth</strong><span>{location.city} - Programmes {location.programmes.join(', ')}</span></span><small>DEMO - AWAITING VERIFICATION</small></button>)}</div>
-        <section className="map-details-box" aria-live="polite">
+        <div className="map-country-labels" aria-label="Country locations">{mapLocations.map(location=><button type="button" className={`map-country-label ${locationId===location.id?'selected':''}`} key={location.id} onClick={()=>setLocationId(location.id)} aria-pressed={locationId===location.id} aria-label={`Show ${location.country} details`} data-testid={`map-label-${location.id}`}><span className="map-label-pin" aria-hidden="true"><svg viewBox="0 0 28 36"><path d="M14 1C6.8 1 1 6.8 1 14c0 9.1 13 21 13 21s13-11.9 13-21C27 6.8 21.2 1 14 1Z" fill="#FCEE21" stroke="#1A1A1A" strokeWidth="2"/><circle cx="14" cy="14" r="4" fill="#1A1A1A"/></svg></span><span className="map-label-main"><strong>{location.country} - {location.partners} partners - {location.youth} youth</strong><span>{location.story?`${location.city} · Story: ${location.story}`:`${location.city} · Programmes ${location.programmes.join(', ')}`}</span></span><small>DEMO - AWAITING VERIFICATION</small></button>)}</div>
+        <p className="map-filter-state" role="status">Filtered: {programme}</p>
+        {selected&&<section className="map-details-box" aria-live="polite">
           <div className="map-details-header"><span>SELECTED LOCATION</span><strong>Filtered: {programme}</strong></div>
-          {selected?<><h3 data-testid="map-selected-country">{selected.country}</h3><dl><div><dt>Capital</dt><dd>{selected.city}</dd></div><div><dt>Partners</dt><dd>{selected.partners}</dd></div><div><dt>Youth</dt><dd>{selected.youth}</dd></div><div><dt>Programmes</dt><dd>{selected.programmes.join(', ')}</dd></div><div><dt>Story</dt><dd>{selected.story||'Not provided in the demo data.'}</dd></div></dl><Link className="btn map-view-stories" href={`/impact#filter-country-${selected.id}`} aria-label={`View ${selected.country} stories`} data-testid={`map-view-stories-${selected.id}`}>View Stories <ArrowRight size={15}/></Link></>:<p>Select a country pin or label.</p>}
-        </section>
+          <h3 data-testid="map-selected-country">{selected.country}</h3><dl><div><dt>Capital</dt><dd>{selected.city}</dd></div><div><dt>Partners</dt><dd>{selected.partners}</dd></div><div><dt>Youth</dt><dd>{selected.youth}</dd></div><div><dt>Programmes</dt><dd>{selected.programmes.join(', ')}</dd></div><div><dt>Story</dt><dd>{selected.story||'Not provided in the demo data.'}</dd></div></dl>
+        </section>}
+        {!selected&&<p className="map-selection-hint">Select a country pin or label to view details.</p>}
       </aside>
     </div>
-    <p className="home-map-caveat map-reference-caveat">Country-level pins only. No school, village, or individual locations are shown.</p>
-    <p className="home-map-caveat">Programme filters highlight documented story locations only: they are not a complete coverage map.</p>
-    <div className="map-totals-math"><strong>DEMO - AWAITING VERIFICATION</strong><p>Partners: 62 + 78 + 71 + 40 = <b>251</b></p><p>Youth: 92k + 118k + 105k + 85k = <b>400,000</b></p></div>
-    <nav className="map-section-actions" aria-label="Map links"><Link className="btn" href="/" aria-label="Go to home page" data-testid="map-home">Home</Link><Link className="btn" href="/programmes" aria-label="Go to programmes" data-testid="map-programmes">Programmes</Link><Link className="btn" href="/impact" aria-label="Go to stories" data-testid="map-stories">Stories</Link></nav>
+    <div className="map-totals-math"><strong>DEMO - AWAITING VERIFICATION</strong><p>Totals: 62 + 78 + 71 + 40 = <b>251</b> partners. 92k + 118k + 105k + 85k = <b>400,000</b> youth.</p></div>
   </div>
 }
 function WhereWeWorkPage(){
-  const[query,setQuery]=useState('');
-  const[searched,setSearched]=useState('');
-  const searchDistrict=(event:FormEvent<HTMLFormElement>)=>{event.preventDefault();setSearched(query.trim())};
   return <main><PageHero eyebrow="Where We Work" title="East Africa" description="Country-level pins only. No school, village, or individual locations are shown."/><section className="home-section">
     <InteractiveLocations/>
-    <form className="home-district-search" onSubmit={searchDistrict}><label htmlFor="full-map-search">Find EYDCD partner near you</label><div className="home-district-controls"><input id="full-map-search" value={query} onChange={event=>setQuery(event.target.value)} placeholder="Search city or country" required/><button type="submit">Search <Search size={15}/></button></div>{searched&&<div className="home-district-result" role="status"><strong>Search results for “{searched}”</strong>{findEydcdLocations(searched).length?<ul>{findEydcdLocations(searched).map(location=><li key={location.id}><strong>{location.city}, {location.country}</strong><span>EYDCD location. Public partner names and district-level listings were not provided.</span></li>)}</ul>:<p>No documented EYDCD city or country matched. Try Kampala, Dodoma, Addis Ababa, or Uganda, Tanzania, Ethiopia. District-level partner listings are not available in the verified records used here.</p>}<a href={`https://wa.me/256393216519?text=${encodeURIComponent(`Hello, I would like to ask about EYDCD partners near ${searched}.`)}`} target="_blank" rel="noopener noreferrer">Ask CRVPF on WhatsApp <ArrowRight size={14}/></a></div>}</form>
   </section></main>
 }
 function PartnerEnquiryForm({programme,notify}:{programme:string;notify:(message:string)=>void}){
