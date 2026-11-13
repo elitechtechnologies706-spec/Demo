@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type AnchorHTMLAttributes, type FormEvent } from 'react';
 import { Route, Router as WouterRouter, Switch, useLocation } from 'wouter';
 import {
-  ArrowRight, ArrowUp, ChevronDown,
+  ArrowRight, ChevronDown,
   HandHeart, HeartHandshake, Home as HomeIcon, MapPin, Menu,
   Search, Shield, ShieldCheck, Sparkles, Users, X, Mail, Phone,
 } from 'lucide-react';
@@ -68,12 +68,44 @@ function loadAdminStories():AdminStory[]{try{const value=JSON.parse(localStorage
 function App(){
  const [path,setPath]=useLocation();
  const [lang,setLang]=useState<'EN'|'SW'>(()=>(localStorage.getItem('crvpf-lang') as 'EN'|'SW')||'EN');
+  const [showPageBack,setShowPageBack]=useState(false);
  const [menu,setMenu]=useState(false),[programOpen,setProgramOpen]=useState(false),[search,setSearch]=useState(false),[searchText,setSearchText]=useState('');
  const [donate,setDonate]=useState(false),[toast,setToast]=useState(''),[selectedCountry,setSelectedCountry]=useState('All'),[selectedProgram,setSelectedProgram]=useState('All');
   const [year,setYear]=useState(2026),[portalTab,setPortalTab]=useState('My Grants'),[login,setLogin]=useState(false);
   const [adminItems,setAdminItems]=useState<AdminStory[]>(loadAdminStories);
  const [pubModal,setPubModal]=useState('');
  const notify=(s:string)=>{setToast(s);window.setTimeout(()=>setToast(''),4000)};
+  useEffect(()=>{
+    const canonicalPath=(pathname:string)=>{
+      const base=APP_BASE_PATH==='/'?'':APP_BASE_PATH.replace(/\/$/,'');
+      const relative=base&&pathname.startsWith(base)?pathname.slice(base.length)||'/':pathname;
+      const normalized=relative.startsWith('/')?relative:`/${relative}`;
+      const entry=Object.entries(pageFiles).find(([,file])=>`/${file.split('#')[0]}`===normalized);
+      return entry?.[0]||(normalized==='/'?'/':normalized.replace(/\/$/,''));
+    };
+    try{
+      const marker=JSON.parse(sessionStorage.getItem('crvpf-internal-navigation')||'null') as {from:string;to:string;time:number}|null;
+      sessionStorage.removeItem('crvpf-internal-navigation');
+      if(marker&&Date.now()-marker.time<15000&&marker.to===canonicalPath(window.location.pathname)&&marker.from!==marker.to)setShowPageBack(true);
+    }catch{try{sessionStorage.removeItem('crvpf-internal-navigation')}catch{}}
+    const recordNavigation=(event:MouseEvent)=>{
+      if(event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
+      const target=event.target;
+      if(!(target instanceof Element))return;
+      const anchor=target.closest<HTMLAnchorElement>('a[href]');
+      if(!anchor||anchor.target==='_blank'||anchor.hasAttribute('download'))return;
+      const url=new URL(anchor.href,window.location.href);
+      if(url.origin!==window.location.origin)return;
+      const base=APP_BASE_PATH==='/'?'':APP_BASE_PATH.replace(/\/$/,'');
+      if(base&&!url.pathname.startsWith(`${base}/`)&&url.pathname!==base)return;
+      const destination=canonicalPath(url.pathname);
+      const current=canonicalPath(window.location.pathname);
+      if(destination===current)return;
+      try{sessionStorage.setItem('crvpf-internal-navigation',JSON.stringify({from:current,to:destination,time:Date.now()}))}catch{}
+    };
+    document.addEventListener('click',recordNavigation,true);
+    return()=>document.removeEventListener('click',recordNavigation,true);
+  },[]);
  useEffect(()=>{setMenu(false);setProgramOpen(false);if(window.location.hash){const id=decodeURIComponent(window.location.hash.slice(1));requestAnimationFrame(()=>document.getElementById(id)?.scrollIntoView({block:'start'}))}},[path]);
  useEffect(()=>{localStorage.setItem('crvpf-lang',lang)},[lang]);
   const filteredPages=useMemo(()=>{
@@ -87,7 +119,7 @@ function App(){
       <div className="top-banner" data-testid="text-demo-banner">DEMO — STAGING ONLY — NOT FOR LIVE PUBLICATION</div>
      <LowNetworkBanner />
       <Header path={path} lang={lang} menuOpen={menu} programOpen={programOpen} onProgramToggle={()=>setProgramOpen(v=>!v)} onLanguage={setLang} onSearch={()=>setSearch(true)} onMenu={()=>setMenu(v=>!v)} />
-     <PageNavigation path={path}/>
+      <PageNavigation path={path} showBack={showPageBack}/>
       {menu&&<MobileDrawer lang={lang} onLanguage={setLang} onClose={()=>setMenu(false)} onSearch={()=>{setMenu(false);setSearch(true)}}/>}
    <Switch>
        <Route path="/"><Home lang={lang}/></Route>
@@ -116,7 +148,6 @@ function App(){
      <Route path="/how-we-deliver"><HowWeDeliver /></Route>
     <Route><NotFound /></Route>
    </Switch>
-    <BottomPageNavigation path={path}/>
    {footer}
    <nav className="mobile-bottom" aria-label="Quick navigation">
      <Link href="/" aria-label="Home" data-testid="mobile-home"><HomeIcon size={18}/><span>Home</span></Link>
@@ -127,7 +158,6 @@ function App(){
     {search&&<SearchModal value={searchText} setValue={setSearchText} results={filteredPages} onStorySelect={()=>{setSelectedCountry('All');setSelectedProgram('All')}} onClose={()=>{setSearch(false);setSearchText('')}}/>}
    {donate&&<DonateModal onClose={()=>setDonate(false)} notify={notify}/>}
     {pubModal&&<Modal title={pubModal} onClose={()=>setPubModal('')}><p>You selected “{pubModal}”. This standalone demo identifies the publication but does not provide a downloadable file.</p><div className="notice">No report download or publication action is available in this demo.</div></Modal>}
-   <BackToTop />
    {toast&&<div className="toast" role="status" data-testid="status-toast">{toast}</div>}
   </div>
  </WouterRouter>
@@ -173,41 +203,23 @@ function Footer(){return <footer className="site-footer"><div className="contain
   <div><h4>Programmes</h4><Link href="/programmes">All Programmes</Link>{programs.map(p=><Link key={p.slug} href={p.slug}>{p.short}</Link>)}<Link href="/programmes/coordinated">Coordinated</Link><Link href="/programmes/joint">Joint</Link><Link href="/resources">Publications</Link></div>
   <div><h4>Contact</h4><p><a href="tel:+256393216519">(+256) 393 216 519</a><a href="mailto:info@crvpf.org">info@crvpf.org</a>Block 244, Plot 5170, Diplomate Road, Muyenga, Kampala, Uganda</p><a className="btn btn-green whatsapp-link" href="https://wa.me/256393216519" target="_blank" rel="noopener noreferrer">WhatsApp CRVPF</a><Link href="/get-involved#contact">Send a message <ArrowRight size={13}/></Link></div>
   </div><SocialLinks className="footer-social"/><ElitechStudios title="Powered by ELITECH TECHNOLOGIES - Our Studios"/><div className="footer-bottom">Demo on Replit | Final on WordPress + Elementor + i3C | Powered by ELITECH TECHNOLOGIES - Building systems that work for real people in Uganda. Lead: Akol Francis, 0781155288, <a href="mailto:akolfrancis85@gmail.com" className="inline-contact">akolfrancis85@gmail.com</a></div><p className="footer-operations">DEMO — TOR Deliverable 3. Content sourced from crvpf.org; publishing requires CRVPF Communications approval.</p></div></footer>}
-function PageNavigation({path}:{path:string}){
+function PageNavigation({path,showBack}:{path:string;showBack:boolean}){
   if(path==='/')return null;
   const programmeOrder=['/programmes/pvac','/programmes/agpp','/programmes/eydcd','/programmes/coordinated','/programmes/joint'];
   const programmeNames:Record<string,string>={'/programmes/pvac':'PVAC','/programmes/agpp':'AGPP','/programmes/eydcd':'EYDCD','/programmes/coordinated':'Coordinated','/programmes/joint':'Joint'};
-   const pageNames:Record<string,string>={'/about':'About','/programmes':'Our Work','/impact':'Impact','/where-we-work':'Where We Work','/resources':'Resources','/get-involved':'Get Involved','/annual-report-2026':'Annual Report 2026','/partners':'Partner Portal','/dashboard':'Dashboard','/admin-demo':'Safeguarding CMS','/publications':'Publications','/training':'Training','/handover':'Handover','/financial':'Financial','/donor-portal':'Donor Portal','/contact':'Contact','/system':'How This System Works','/how-we-deliver':'How We Deliver'};
+  const pageNames:Record<string,string>={'/about':'About','/programmes':'Our Work','/impact':'Impact','/where-we-work':'Where We Work','/resources':'Resources','/get-involved':'Get Involved','/annual-report-2026':'Annual Report 2026','/partners':'Partner Portal','/dashboard':'Dashboard','/admin-demo':'Safeguarding CMS','/publications':'Publications','/training':'Training','/handover':'Handover','/financial':'Financial','/donor-portal':'Donor Portal','/contact':'Contact','/system':'How This System Works','/how-we-deliver':'How We Deliver'};
   const isProgramme=programmeOrder.includes(path);
   const current=programmeNames[path]||pageNames[path]||'CRVPF';
-  const goBack=()=>{if(window.history.length>1){window.history.back()}else{window.location.href=`${APP_BASE_PATH}index.html`}};
   return <div className="page-navigation">
-    <nav className="page-breadcrumb" aria-label="Breadcrumb">
-      <Link href="/" aria-label="Home">Home</Link><span aria-hidden="true">›</span>
-      {isProgramme&&<><Link href="/programmes">Our Work</Link><span aria-hidden="true">›</span></>}
-      <span aria-current="page">{current}</span>
-    </nav>
-    <div className="page-navigation-buttons">
-      <a className="btn back-nav-button" href={`${APP_BASE_PATH}index.html`} aria-label="Go back to previous page" onClick={event=>{event.preventDefault();goBack()}}>← Back</a>
-      <Link className="btn back-nav-button" href={isProgramme?'/programmes':'/'} aria-label={isProgramme?'Go back to programmes':'Go to home page'}>← Back to Programmes</Link>
-      <button className="btn back-nav-button" type="button" aria-label="Scroll to top" onClick={()=>window.scrollTo({top:0,behavior:'smooth'})}>↑ Back to Top</button>
-      <Link className="btn back-nav-button" href="/" aria-label="Go to home page">🏠 Home</Link>
+    <div className="page-navigation-line">
+      {showBack&&<button type="button" className="breadcrumb-back-button" aria-label="Go back to previous page" data-testid="breadcrumb-back" onClick={()=>window.history.back()}>←</button>}
+      <nav className="page-breadcrumb" aria-label="Breadcrumb">
+        <Link href="/" aria-label="Home">Home</Link><span aria-hidden="true">›</span>
+        {isProgramme&&<><Link href="/programmes">Our Work</Link><span aria-hidden="true">›</span></>}
+        <span aria-current="page">{current}</span>
+      </nav>
     </div>
   </div>
-}
-function BottomPageNavigation({path}:{path:string}){
-  if(path==='/')return null;
-  const order=['/programmes/pvac','/programmes/agpp','/programmes/eydcd','/programmes/coordinated','/programmes/joint'];
-  const index=order.indexOf(path);
-  const previous=index<0?'/':index===0?'/programmes':order[index-1];
-  const next=index<0?(path==='/get-involved'?'/': '/get-involved'):index===order.length-1?'/programmes':order[index+1];
-  const previousLabel=index===0?'← Previous Page':index<0?'← Previous Page':`← Previous Page`;
-  const nextLabel=index===order.length-1?'Back to Programmes →':'Next Page →';
-  return <nav className="bottom-page-navigation" aria-label="Page navigation">
-    <Link className="btn back-nav-button" href={previous} aria-label="Go to previous page">{previousLabel}</Link>
-    <Link className="btn back-nav-button" href={next} aria-label={index===order.length-1?'Go back to programmes':'Go to next page'}>{nextLabel}</Link>
-    <button className="btn back-nav-button" type="button" aria-label="Scroll to top" onClick={()=>window.scrollTo({top:0,behavior:'smooth'})}>↑ Back to Top</button>
-  </nav>
 }
 function SectionHead({eyebrow,title,description}:{eyebrow:string;title:string;description?:string}){return <div className="section-head"><div><div className="section-kicker">{eyebrow}</div><h2>{title}</h2></div>{description&&<p>{description}</p>}</div>}
 function Home({lang}:{lang:'EN'|'SW'}){
@@ -575,7 +587,7 @@ function InteractiveLocations(){
     <p className="home-map-caveat map-reference-caveat">Country-level pins only. No school, village, or individual locations are shown.</p>
     <p className="home-map-caveat">Programme filters highlight documented story locations only: they are not a complete coverage map.</p>
     <div className="map-totals-math"><strong>DEMO - AWAITING VERIFICATION</strong><p>Partners: 62 + 78 + 71 + 40 = <b>251</b></p><p>Youth: 92k + 118k + 105k + 85k = <b>400,000</b></p></div>
-    <nav className="map-section-actions" aria-label="Map navigation"><a className="back-nav-button" href={`${APP_BASE_PATH}index.html`} aria-label="Go back to previous page" data-testid="map-back" onClick={event=>{event.preventDefault();if(window.history.length>1){window.history.back()}else{window.location.href=`${APP_BASE_PATH}index.html`}}}>← Back</a><Link className="back-nav-button" href="/" aria-label="Go to home page" data-testid="map-home">🏠 Home</Link><Link className="back-nav-button" href="/programmes" aria-label="Go to programmes" data-testid="map-programmes">Programmes</Link><Link className="back-nav-button" href="/impact" aria-label="Go to stories" data-testid="map-stories">Stories</Link><button type="button" className="back-nav-button" aria-label="Scroll to page top" data-testid="map-back-to-top" onClick={()=>window.scrollTo({top:0,behavior:'smooth'})}>↑ Back to Top</button></nav>
+    <nav className="map-section-actions" aria-label="Map links"><Link className="btn" href="/" aria-label="Go to home page" data-testid="map-home">Home</Link><Link className="btn" href="/programmes" aria-label="Go to programmes" data-testid="map-programmes">Programmes</Link><Link className="btn" href="/impact" aria-label="Go to stories" data-testid="map-stories">Stories</Link></nav>
   </div>
 }
 function WhereWeWorkPage(){
@@ -605,8 +617,6 @@ function GetInvolved({onDonate,notify}:{onDonate:()=>void;notify:(message:string
   </div></div></section></main>
 }
 function ProgrammeDetail({slug,notify}:{slug:string;notify:(s:string)=>void}){
- const order=['/programmes/pvac','/programmes/agpp','/programmes/eydcd','/programmes/coordinated','/programmes/joint'];
- const index=order.indexOf(slug);
  const p=programs.find(x=>x.slug===slug);
  const approach=slug.endsWith('coordinated')?approachContent.coordinated:slug.endsWith('joint')?approachContent.joint:undefined;
  const short=p?.short||(slug.endsWith('coordinated')?'Coordinated':'Joint');
@@ -616,12 +626,8 @@ function ProgrammeDetail({slug,notify}:{slug:string;notify:(s:string)=>void}){
  const stories=p?storyData.filter(s=>s.program===p.short):[];
   const resources=p?.short==='PVAC'?[{title:'PVAC Program Profile',url:'https://crvpf.org/wp-content/uploads/2025/03/PVAC-Program-Profile.pdf'},{title:'Parenting for Respectability Module One: Bonding and attachment',url:'https://crvpf.org/wp-content/uploads/2025/03/MODULE-ONE_Bonding-and-attachment.pdf'},{title:'Parenting for Respectability Module 2',url:'https://crvpf.org/wp-content/uploads/2025/03/Parenting-for-Respectability-Module-2.pdf'},{title:'Parenting for Respectability Module 3',url:'https://crvpf.org/wp-content/uploads/2025/03/Parenting-for-Respectability-Module-3.pdf'},{title:'Parenting for Respectability Module 4',url:'https://crvpf.org/wp-content/uploads/2025/03/Parenting-for-Respectability-Module-4.pdf'},{title:'Parenting for Respectability Module 5',url:'https://crvpf.org/wp-content/uploads/2025/03/Parenting-for-Respectability-Module-5.pdf'}]:p?.short==='AGPP'?[{title:'AGPP Program Profile',url:'https://crvpf.org/wp-content/uploads/2025/03/AGPP-Program-Profile.pdf'},{title:'This Little Light of Mine · Module 1',url:'https://crvpf.org/wp-content/uploads/2025/03/ThisLittleLightofMine_Module1.pdf'},{title:'This Little Light of Mine · Module 2',url:'https://crvpf.org/wp-content/uploads/2025/03/ThisLittleLightofMine_Module2.pdf'},{title:'This Little Light of Mine · Module 3',url:'https://crvpf.org/wp-content/uploads/2025/03/ThisLittleLightofMine_Module3.pdf'},{title:'This Little Light of Mine · Module 4',url:'https://crvpf.org/wp-content/uploads/2025/03/ThisLittleLightofMine_Module4.pdf'},{title:'This Little Light of Mine · Module 5',url:'https://crvpf.org/wp-content/uploads/2025/03/5ThisLittleLightofMine_Module5.pdf'}]:p?.short==='EYDCD'?[{title:'EYDCD Program Profile',url:'https://crvpf.org/wp-content/uploads/2025/03/EYDCD-1.pdf'},{title:'EYDCD program page',url:'https://crvpf.org/empowering-youth-through-data-and-community-development-program/'}]:approach?[{title:'CRVPF approaches',url:'https://crvpf.org/our-approaches/'}]:[];
    const partnerships=p?.short==='EYDCD'?['Children’s Rights and Violence Prevention Fund (CRVPF)','gnuGrid CRB','Mastercard Foundation']:p?.short==='AGPP'?['KIWOHEDE','CRVPF community partners']:p?.short==='PVAC'?['Community organizations']:approach?.partnerships||[];
- const previous=index===0?'/#programmes':order[index-1];
- const next=index===order.length-1?'/#programmes':order[index+1];
- const previousLabel=index===0?'Back to Programmes':`Previous: ${order[index-1].split('/').pop()?.toUpperCase()}`;
- const nextLabel=index===order.length-1?'Programme list':`Next: ${order[index+1].split('/').pop()?.toUpperCase()}`;
   const achievements=p?.short==='PVAC'?['Source: crvpf.org/our-programs/']:p?.short==='AGPP'?['10 Safe Spaces Established','+440 Adolescent Girls trained in life skills using This Little Light of Mine Manual.','+534 Adolescent Girls & Young Mothers regularly attending safe space meetings across East Africa','+388 Trained in Vocational and income generating skills','31 Children Aged 0 to 3 years registered under ECD']:p?.short==='EYDCD'?['400,000 young people (70% female)','250,000 dignified and fulfilling employment opportunities','200 community organizations','3,000 youth-led Village Savings and Loan Associations (VSLAs)']:['As per crvpf.org/our-approaches/'];
-   return <main><PageHero eyebrow={short} title={title} description={summary}/><section className="section"><div className="container"><div className="programme-summary-grid"><section className="soft-card"><h2>Objectives</h2><p>{summary}</p></section><section className="soft-card"><h2>Coverage</h2><p>CRVPF operates in Uganda, Kenya, Tanzania and Ethiopia.</p></section></div><div className="content-grid programme-content"><div><section className="soft-card"><h2>What We Do</h2><ul className="check-list">{activities.map(item=><li key={item}>{item}</li>)}</ul></section><section className="soft-card"><h2>Achievements and targets</h2><small className="source-note">DEMO • AWAITING VERIFICATION</small><ul className="check-list">{achievements.map(item=><li key={item}>{item}</li>)}</ul></section><section className="soft-card"><h2>Partnerships</h2><ul className="check-list">{partnerships.map(item=><li key={item}>{item}</li>)}</ul></section><PartnerEnquiryForm programme={short} notify={notify}/></div><aside><section className="soft-card"><h2>Stories</h2>{stories.length?stories.map(s=><div className="programme-story" key={s.name}><span className="tag">{s.country?`${s.program} · ${s.country}`:s.program}</span><span className="home-consent-badge">DEMO • AWAITING CONSENT</span><h3>{s.name}</h3><p>{s.text}</p><small className="source-note"><a href={s.href} target="_blank" rel="noopener noreferrer">Source: crvpf.org</a></small><a href={s.href} target="_blank" rel="noopener noreferrer" className="arrow-link">Read story on CRVPF <ArrowRight size={14}/></a></div>):<p>As per crvpf.org.</p>}</section><section className="soft-card" style={{marginTop:16}}><h2>Resources</h2>{resources.map(item=><div className="resource-row" key={item.url}><span>{item.title}</span><a className="btn btn-outline" href={item.url} target="_blank" rel="noopener noreferrer">Open resource</a></div>)}<Link className="arrow-link" href="/resources">Open Resource Centre <ArrowRight size={14}/></Link></section></aside></div><div className="programme-pager"><Link className="btn btn-outline" href={previous}>← {previousLabel}</Link><Link className="btn btn-blue" href={next}>{nextLabel} →</Link></div>{short==='EYDCD'&&<section className="soft-card district-panel"><h2>District Finder</h2><p>District-specific partner, opportunity, and VSLA details are not listed in the EYDCD source page.</p><DistrictFinder notify={notify}/></section>}</div></section></main>
+    return <main><PageHero eyebrow={short} title={title} description={summary}/><section className="section"><div className="container"><div className="programme-summary-grid"><section className="soft-card"><h2>Objectives</h2><p>{summary}</p></section><section className="soft-card"><h2>Coverage</h2><p>CRVPF operates in Uganda, Kenya, Tanzania and Ethiopia.</p></section></div><div className="content-grid programme-content"><div><section className="soft-card"><h2>What We Do</h2><ul className="check-list">{activities.map(item=><li key={item}>{item}</li>)}</ul></section><section className="soft-card"><h2>Achievements and targets</h2><small className="source-note">DEMO • AWAITING VERIFICATION</small><ul className="check-list">{achievements.map(item=><li key={item}>{item}</li>)}</ul></section><section className="soft-card"><h2>Partnerships</h2><ul className="check-list">{partnerships.map(item=><li key={item}>{item}</li>)}</ul></section><PartnerEnquiryForm programme={short} notify={notify}/></div><aside><section className="soft-card"><h2>Stories</h2>{stories.length?stories.map(s=><div className="programme-story" key={s.name}><span className="tag">{s.country?`${s.program} · ${s.country}`:s.program}</span><span className="home-consent-badge">DEMO • AWAITING CONSENT</span><h3>{s.name}</h3><p>{s.text}</p><small className="source-note"><a href={s.href} target="_blank" rel="noopener noreferrer">Source: crvpf.org</a></small><a href={s.href} target="_blank" rel="noopener noreferrer" className="arrow-link">Read story on CRVPF <ArrowRight size={14}/></a></div>):<p>As per crvpf.org.</p>}</section><section className="soft-card" style={{marginTop:16}}><h2>Resources</h2>{resources.map(item=><div className="resource-row" key={item.url}><span>{item.title}</span><a className="btn btn-outline" href={item.url} target="_blank" rel="noopener noreferrer">Open resource</a></div>)}<Link className="arrow-link" href="/resources">Open Resource Centre <ArrowRight size={14}/></Link></section></aside></div>{short==='EYDCD'&&<section className="soft-card district-panel"><h2>District Finder</h2><p>District-specific partner, opportunity, and VSLA details are not listed in the EYDCD source page.</p><DistrictFinder notify={notify}/></section>}</div></section></main>
 }
 
 function Impact({country,setCountry,program,setProgram}:{country:string;setCountry:(s:string)=>void;program:string;setProgram:(s:string)=>void}){useEffect(()=>{const match=window.location.hash.match(/^#filter-country-(uganda|kenya|tanzania|ethiopia)$/i);if(match){const selected=countries.find(c=>c.toLowerCase()===match[1].toLowerCase());if(selected)setCountry(selected)}},[setCountry]);const filtered=storyData.filter(s=>(country==='All'||s.country===country)&&(program==='All'||s.program===program));return <main><PageHero eyebrow="Impact" title="Our Reach From 2021 - 2023" description="CRVPF operates in Uganda, Kenya, Tanzania and Ethiopia."/><section className="section"><div className="container" id="impact-overview"><div className="filter-toolbar"><div><strong>Country</strong><div className="pill-row">{['All',...countries].map(v=><button id={`filter-country-${v.toLowerCase()}`} className={`pill ${country===v?'selected active':''}`} key={v} onClick={()=>setCountry(v)} data-testid={`filter-country-${v.toLowerCase()}`}>{v}</button>)}</div></div><div><strong>Programme</strong><div className="pill-row">{programmeFilters.map(v=><button className={`pill ${program===v?'selected active':''}`} key={v} onClick={()=>setProgram(v)} data-testid={`filter-program-${v.toLowerCase()}`}>{v}</button>)}</div></div></div><p className="showing-count" role="status">Showing {filtered.length} stories</p>{filtered.length?<div className="impact-grid">{filtered.map((s,i)=><article className="impact-card" id={`story-${s.name.toLowerCase().replaceAll(' ','-')}`} key={s.name}><span className="tag">{s.country?`${s.country} · ${s.program}`:s.program}</span><span className="home-consent-badge">DEMO • AWAITING CONSENT</span><h2>{s.name}</h2><p>{s.text}</p>{s.quote&&<blockquote className="story-quote">“{s.quote}”</blockquote>}<small className="source-note"><a href={s.href} target="_blank" rel="noopener noreferrer">Source: crvpf.org</a></small><span className="tag">{i+1} / {filtered.length}</span></article>)}</div>:<div className="empty-state">No stories found</div>}</div></section></main>}
@@ -710,7 +716,6 @@ function Modal({title,onClose,children}:{title:string;onClose:()=>void;children:
   },[]);
   return <div className="modal-backdrop" onClick={event=>{if(event.target===event.currentTarget)onClose()}}><div className="modal" ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="modal-title"><div className="modal-head"><h2 id="modal-title">{title}</h2><button className="icon-btn" onClick={onClose} aria-label="Close dialog"><X/></button></div>{children}</div></div>
 }
-function BackToTop(){const [visible,setVisible]=useState(false);useEffect(()=>{const check=()=>setVisible(window.scrollY>300);window.addEventListener('scroll',check,{passive:true});check();return()=>window.removeEventListener('scroll',check)},[]);return visible?<button className="btn back-to-top" aria-label="Back to top" title="Back to top" onClick={()=>window.scrollTo({top:0,behavior:'smooth'})} data-testid="button-back-to-top"><ArrowUp size={19}/></button>:null}
 function NotFound(){return <main><PageHero eyebrow="Not found" title="Page not found - Go Home" description="This page is not available in the CRVPF demo."/><section className="section"><div className="container"><Link href="/" className="btn btn-blue" aria-label="Go home">Go Home <ArrowRight size={16}/></Link></div></section></main>}
 
 export default App;
