@@ -950,6 +950,9 @@ button,input,textarea,select{font-family:var(--app-font-sans)}
 .elitech-card{display:grid;align-content:start;gap:9px;min-width:0;padding:16px;border:1px solid rgba(255,255,255,.25);border-radius:12px;background:rgba(255,255,255,.08);color:#fff}
 .elitech-card strong{color:#fff}
 .elitech-card span{font-size:12px;line-height:1.45;color:#fff}
+.elitech-subtitle{margin:-8px 0 12px;color:#fff;font-size:12px;line-height:1.4}
+.elitech-card small{font-size:10px;line-height:1.35;color:#fff;opacity:.78}
+.elitech-ownership-note{margin:12px 0 0;color:#fff;font-size:11px;line-height:1.4}
 .elitech-card a{display:inline-flex;align-items:center;gap:5px;color:var(--cream);font-size:12px;font-weight:800;text-decoration:underline}
 .about-studios .elitech-studios{background:var(--blue)}
 .about-studios .elitech-studios h2{color:#fff}
