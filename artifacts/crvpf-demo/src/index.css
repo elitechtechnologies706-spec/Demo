@@ -1669,3 +1669,51 @@ img,video{max-width:100%}
 @media(max-width:900px){
   .header-actions .header-donate,.header-actions .header-donate[data-current="true"]{background:#EAF6DC!important;color:#1A1A1A!important;border-color:transparent!important}
 }
+
+/* Site-wide button alignment and link hover treatment. */
+button{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+}
+.icon-btn,.menu-toggle,.mobile-bottom button{
+  display:grid!important;
+  place-items:center!important;
+}
+.drawer-accordion{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px;
+  text-align:center!important;
+}
+.map-country-label{
+  display:grid!important;
+  text-align:center!important;
+  grid-template-columns:24px minmax(0,1fr)!important;
+  justify-items:stretch!important;
+}
+.map-label-pin{grid-column:1;grid-row:1 / span 2;justify-self:center}
+.map-label-main{grid-column:2;grid-row:1;text-align:center}
+.map-country-label small{grid-column:2;grid-row:2;text-align:center}
+.elitech-card a{
+  width:100%;
+  justify-content:center;
+  text-align:center;
+}
+a,a:hover,a:focus,a:focus-visible{
+  text-decoration:none!important;
+}
+a:hover:not(.btn):not(.active){
+  background-color:#FFF9A0!important;
+  border-radius:4px;
+}
+.nav-link::after,.nav-link:hover::after,.nav-link.active::after,.program-trigger::after{
+  display:none!important;
+}
+.mobile-bottom a,.mobile-bottom button{
+  justify-items:center!important;
+  align-items:center!important;
+  text-align:center!important;
+}
