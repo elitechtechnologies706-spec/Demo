@@ -1901,6 +1901,28 @@ a *{
   height:28px;
 }
 
+/* Uploaded section photos: preserve the current visual system and load
+   below-the-fold media lazily with a stable crop box. */
+.section-photo{margin:0;overflow:hidden;border-radius:12px;background:#EAF6DC}
+.section-photo img{display:block;width:100%;height:100%;object-fit:cover}
+.programme-section-photo{width:100%;aspect-ratio:16/9;margin:12px 0 16px}
+.about-section-photo{width:min(100%,520px);aspect-ratio:16/9;margin:16px 0}
+.resource-section-photo{width:min(100%,820px);aspect-ratio:16/6;margin:0 0 16px}
+.stories-section-photo{width:min(100%,720px);aspect-ratio:16/6;margin:0 auto 18px}
+.involved-card-photo{width:100%;aspect-ratio:16/9;margin:0 0 14px}
+.map-reference-grid .home-map-card{width:100%;max-width:560px;margin-inline:auto}
+.map-region-photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.where-region-photo{aspect-ratio:16/9}
+@media(max-width:900px){
+  .map-reference-grid .home-map-card{max-width:460px}
+}
+@media(max-width:599px){
+  .map-reference-grid .home-map-card{max-width:320px}
+  .resource-section-photo{aspect-ratio:16/8}
+  .stories-section-photo{aspect-ratio:16/9}
+  .map-region-photos{gap:8px}
+}
+
 @media (min-width:1024px){
   .section,.section.tight{padding-top:80px;padding-bottom:80px}
   .home-section{
