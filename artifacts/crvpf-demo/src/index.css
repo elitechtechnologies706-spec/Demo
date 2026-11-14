@@ -1887,6 +1887,20 @@ a *{
   .static-africa-pin svg{animation:none}
 }
 
+/* Keep the visible marker compact while its button remains easy to tap.
+   The marker tip, rather than its center, lands on the map coordinate. */
+.static-africa-pin{
+  width:44px;
+  height:48px;
+  padding:0;
+  place-items:end center;
+  transform:translate(-50%,-100%);
+}
+.static-africa-pin svg{
+  width:22px;
+  height:28px;
+}
+
 @media (min-width:1024px){
   .section,.section.tight{padding-top:80px;padding-bottom:80px}
   .home-section{

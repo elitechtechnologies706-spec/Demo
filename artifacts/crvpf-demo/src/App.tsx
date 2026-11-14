@@ -391,10 +391,10 @@ const homeProgrammeCards=[
   {code:'JOINT',title:'Joint Action & Resourcing',description:'Connects PVAC and AGPP partners working in the same geographic area.',slug:'/programmes/joint'},
 ];
 const mapLocations=[
-  {id:'ethiopia',country:'Ethiopia',city:'Addis Ababa',mapX:80,mapY:34,partners:62,youth:'92k',programmes:['EYDCD','PVAC'],story:''},
-  {id:'kenya',country:'Kenya',city:'Nairobi',mapX:83,mapY:50,partners:78,youth:'118k',programmes:['AGPP','PVAC'],story:''},
-  {id:'uganda',country:'Uganda',city:'Kampala',mapX:71,mapY:53,partners:71,youth:'105k',programmes:['EYDCD','AGPP','PVAC'],story:'Safe Schools Initiative'},
-  {id:'tanzania',country:'Tanzania',city:'Dodoma',mapX:78,mapY:67,partners:40,youth:'85k',programmes:['EYDCD','AGPP'],story:'Youth Council Launched - Dar es Salaam'},
+  {id:'ethiopia',country:'Ethiopia',city:'Addis Ababa',mapX:78.5,mapY:38.5,partners:62,youth:'92k',programmes:['EYDCD','PVAC'],story:''},
+  {id:'kenya',country:'Kenya',city:'Nairobi',mapX:77,mapY:51.5,partners:78,youth:'118k',programmes:['AGPP','PVAC'],story:''},
+  {id:'uganda',country:'Uganda',city:'Kampala',mapX:70.5,mapY:50,partners:71,youth:'105k',programmes:['EYDCD','AGPP','PVAC'],story:'Safe Schools Initiative'},
+  {id:'tanzania',country:'Tanzania',city:'Dodoma',mapX:75.5,mapY:59.5,partners:40,youth:'85k',programmes:['EYDCD','AGPP'],story:'Youth Council Launched - Dar es Salaam'},
 ];
 function findEydcdLocations(query:string){
   const normalized=query.trim().toLowerCase();
