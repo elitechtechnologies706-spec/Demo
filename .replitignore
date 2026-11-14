@@ -3,3 +3,6 @@
 
 # No need to store the pnpm store twice.
 .local
+
+# Local pre-patch site backup; keep out of deployed images.
+/backup-before-patch/

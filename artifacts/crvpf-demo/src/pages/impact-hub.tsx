@@ -71,9 +71,9 @@ export function InceptionPage() {
 
           <section className="soft-card" style={{ marginTop: 24 }}>
             <h2>Timeline</h2>
-            <ol className="timeline" aria-label="Project timeline">
+            <ol className="inception-milestones" aria-label="Project timeline">
               {milestones.map(([date, task]) => (
-                <li className="timeline-item" key={date}>
+                <li className="inception-milestone" key={date}>
                   <strong>{date}</strong>
                   <span>{task}</span>
                 </li>

@@ -40,6 +40,11 @@ const pageEntries = {
   whereWeWork: 'where-we-work.html',
   resources: 'resources.html',
   getInvolved: 'get-involved.html',
+  publications: 'publications.html',
+  inception: 'inception.html',
+  audit: 'audit.html',
+  analytics: 'analytics.html',
+  hosting: 'hosting.html',
 };
 
 export default defineConfig({

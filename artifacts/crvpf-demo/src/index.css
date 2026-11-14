@@ -1910,6 +1910,7 @@ h1,h2,h3,h4,h5,h6{font-weight:800!important}
 }
 .home-partner-card img{display:block;width:min(100%,120px);height:48px;object-fit:contain}
 .home-partner-card h3{margin:0;color:#1B7A3D!important;font-size:15px;line-height:1.35}
+.home-partners-section .home-section-heading h2{color:#1B7A3D!important}
 
 /* Extend the existing static map with accessible country selection and the requested office card. */
 .where-we-work-map{max-width:1120px}
@@ -1960,7 +1961,14 @@ h1,h2,h3,h4,h5,h6{font-weight:800!important}
 .where-map-hotspot.is-dimmed{opacity:.36}
 .where-map-hotspot:focus-visible{outline:3px solid #FCEE21!important;outline-offset:1px}
 .where-map-country-card{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  justify-items:start;
+  gap:4px;
   width:100%;
+  border:1px solid #1B7A3D!important;
+  border-radius:12px;
+  background:#FFFFFF!important;
   color:#1A1A1A!important;
   font:inherit;
   line-height:1.5;
@@ -1968,7 +1976,8 @@ h1,h2,h3,h4,h5,h6{font-weight:800!important}
   cursor:pointer;
   transition:opacity .18s ease,border-color .18s ease;
 }
-.where-map-country-card small{color:#1A1A1A!important}
+.where-map-country-card strong,.where-map-country-card small,.where-map-country-programmes{grid-column:1;display:block;color:#1A1A1A!important}
+.where-map-country-programmes{margin:0}
 .where-map-country-card.is-dimmed{opacity:.42}
 .where-map-country-card.is-selected{border:2px solid #1B7A3D!important}
 .where-map-selected-country,.where-map-usa-card{
@@ -2008,6 +2017,24 @@ h1,h2,h3,h4,h5,h6{font-weight:800!important}
   text-align:center;
 }
 .annual-cover-placeholder small{color:#1A1A1A!important;font-size:12px;font-weight:600}
+.inception-milestones{
+  display:grid;
+  gap:0;
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+.inception-milestone{
+  display:grid;
+  grid-template-columns:140px minmax(0,1fr);
+  gap:14px;
+  align-items:center;
+  padding:14px 0;
+  border-bottom:1px solid #8BC34A;
+}
+.inception-milestone:last-child{border-bottom:0}
+.inception-milestone strong{color:#1B7A3D!important}
+.inception-milestone span{color:#1A1A1A!important}
 
 @media(max-width:900px){
   .where-map-layout{grid-template-columns:1fr}
@@ -2026,4 +2053,5 @@ h1,h2,h3,h4,h5,h6{font-weight:800!important}
   .home-reach-card{min-height:132px}
   .where-map-countries{grid-template-columns:1fr}
   .where-map-legend{gap:10px}
+  .inception-milestone{grid-template-columns:1fr;gap:5px}
 }

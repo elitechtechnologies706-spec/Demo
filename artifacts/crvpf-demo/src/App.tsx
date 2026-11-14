@@ -214,7 +214,7 @@ function PageNavigation({path,showBack}:{path:string;showBack:boolean}){
   if(path==='/')return null;
   const programmeOrder=['/programmes/pvac','/programmes/agpp','/programmes/eydcd','/programmes/coordinated','/programmes/joint'];
   const programmeNames:Record<string,string>={'/programmes/pvac':'PVAC','/programmes/agpp':'AGPP','/programmes/eydcd':'EYDCD','/programmes/coordinated':'Coordinated','/programmes/joint':'Joint'};
-  const pageNames:Record<string,string>={'/about':'About','/programmes':'Our Work','/impact':'Impact','/where-we-work':'Where We Work','/resources':'Resources','/get-involved':'Get Involved','/annual-report-2026':'Annual Report 2026','/partners':'Partner Portal','/dashboard':'Dashboard','/admin-demo':'Safeguarding CMS','/publications':'Publications','/training':'Training','/handover':'Handover','/financial':'Financial','/donor-portal':'Donor Portal','/contact':'Contact','/system':'How This System Works','/how-we-deliver':'How We Deliver'};
+   const pageNames:Record<string,string>={'/about':'About','/programmes':'Our Work','/impact':'Impact','/where-we-work':'Where We Work','/resources':'Resources','/get-involved':'Get Involved','/annual-report-2026':'Annual Report 2026','/partners':'Partner Portal','/dashboard':'Dashboard','/admin-demo':'Safeguarding CMS','/publications':'Publications','/inception':'Inception','/audit':'Audit','/analytics':'Analytics','/hosting':'Hosting','/training':'Training','/handover':'Handover','/financial':'Financial','/donor-portal':'Donor Portal','/contact':'Contact','/system':'How This System Works','/how-we-deliver':'How We Deliver'};
   const isProgramme=programmeOrder.includes(path);
   const current=programmeNames[path]||pageNames[path]||'CRVPF';
   return <div className="page-navigation">
@@ -545,7 +545,8 @@ function WhereWeWorkMap(){
             aria-pressed={selectedCountry?.country===country.country}
             data-testid={`country-card-${country.country.toLowerCase()}`}
           >
-            <strong>{country.country}</strong><br/>{country.programmes.join(' • ')}<br/>
+            <strong>{country.country}</strong>
+            <span className="where-map-country-programmes">{country.programmes.join(' • ')}</span>
             <small>{country.partners} partners · {country.youth} youth</small>
           </button>)}
         </div>
@@ -645,10 +646,10 @@ function Publications({notify}:{notify:(message:string)=>void}){
   const[filter,setFilter]=useState('All');
   const events=[{title:'Bold Threads & Bolder Futures: Inside the Pakasa Fashion Show',type:'Event',description:'The Pakasa Art and Fashion Showcase was held in celebration of International Women’s Day 2026.',href:'https://crvpf.org/edition-2-2026/'}];
   const entries=[
+    {title:'Annual Report 2026',type:'Publication',description:'Cover and PDF link pending CRVPF approval.',href:''},
     ...storyData.map(s=>({title:s.name,type:'Story',description:s.text,href:s.href})),
     ...reportItems.map((title,i)=>({title,type:'Publication',description:title,href:reportUrls[i]})),
     ...events,
-    {title:'Annual Report 2026',type:'Publication',description:'Cover and PDF link pending CRVPF approval.',href:''},
   ];
   const types=['All','Story','Publication','Newsletter','Event','Video'];
   const filtered=entries.filter(e=>(filter==='All'||e.type===filter)&&(q.trim()===''||`${e.title} ${e.description}`.toLowerCase().includes(q.trim().toLowerCase())));
@@ -664,7 +665,7 @@ function Publications({notify}:{notify:(message:string)=>void}){
         <h2>Newsletters</h2>
         <p>No newsletter editions have been supplied for this demo.</p>
       </section>
-      {filtered.length?<div className="archive-grid">{filtered.map(entry=><article className="archive-card" id={entry.type==='Publication'?`publication-${reportItems.indexOf(entry.title)}`:undefined} key={`${entry.type}-${entry.title}`}>
+      {filtered.length?<div className="archive-grid">{filtered.map(entry=><article className="archive-card" id={entry.title==='Annual Report 2026'?'publication-annual-report-2026':entry.type==='Publication'?`publication-${reportItems.indexOf(entry.title)}`:undefined} key={`${entry.type}-${entry.title}`}>
         {entry.title==='Annual Report 2026'&&<div className="annual-cover-placeholder" role="img" aria-label="Annual Report 2026 cover artwork awaiting CRVPF approval">Annual Report 2026<br/><small>Cover pending approval</small></div>}
         <span className="tag">{entry.type}</span><h2>{entry.title}</h2><p>{entry.description}</p>
         {entry.title==='Annual Report 2026'

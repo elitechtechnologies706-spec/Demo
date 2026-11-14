@@ -26,6 +26,11 @@ ROUTE_FILES = {
     "/where-we-work": "where-we-work.html",
     "/resources": "resources.html",
     "/get-involved": "get-involved.html",
+    "/publications": "publications.html",
+    "/inception": "inception.html",
+    "/audit": "audit.html",
+    "/analytics": "analytics.html",
+    "/hosting": "hosting.html",
 }
 
 
@@ -91,5 +96,9 @@ server = ThreadingHTTPServer(
         *args, directory=str(PUBLIC_DIR), **kwargs
     ),
 )
-print(f"CRVPF running on {PORT} - Pages: / /about /programmes /impact /resources", flush=True)
+print(
+    f"CRVPF running on {PORT} - Pages: / /about /programmes /impact /resources "
+    "/publications /inception /audit /analytics /hosting",
+    flush=True,
+)
 server.serve_forever()
