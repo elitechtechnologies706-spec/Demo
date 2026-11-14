@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type AnchorHTMLAttributes, type FormEvent } from 'react';
 import { Route, Router as WouterRouter, Switch, useLocation } from 'wouter';
 import {
-  ArrowRight, BookOpen, ChevronDown,
+  ArrowRight, BookOpen, ChevronDown, LayoutGrid,
   HandHeart, HeartHandshake, Home as HomeIcon, MapPin, Menu, MessageCircle,
   Search, Shield, ShieldCheck, Sparkles, Users, X, Mail, Phone,
 } from 'lucide-react';
@@ -41,7 +41,7 @@ const programs:Program[]=[
  {slug:'/programmes/eydcd',short:'EYDCD',name:'Empowering Youth Through Data and Community Development Program (EYDCD)',summary:'Empowering Youth through Data and Community Development (EYDCD) program is a five-year program led by Children’s Rights and Violence Prevention Fund (CVRPF) and gnuGrid CRB in partnership with Mastercard Foundation. The program aims to provide market-relevant skills, business development resources, and digital financial inclusion to empower young people in Uganda. Throughout its duration, the program will endeavour to reach 400,000 young people across the country (70% female) and create 250,000 dignified and fulfilling employment opportunities.',details:['Additionally, the program will strengthen the capacities of 200 community organizations to deliver training and capacity-building programs that link young people, including those in refugee and host communities, and people with disabilities to work opportunities.','By digitizing 3,000 youth-led Village Savings and Loan Associations (VSLAs) and creating digital wallets for their members, the program aims to enhance access to financial services and products from local financial institutions.']},
 ];
 const pages=[
-  ['/','Home'],['/about','About'],['/programmes','Our Programmes'],['/programmes/pvac','PVAC'],
+  ['/','Home'],['/about','About'],['/programmes','Our Programmes'],['/map','Map'],['/stories','Stories'],['/contact','Contact'],['/programmes/pvac','PVAC'],
   ['/programmes/agpp','AGPP'],['/programmes/eydcd','EYDCD'],['/programmes/coordinated','Coordinated'],
   ['/programmes/joint','Joint'],['/impact','Impact & Stories'],['/where-we-work','Where We Work'],
   ['/resources','Resources'],['/get-involved','Get Involved'],['/publications','Publications'],
@@ -79,7 +79,7 @@ function App(){
   const [year,setYear]=useState(2026),[portalTab,setPortalTab]=useState('My Grants'),[login,setLogin]=useState(false);
   const [adminItems,setAdminItems]=useState<AdminStory[]>(loadAdminStories);
  const [pubModal,setPubModal]=useState('');
- const bottomTab=path.startsWith('/programmes')?'programmes':path==='/where-we-work'?'map':path==='/impact'?'stories':path==='/get-involved'||path==='/contact'?'contact':'home';
+  const bottomTab=path==='/'?'home':path.startsWith('/programmes')?'programmes':path==='/map'||path==='/where-we-work'?'map':path==='/stories'||path==='/impact'?'stories':null;
  const notify=(s:string)=>{setToast(s);window.setTimeout(()=>setToast(''),4000)};
   useEffect(()=>{
     const canonicalPath=(pathname:string)=>{
@@ -160,7 +160,9 @@ function App(){
     <Route path="/programmes/coordinated"><ProgrammeDetail slug="/programmes/coordinated" notify={notify}/></Route>
     <Route path="/programmes/joint"><ProgrammeDetail slug="/programmes/joint" notify={notify}/></Route>
     <Route path="/impact"><Impact country={selectedCountry} setCountry={setSelectedCountry} program={selectedProgram} setProgram={setSelectedProgram}/></Route>
+     <Route path="/stories"><Impact country={selectedCountry} setCountry={setSelectedCountry} program={selectedProgram} setProgram={setSelectedProgram}/></Route>
      <Route path="/where-we-work"><WhereWeWorkPage /></Route>
+      <Route path="/map"><WhereWeWorkPage /></Route>
      <Route path="/resources"><ResourcesPage /></Route>
      <Route path="/get-involved"><GetInvolved onDonate={donateAction} notify={notify}/></Route>
      <Route path="/inception"><InceptionPage /></Route>
@@ -183,12 +185,11 @@ function App(){
     <Route><NotFound /></Route>
    </Switch>
    {footer}
-    <nav className="mobile-bottom" aria-label="Quick navigation">
-      <Link href="/" className={bottomTab==='home'?'active':''} aria-current={bottomTab==='home'?'page':undefined} aria-label="Home" data-testid="mobile-home"><HomeIcon size={18}/><span>Home</span></Link>
-      <Link href="/programmes" className={bottomTab==='programmes'?'active':''} aria-current={bottomTab==='programmes'?'page':undefined} aria-label="Programmes" data-testid="mobile-programmes"><BookOpen size={18}/><span>Programmes</span></Link>
-      <Link href="/where-we-work" className={bottomTab==='map'?'active':''} aria-current={bottomTab==='map'?'page':undefined} aria-label="Map" data-testid="mobile-map"><MapPin size={18}/><span>Map</span></Link>
-      <Link href="/impact" className={bottomTab==='stories'?'active':''} aria-current={bottomTab==='stories'?'page':undefined} aria-label="Stories" data-testid="mobile-stories"><MessageCircle size={18}/><span>Stories</span></Link>
-      <Link href="/get-involved#contact" className={bottomTab==='contact'?'active':''} aria-current={bottomTab==='contact'?'page':undefined} aria-label="Contact" data-testid="mobile-contact"><Mail size={18}/><span>Contact</span></Link>
+     <nav className="mobile-bottom" aria-label="Quick navigation">
+       <Link href="/" className={bottomTab==='home'?'active':''} aria-current={bottomTab==='home'?'page':undefined} aria-label="Home" data-testid="mobile-home"><HomeIcon size={24}/><span>Home</span></Link>
+       <Link href="/programmes" className={bottomTab==='programmes'?'active':''} aria-current={bottomTab==='programmes'?'page':undefined} aria-label="Programmes" data-testid="mobile-programmes"><LayoutGrid size={24}/><span>Programmes</span></Link>
+       <Link href="/map" className={bottomTab==='map'?'active':''} aria-current={bottomTab==='map'?'page':undefined} aria-label="Map" data-testid="mobile-map"><MapPin size={24}/><span>Map</span></Link>
+       <Link href="/stories" className={bottomTab==='stories'?'active':''} aria-current={bottomTab==='stories'?'page':undefined} aria-label="Stories" data-testid="mobile-stories"><BookOpen size={24}/><span>Stories</span></Link>
     </nav>
     <nav className="mobile-sticky-cta" aria-label="Quick actions">
       <Link className="btn primary-action" href="/programmes">Explore Programmes</Link>
@@ -208,9 +209,11 @@ function Header({path,lang,menuOpen,onLanguage,onSearch,onMenu}:{path:string;lan
  return <header className="site-header"><div className="header-inner">
      <Link href="/" className="brand" aria-label="CRVPF home" data-testid="link-brand"><img className="brand-logo" src={CRVPF_LOGO_URL} data-source={CRVPF_LOGO_SOURCE} alt="CRVPF logo" width="11309" height="4010" fetchPriority="high" decoding="async"/></Link>
   <nav className="desktop-nav" aria-label="Main navigation">
-      {link('/','Home','Nyumbani',path==='/')}{link('/about','About','Kuhusu')}
-       <div className="program-wrap"><Link href="/programmes" className={`nav-link ${path.startsWith('/programmes')?'active':''}`} aria-current={path.startsWith('/programmes')?'page':undefined} aria-haspopup="true" data-testid="nav-programmes">{sw?'Programu':'Programmes'} <ChevronDown size={13} aria-hidden="true"/></Link><div className="program-menu"><Link href="/programmes" data-testid="nav-programmes-hub">All Programmes</Link>{[...programs.map(p=>({url:p.slug,label:`${p.short} · ${p.name}`})),{url:'/programmes/coordinated',label:'Coordinated Program Approach'},{url:'/programmes/joint',label:'Joint Action & Resourcing'}].map(p=><Link key={p.url} href={p.url} data-testid={`nav-program-${p.url.split('/').pop()}`}>{p.label}</Link>)}</div></div>
-         {link('/impact','Impact','Athari')}{link('/resources','Resources','Rasilimali')}{link('/where-we-work','Where We Work','Mahali Tunapofanya Kazi',path==='/where-we-work')}{link('/get-involved','Get Involved','Shiriki')}
+       {link('/','Home','Nyumbani',path==='/')}
+        <div className="program-wrap"><Link href="/programmes" className={`nav-link ${path.startsWith('/programmes')?'active':''}`} aria-current={path.startsWith('/programmes')?'page':undefined} aria-haspopup="true" data-testid="nav-programmes">{sw?'Programu':'Programmes'} <ChevronDown size={13} aria-hidden="true"/></Link><div className="program-menu"><Link href="/programmes" data-testid="nav-programmes-hub">All Programmes</Link>{[...programs.map(p=>({url:p.slug,label:`${p.short} · ${p.name}`})),{url:'/programmes/coordinated',label:'Coordinated Program Approach'},{url:'/programmes/joint',label:'Joint Action & Resourcing'}].map(p=><Link key={p.url} href={p.url} data-testid={`nav-program-${p.url.split('/').pop()}`}>{p.label}</Link>)}</div></div>
+        {link('/map','Map','Ramani',path==='/map'||path==='/where-we-work')}
+        {link('/stories','Stories','Hadithi',path==='/stories'||path==='/impact')}
+        {link('/contact','Contact','Mawasiliano',path==='/contact')}
   </nav>
       <div className="header-actions"><button className="icon-btn" aria-label="Search site" onClick={onSearch} data-testid="button-search"><Search size={19}/></button><Link className="header-donate" data-current={path==='/get-involved'} href="/get-involved#donate" aria-label="Donate to CRVPF" data-testid="button-donate">{sw?'Changia':'Donate'}</Link><button className="icon-btn menu-toggle" aria-label={menuOpen?'Close navigation menu':'Open navigation menu'} aria-expanded={menuOpen} onClick={onMenu} data-testid="button-menu"><Menu size={24}/></button></div>
  </div></header>
@@ -227,11 +230,14 @@ function MobileDrawer({path,onClose,onSearch,lang,onLanguage}:{path:string;onClo
     return()=>{window.removeEventListener('keydown',onKey);opener?.focus({preventScroll:true})};
   },[]);
       return <div className="mobile-drawer" role="dialog" aria-modal="true" aria-label="Navigation menu" onClick={event=>{if(event.target===event.currentTarget)onClose()}}><div className="drawer-head"><Link href="/" className="brand" onClick={onClose}><img className="brand-logo" src={CRVPF_LOGO_URL} data-source={CRVPF_LOGO_SOURCE} alt="CRVPF logo" width="11309" height="4010" decoding="async"/></Link><button className="icon-btn" onClick={onClose} aria-label="Close menu" data-testid="button-close-menu"><X size={24}/></button></div>
-   <div className="drawer-links">
-    <button className="drawer-accordion" onClick={onSearch} data-testid="drawer-search"><span>{sw?'Tafuta':'Search'}</span><Search size={18}/></button>
-        <Link href="/" className={path==='/'?'active':''} aria-current={path==='/'?'page':undefined} onClick={onClose} data-testid="drawer-home">{sw?'Nyumbani':'Home'}</Link><Link href="/about" onClick={onClose} data-testid="drawer-about">{sw?'Kuhusu':'About'}</Link><button className={`drawer-accordion ${path.startsWith('/programmes')?'active':''}`} aria-current={path.startsWith('/programmes')?'page':undefined} onClick={()=>setOpen(!open)} aria-expanded={open} data-testid="drawer-programmes">{sw?'Programu':'Programmes'} <ChevronDown size={18}/></button>{open&&<div className="drawer-sub"><Link href="/programmes" onClick={onClose}>All Programmes</Link>{[...programs.map(p=>({url:p.slug,label:`${p.short} — ${p.name}`})),{url:'/programmes/coordinated',label:'Coordinated Program'},{url:'/programmes/joint',label:'Joint Action & Resourcing'}].map(p=><Link key={p.url} href={p.url} onClick={onClose}>{p.label}</Link>)}</div>}
-         <Link href="/impact" onClick={onClose} data-testid="drawer-impact">{sw?'Athari':'Impact'}</Link><Link href="/resources" onClick={onClose} data-testid="drawer-resources">{sw?'Rasilimali':'Resources'}</Link><Link href="/where-we-work" className={path==='/where-we-work'?'active':''} aria-current={path==='/where-we-work'?'page':undefined} onClick={onClose} data-testid="drawer-where-we-work">{sw?'Mahali Tunapofanya Kazi':'Where We Work'}</Link><Link href="/get-involved" onClick={onClose} data-testid="drawer-get-involved">{sw?'Shiriki':'Get Involved'}</Link>
-   </div>
+    <div className="drawer-links">
+     <button className="drawer-accordion" onClick={onSearch} data-testid="drawer-search"><span>{sw?'Tafuta':'Search'}</span><Search size={18}/></button>
+     <Link href="/" className={path==='/'?'active':''} aria-current={path==='/'?'page':undefined} onClick={onClose} data-testid="drawer-home">{sw?'Nyumbani':'Home'}</Link>
+     <button className={`drawer-accordion ${path.startsWith('/programmes')?'active':''}`} aria-current={path.startsWith('/programmes')?'page':undefined} onClick={()=>setOpen(!open)} aria-expanded={open} data-testid="drawer-programmes">{sw?'Programu':'Programmes'} <ChevronDown size={18}/></button>{open&&<div className="drawer-sub"><Link href="/programmes" onClick={onClose}>All Programmes</Link>{[...programs.map(p=>({url:p.slug,label:`${p.short} — ${p.name}`})),{url:'/programmes/coordinated',label:'Coordinated Program'},{url:'/programmes/joint',label:'Joint Action & Resourcing'}].map(p=><Link key={p.url} href={p.url} onClick={onClose}>{p.label}</Link>)}</div>}
+     <Link href="/map" className={path==='/map'||path==='/where-we-work'?'active':''} aria-current={path==='/map'||path==='/where-we-work'?'page':undefined} onClick={onClose} data-testid="drawer-map">{sw?'Ramani':'Map'}</Link>
+     <Link href="/stories" className={path==='/stories'||path==='/impact'?'active':''} aria-current={path==='/stories'||path==='/impact'?'page':undefined} onClick={onClose} data-testid="drawer-stories">{sw?'Hadithi':'Stories'}</Link>
+     <Link href="/contact" className={path==='/contact'?'active':''} aria-current={path==='/contact'?'page':undefined} onClick={onClose} data-testid="drawer-contact">{sw?'Mawasiliano':'Contact'}</Link>
+    </div>
      <div className="drawer-actions"><Link className={`drawer-donate-link ${path==='/get-involved'?'active':''}`} href="/get-involved#donate" onClick={onClose} aria-current={path==='/get-involved'?'page':undefined} aria-label="Donate to CRVPF">{sw?'Changia':'Donate'} <HandHeart size={16}/></Link><div className="lang-toggle"><button className={lang==='EN'?'selected':''} onClick={()=>onLanguage('EN')}>EN</button><button className={lang==='SW'?'selected':''} onClick={()=>onLanguage('SW')}>SW</button></div></div><SocialLinks className="drawer-social"/>
  </div>
 }
@@ -265,7 +271,7 @@ function PageNavigation({path,showBack}:{path:string;showBack:boolean}){
   if(path==='/')return null;
   const programmeOrder=['/programmes/pvac','/programmes/agpp','/programmes/eydcd','/programmes/coordinated','/programmes/joint'];
   const programmeNames:Record<string,string>={'/programmes/pvac':'PVAC','/programmes/agpp':'AGPP','/programmes/eydcd':'EYDCD','/programmes/coordinated':'Coordinated','/programmes/joint':'Joint'};
-   const pageNames:Record<string,string>={'/about':'About','/programmes':'Our Work','/impact':'Impact','/where-we-work':'Where We Work','/resources':'Resources','/get-involved':'Get Involved','/annual-report-2026':'Annual Report 2026','/partners':'Partner Portal','/dashboard':'Dashboard','/admin-demo':'Safeguarding CMS','/publications':'Publications','/inception':'Inception','/audit':'Audit','/analytics':'Analytics','/hosting':'Hosting','/training':'Training','/handover':'Handover','/support':'Support','/financial':'Financial','/donor-portal':'Donor Portal','/contact':'Contact','/system':'How This System Works','/how-we-deliver':'How We Deliver'};
+   const pageNames:Record<string,string>={'/about':'About','/programmes':'Our Work','/impact':'Impact','/stories':'Stories','/where-we-work':'Where We Work','/map':'Map','/resources':'Resources','/get-involved':'Get Involved','/annual-report-2026':'Annual Report 2026','/partners':'Partner Portal','/dashboard':'Dashboard','/admin-demo':'Safeguarding CMS','/publications':'Publications','/inception':'Inception','/audit':'Audit','/analytics':'Analytics','/hosting':'Hosting','/training':'Training','/handover':'Handover','/support':'Support','/financial':'Financial','/donor-portal':'Donor Portal','/contact':'Contact','/system':'How This System Works','/how-we-deliver':'How We Deliver'};
   const isProgramme=programmeOrder.includes(path);
   const current=programmeNames[path]||pageNames[path]||'CRVPF';
   return <div className="page-navigation">

@@ -23,7 +23,10 @@ ROUTE_FILES = {
     "/programmes/coordinated": "coordinated.html",
     "/programmes/joint": "joint.html",
     "/impact": "impact.html",
+    "/stories": "impact.html",
+    "/map": "where-we-work.html",
     "/where-we-work": "where-we-work.html",
+    "/contact": "get-involved.html",
     "/resources": "resources.html",
     "/get-involved": "get-involved.html",
     "/publications": "publications.html",
@@ -100,7 +103,7 @@ server = ThreadingHTTPServer(
     ),
 )
 print(
-    f"CRVPF running on {PORT} - Pages: / /about /programmes /impact /resources "
+    f"CRVPF running on {PORT} - Pages: / /about /programmes /map /stories /contact /impact /resources "
     "/publications /inception /audit /analytics /hosting /training /handover /support",
     flush=True,
 )
