@@ -1841,3 +1841,189 @@ a *{
 }
 
 h1,h2,h3,h4,h5,h6{font-weight:800!important}
+
+/* Scoped styles for the added Reach and partner sections; existing page styles stay intact. */
+.home-section.home-reach-section{
+  background:#FFFBF0!important;
+}
+.home-reach-heading{
+  display:inline-block;
+  margin:0!important;
+  padding:12px 18px;
+  border-radius:12px;
+  background:#90CAF9!important;
+  color:#1A1A1A!important;
+}
+.home-reach-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:16px;
+  max-width:1120px;
+  margin:0 auto;
+}
+.home-reach-card{
+  min-height:176px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
+  padding:22px;
+  border:1px solid #1B7A3D!important;
+  border-top:4px solid #1B7A3D!important;
+  border-radius:16px;
+  text-align:center;
+  color:#1A1A1A!important;
+}
+.home-reach-card.reach-0{background:#8BC34A!important}
+.home-reach-card.reach-1{background:#FFFFFF!important}
+.home-reach-card.reach-2{background:#90CAF9!important}
+.home-reach-card>strong{
+  color:#1A1A1A!important;
+  font-size:clamp(25px,3vw,38px);
+  line-height:1;
+}
+.home-reach-card>p{margin:0;color:#1A1A1A!important;line-height:1.5}
+.home-reach-source,.home-partners-note{
+  max-width:1120px;
+  margin:14px auto 0;
+  color:#1A1A1A!important;
+  font-size:12px;
+  line-height:1.5;
+}
+.home-partners-grid{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:14px;
+  max-width:1120px;
+  margin:0 auto;
+}
+.home-partner-card{
+  min-height:170px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  padding:18px;
+  text-align:center;
+}
+.home-partner-card img{display:block;width:min(100%,120px);height:48px;object-fit:contain}
+.home-partner-card h3{margin:0;color:#1B7A3D!important;font-size:15px;line-height:1.35}
+
+/* Extend the existing static map with accessible country selection and the requested office card. */
+.where-we-work-map{max-width:1120px}
+.where-map-layout{
+  display:grid;
+  grid-template-columns:minmax(0,720px) minmax(220px,1fr);
+  gap:24px;
+  align-items:start;
+  text-align:left;
+}
+.where-map-main{min-width:0}
+.where-map-view-tabs{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:0 0 14px;
+}
+.where-map-eydcd-note{
+  margin:0 0 12px;
+  padding:12px;
+  border:1px solid #1B7A3D;
+  border-radius:12px;
+  background:#FFFBF0!important;
+  color:#1A1A1A!important;
+  line-height:1.5;
+}
+.where-map-image-wrap{
+  display:flex;
+  justify-content:center;
+  width:100%;
+}
+.where-map-image-stage{position:relative;width:min(100%,630px)}
+.where-map-image-stage img{display:block;width:100%;height:auto;max-height:420px;object-fit:contain}
+.where-map-hotspots{position:absolute;inset:0}
+.where-map-hotspot{
+  position:absolute;
+  width:42px;
+  height:42px;
+  padding:0;
+  transform:translate(-50%,-50%);
+  border:0!important;
+  border-radius:50%;
+  background:transparent!important;
+  color:transparent!important;
+  cursor:pointer;
+}
+.where-map-hotspot.is-dimmed{opacity:.36}
+.where-map-hotspot:focus-visible{outline:3px solid #FCEE21!important;outline-offset:1px}
+.where-map-country-card{
+  width:100%;
+  color:#1A1A1A!important;
+  font:inherit;
+  line-height:1.5;
+  text-align:left;
+  cursor:pointer;
+  transition:opacity .18s ease,border-color .18s ease;
+}
+.where-map-country-card small{color:#1A1A1A!important}
+.where-map-country-card.is-dimmed{opacity:.42}
+.where-map-country-card.is-selected{border:2px solid #1B7A3D!important}
+.where-map-selected-country,.where-map-usa-card{
+  border:1px solid #1B7A3D!important;
+  border-top:4px solid #8BC34A!important;
+  background:#FFFFFF!important;
+}
+.where-map-selected-country{margin-top:14px}
+.where-map-selected-country h3{margin:0 0 8px;color:#1B7A3D!important}
+.where-map-selected-country p,.where-map-usa-card p{margin:7px 0;color:#1A1A1A!important;line-height:1.5}
+.where-map-selected-country .btn{margin-top:8px}
+.where-map-usa-card{position:sticky;top:104px}
+.where-map-tor-badge{
+  margin:16px 0 0;
+  padding:10px 12px;
+  border:1px solid #1B7A3D;
+  border-radius:999px;
+  background:#8BC34A!important;
+  color:#1A1A1A!important;
+  font-size:12px;
+  font-weight:800;
+  text-align:center;
+}
+.annual-cover-placeholder{
+  min-height:170px;
+  display:grid;
+  place-content:center;
+  gap:8px;
+  margin-bottom:14px;
+  padding:18px;
+  border:2px solid #1B7A3D;
+  border-radius:12px;
+  background:#FFFBF0!important;
+  color:#1B7A3D!important;
+  font-size:22px;
+  font-weight:800;
+  text-align:center;
+}
+.annual-cover-placeholder small{color:#1A1A1A!important;font-size:12px;font-weight:600}
+
+@media(max-width:900px){
+  .where-map-layout{grid-template-columns:1fr}
+  .where-map-usa-card{position:static}
+  .home-partners-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:767px){
+  .home-reach-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .home-reach-card{min-height:156px;padding:16px}
+  .home-partners-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .where-map-hotspot{width:40px;height:40px}
+  .where-map-tor-badge{border-radius:12px}
+}
+@media(max-width:599px){
+  .home-reach-grid,.home-partners-grid{grid-template-columns:1fr}
+  .home-reach-card{min-height:132px}
+  .where-map-countries{grid-template-columns:1fr}
+  .where-map-legend{gap:10px}
+}
