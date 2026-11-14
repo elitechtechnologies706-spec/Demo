@@ -31,6 +31,9 @@ ROUTE_FILES = {
     "/audit": "audit.html",
     "/analytics": "analytics.html",
     "/hosting": "hosting.html",
+    "/training": "training.html",
+    "/handover": "handover.html",
+    "/support": "support.html",
 }
 
 
@@ -98,7 +101,7 @@ server = ThreadingHTTPServer(
 )
 print(
     f"CRVPF running on {PORT} - Pages: / /about /programmes /impact /resources "
-    "/publications /inception /audit /analytics /hosting",
+    "/publications /inception /audit /analytics /hosting /training /handover /support",
     flush=True,
 )
 server.serve_forever()

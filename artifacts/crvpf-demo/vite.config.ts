@@ -45,6 +45,9 @@ const pageEntries = {
   audit: 'audit.html',
   analytics: 'analytics.html',
   hosting: 'hosting.html',
+  training: 'training.html',
+  handover: 'handover.html',
+  support: 'support.html',
 };
 
 export default defineConfig({

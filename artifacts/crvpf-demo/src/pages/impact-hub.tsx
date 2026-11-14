@@ -225,3 +225,41 @@ export function HostingPage() {
     </main>
   );
 }
+
+export function SupportPage() {
+  const fields = [
+    "Reporting month",
+    "Urgent issues and response",
+    "Routine issues and response",
+    "Pages or content updated",
+    "Analytics and downloads",
+    "Safeguarding and training status",
+    "Open items and next steps",
+  ];
+
+  return (
+    <main>
+      <PageIntro
+        eyebrow="Support"
+        title="Support and monthly reporting"
+        description="A support outline and monthly report template. No live support channel is connected."
+      />
+      <section className="section">
+        <div className="container">
+          <article className="soft-card support-sla-card">
+            <h2>Service Level Agreement</h2>
+            <p><strong>Urgent:</strong> 24h</p>
+            <p><strong>Routine:</strong> 48-72h</p>
+            <p>Support channels: WhatsApp / Email. Contact route to be confirmed with CRVPF.</p>
+          </article>
+          <article className="soft-card support-template-card">
+            <h2>Monthly Report Template</h2>
+            <ol className="numbered-list">
+              {fields.map((field) => <li key={field}>{field}: To be confirmed with CRVPF.</li>)}
+            </ol>
+          </article>
+        </div>
+      </section>
+    </main>
+  );
+}

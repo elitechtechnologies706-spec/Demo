@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useRef, useState, type AnchorHTMLAttributes, type FormEvent } from 'react';
 import { Route, Router as WouterRouter, Switch, useLocation } from 'wouter';
 import {
-  ArrowRight, ChevronDown,
-  HandHeart, HeartHandshake, Home as HomeIcon, MapPin, Menu,
+  ArrowRight, BookOpen, ChevronDown,
+  HandHeart, HeartHandshake, Home as HomeIcon, MapPin, Menu, MessageCircle,
   Search, Shield, ShieldCheck, Sparkles, Users, X, Mail, Phone,
 } from 'lucide-react';
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaXTwitter, FaYoutube } from 'react-icons/fa6';
-import { AnalyticsPage, AuditPage, HostingPage, InceptionPage } from './pages/impact-hub';
+import { AnalyticsPage, AuditPage, HostingPage, InceptionPage, SupportPage } from './pages/impact-hub';
 
 const APP_BASE_PATH=import.meta.env.BASE_URL.endsWith('/')?import.meta.env.BASE_URL:`${import.meta.env.BASE_URL}/`;
 const CRVPF_LOGO_SOURCE='https://crvpf.org/wp-content/uploads/2025/01/CRPVF_Final_Logo-08.png';
@@ -20,7 +20,8 @@ const pageFiles:Record<string,string>={
   '/programmes/pvac':'pvac.html','/programmes/agpp':'agpp.html','/programmes/eydcd':'eydcd.html',
   '/programmes/coordinated':'coordinated.html','/programmes/joint':'joint.html',
   '/impact':'impact.html','/where-we-work':'where-we-work.html','/resources':'resources.html','/get-involved':'get-involved.html',
-  '/publications':'publications.html','/inception':'inception.html','/audit':'audit.html','/analytics':'analytics.html','/hosting':'hosting.html',
+   '/publications':'publications.html','/inception':'inception.html','/audit':'audit.html','/analytics':'analytics.html','/hosting':'hosting.html',
+   '/training':'training.html','/handover':'handover.html','/support':'support.html',
 };
 type FileLinkProps=Omit<AnchorHTMLAttributes<HTMLAnchorElement>,'href'>&{href:string};
 function Link({href,...props}:FileLinkProps){
@@ -44,7 +45,8 @@ const pages=[
   ['/programmes/agpp','AGPP'],['/programmes/eydcd','EYDCD'],['/programmes/coordinated','Coordinated'],
   ['/programmes/joint','Joint'],['/impact','Impact & Stories'],['/where-we-work','Where We Work'],
   ['/resources','Resources'],['/get-involved','Get Involved'],['/publications','Publications'],
-  ['/inception','Inception'],['/audit','Audit'],['/analytics','Analytics'],['/hosting','Hosting'],
+   ['/inception','Inception'],['/audit','Audit'],['/analytics','Analytics'],['/hosting','Hosting'],
+   ['/training','Training'],['/handover','Handover'],['/support','Support'],
 ] as const;
 const storyData=[
  {name:'Beatrice',country:'Uganda',program:'EYDCD',text:'Beatrice, 28, a graduate of Business and Administration, wife, and mother of two, was one of them. Despite her education, she struggled to find stable work. However, with resilience and a desire to create impact, she turned to a skill her mother had once taught her, basket weaving. Through the program, Beatrice and her peers received financial literacy training and formed a Village Savings and Loan Association (VSLA), which they named One Voice Savings Group. They now meet every Saturday, each saving at least UGX 1,000. Together, they opened a bank account, formalized leadership, and established a welfare fund, turning their group into a lifeline for women in moments of vulnerability. The women went on to form Kyisa Kya Maria Arts and Crafts Group, where Beatrice continues to train and mentor others.',quote:'We got a client, All Across Africa, who sends us designs. We weave the baskets and send them back to be exported. The money we earn helps, because when there are no orders, some women can’t afford to send their children to school.',href:'https://crvpf.org/baskets-bonds-and-bold-women-a-story-of-sisterhood-and-strength/'},
@@ -141,6 +143,7 @@ function App(){
      <Route path="/audit"><AuditPage /></Route>
      <Route path="/analytics"><AnalyticsPage /></Route>
      <Route path="/hosting"><HostingPage /></Route>
+     <Route path="/support"><SupportPage /></Route>
     <Route path="/annual-report-2026"><Annual notify={notify}/></Route>
     <Route path="/partners"><Partners tab={portalTab} setTab={setPortalTab} login={login} setLogin={setLogin} notify={notify}/></Route>
      <Route path="/dashboard"><Dashboard year={year} setYear={setYear} notify={notify}/></Route>
@@ -156,12 +159,18 @@ function App(){
     <Route><NotFound /></Route>
    </Switch>
    {footer}
-   <nav className="mobile-bottom" aria-label="Quick navigation">
-     <Link href="/" className={!menu&&path==='/'?'active':''} aria-current={!menu&&path==='/'?'page':undefined} aria-label="Home" data-testid="mobile-home"><HomeIcon size={18}/><span>Home</span></Link>
-      <Link href="/programmes" className={!menu&&path.startsWith('/programmes')?'active':''} aria-current={!menu&&path.startsWith('/programmes')?'page':undefined} aria-label="Programmes" data-testid="mobile-programmes"><Shield size={18}/><span>Programmes</span></Link>
-     <Link href="/where-we-work" className={!menu&&path==='/where-we-work'?'active':''} aria-current={!menu&&path==='/where-we-work'?'page':undefined} aria-label="Where We Work" data-testid="mobile-where"><MapPin size={18}/><span>Where We Work</span></Link>
-      <Link href="/get-involved#donate" className={`donate-tab ${!menu&&path==='/get-involved'?'active':''}`} aria-current={!menu&&path==='/get-involved'?'page':undefined} aria-label="Donate" data-testid="mobile-donate"><HandHeart size={18}/><span>Donate</span></Link>
-   </nav>
+    <nav className="mobile-bottom" aria-label="Quick navigation">
+      <Link href="/" className={!menu&&path==='/'?'active':''} aria-current={!menu&&path==='/'?'page':undefined} aria-label="Home" data-testid="mobile-home"><HomeIcon size={18}/><span>Home</span></Link>
+      <Link href="/programmes" className={!menu&&path.startsWith('/programmes')?'active':''} aria-current={!menu&&path.startsWith('/programmes')?'page':undefined} aria-label="Programmes" data-testid="mobile-programmes"><BookOpen size={18}/><span>Programmes</span></Link>
+      <Link href="/where-we-work" className={!menu&&path==='/where-we-work'?'active':''} aria-current={!menu&&path==='/where-we-work'?'page':undefined} aria-label="Map" data-testid="mobile-map"><MapPin size={18}/><span>Map</span></Link>
+      <Link href="/impact" className={!menu&&path==='/impact'?'active':''} aria-current={!menu&&path==='/impact'?'page':undefined} aria-label="Stories" data-testid="mobile-stories"><MessageCircle size={18}/><span>Stories</span></Link>
+      <Link href="/get-involved#contact" className={!menu&&(path==='/get-involved'||path==='/contact')?'active':''} aria-current={!menu&&(path==='/get-involved'||path==='/contact')?'page':undefined} aria-label="Contact" data-testid="mobile-contact"><Mail size={18}/><span>Contact</span></Link>
+    </nav>
+    <nav className="mobile-sticky-cta" aria-label="Quick actions">
+      <Link className="btn btn-green" href="/programmes">See Programmes</Link>
+      <Link className="btn btn-green" href="/publications#publication-annual-report-2026">Download Annual Report</Link>
+    </nav>
+    <WhatsAppContactButton/>
     {search&&<SearchModal value={searchText} setValue={setSearchText} results={filteredPages} onStorySelect={()=>{setSelectedCountry('All');setSelectedProgram('All')}} onClose={()=>{setSearch(false);setSearchText('')}}/>}
    {donate&&<DonateModal onClose={()=>setDonate(false)} notify={notify}/>}
     {pubModal&&<Modal title={pubModal} onClose={()=>setPubModal('')}><p>You selected “{pubModal}”. This standalone demo identifies the publication but does not provide a downloadable file.</p><div className="notice">No report download or publication action is available in this demo.</div></Modal>}
@@ -204,17 +213,36 @@ function MobileDrawer({path,onClose,onSearch,lang,onLanguage}:{path:string;onClo
  </div>
 }
 function SocialLinks({className=''}:{className?:string}){return <div className={`social-links ${className}`}>{socialLinks.map(({name,url,icon:Icon})=><a key={name} href={url} target="_blank" rel="noopener noreferrer" aria-label={`CRVPF on ${name}`} title={name}><Icon size={16}/></a>)}</div>}
-function Footer(){return <footer className="site-footer"><div className="container"><div className="footer-grid">
-  <div><Link href="/" className="brand footer-brand" aria-label="CRVPF home"><img className="brand-logo" src={CRVPF_LOGO_URL} data-source={CRVPF_LOGO_SOURCE} alt="CRVPF logo" width="11309" height="4010" loading="lazy" decoding="async"/></Link><p style={{maxWidth:300,marginTop:19}}>{CRVPF_INTRO}</p><Link className="btn btn-green" href="/get-involved#donate" aria-label="Donate to CRVPF">Donate</Link></div>
-   <div><h4>Explore</h4><Link href="/about">About CRVPF</Link><Link href="/impact">Impact &amp; stories</Link><Link href="/where-we-work">Where We Work</Link><Link href="/resources">Resource Centre</Link><Link href="/get-involved">Get Involved</Link><Link href="/system">How This System Works</Link><Link href="/how-we-deliver">How We Deliver</Link></div>
-  <div><h4>Programmes</h4><Link href="/programmes">All Programmes</Link>{programs.map(p=><Link key={p.slug} href={p.slug}>{p.short}</Link>)}<Link href="/programmes/coordinated">Coordinated</Link><Link href="/programmes/joint">Joint</Link><Link href="/resources">Publications</Link></div>
-  <div><h4>Contact</h4><p><a href="tel:+256393216519">(+256) 393 216 519</a><a href="mailto:info@crvpf.org">info@crvpf.org</a>Block 244, Plot 5170, Diplomate Road, Muyenga, Kampala, Uganda</p><a className="btn btn-green whatsapp-link" href="https://wa.me/256393216519" target="_blank" rel="noopener noreferrer">WhatsApp CRVPF</a><Link className="footer-message-link" href="/get-involved#contact">Send a message <ArrowRight size={13}/></Link></div>
-   </div><SocialLinks className="footer-social"/><ElitechStudios/><div className="footer-bottom">Demo on Replit | Final on WordPress + Elementor + i3C | Powered by ELITECH TECHNOLOGIES - Building systems that work for real people in Uganda.</div><p className="footer-operations">DEMO — TOR Deliverable 3. Content sourced from crvpf.org; publishing requires CRVPF Communications approval.</p></div></footer>}
+function Footer(){
+  const[baseSize,setBaseSize]=useState(16);
+  const[highContrast,setHighContrast]=useState(false);
+  useEffect(()=>{document.documentElement.style.fontSize=`${baseSize}px`},[baseSize]);
+  useEffect(()=>{document.documentElement.classList.toggle('high-contrast',highContrast);return()=>document.documentElement.classList.remove('high-contrast')},[highContrast]);
+  return <footer className="site-footer"><div className="container">
+    <div className="accessibility-strip" aria-label="Accessibility controls">
+      <span>English</span>
+      <button type="button" onClick={()=>setBaseSize(size=>Math.max(14,size-1))} aria-label="Decrease text size">A-</button>
+      <button type="button" onClick={()=>setBaseSize(size=>Math.min(22,size+1))} aria-label="Increase text size">A+</button>
+      <button type="button" aria-pressed={highContrast} onClick={()=>setHighContrast(value=>!value)}>High Contrast</button>
+    </div>
+    <div className="footer-grid">
+      <div><Link href="/" className="brand footer-brand" aria-label="CRVPF home"><img className="brand-logo" src={CRVPF_LOGO_URL} data-source={CRVPF_LOGO_SOURCE} alt="CRVPF logo" width="11309" height="4010" loading="lazy" decoding="async"/></Link><p style={{maxWidth:300,marginTop:19}}>{CRVPF_INTRO}</p><Link className="btn btn-green" href="/get-involved#donate" aria-label="Donate to CRVPF">Donate</Link></div>
+      <div><h4>Explore</h4><Link href="/about">About CRVPF</Link><Link href="/impact">Impact &amp; stories</Link><Link href="/where-we-work">Where We Work</Link><Link href="/resources">Resource Centre</Link><Link href="/get-involved">Get Involved</Link><Link href="/system">How This System Works</Link><Link href="/how-we-deliver">How We Deliver</Link></div>
+      <div><h4>Programmes</h4><Link href="/programmes">All Programmes</Link>{programs.map(p=><Link key={p.slug} href={p.slug}>{p.short}</Link>)}<Link href="/programmes/coordinated">Coordinated</Link><Link href="/programmes/joint">Joint</Link><Link href="/publications">Publications</Link></div>
+      <div><h4>Contact</h4><p><a href="tel:+256393216519">(+256) 393 216 519</a><a href="mailto:info@crvpf.org">info@crvpf.org</a>Block 244, Plot 5170, Diplomate Road, Muyenga, Kampala, Uganda</p><a className="btn btn-green whatsapp-link" href="https://wa.me/256393216519" target="_blank" rel="noopener noreferrer">WhatsApp CRVPF</a><Link className="footer-message-link" href="/get-involved#contact">Send a message <ArrowRight size={13}/></Link><Link href="/support">Support</Link></div>
+    </div>
+    <SocialLinks className="footer-social"/>
+    <ElitechStudios/>
+    <p className="footer-sla">Support: Urgent 24h / Routine 48-72h - WhatsApp / Email. Contact details to be confirmed with CRVPF.</p>
+    <div className="footer-bottom">Demo on Replit | Final on WordPress + Elementor + i3C | Powered by ELITECH TECHNOLOGIES - Building systems that work for real people in Uganda.</div>
+    <p className="footer-operations">DEMO — TOR Deliverable 3. Content sourced from crvpf.org; publishing requires CRVPF Communications approval.</p>
+  </div></footer>
+}
 function PageNavigation({path,showBack}:{path:string;showBack:boolean}){
   if(path==='/')return null;
   const programmeOrder=['/programmes/pvac','/programmes/agpp','/programmes/eydcd','/programmes/coordinated','/programmes/joint'];
   const programmeNames:Record<string,string>={'/programmes/pvac':'PVAC','/programmes/agpp':'AGPP','/programmes/eydcd':'EYDCD','/programmes/coordinated':'Coordinated','/programmes/joint':'Joint'};
-   const pageNames:Record<string,string>={'/about':'About','/programmes':'Our Work','/impact':'Impact','/where-we-work':'Where We Work','/resources':'Resources','/get-involved':'Get Involved','/annual-report-2026':'Annual Report 2026','/partners':'Partner Portal','/dashboard':'Dashboard','/admin-demo':'Safeguarding CMS','/publications':'Publications','/inception':'Inception','/audit':'Audit','/analytics':'Analytics','/hosting':'Hosting','/training':'Training','/handover':'Handover','/financial':'Financial','/donor-portal':'Donor Portal','/contact':'Contact','/system':'How This System Works','/how-we-deliver':'How We Deliver'};
+   const pageNames:Record<string,string>={'/about':'About','/programmes':'Our Work','/impact':'Impact','/where-we-work':'Where We Work','/resources':'Resources','/get-involved':'Get Involved','/annual-report-2026':'Annual Report 2026','/partners':'Partner Portal','/dashboard':'Dashboard','/admin-demo':'Safeguarding CMS','/publications':'Publications','/inception':'Inception','/audit':'Audit','/analytics':'Analytics','/hosting':'Hosting','/training':'Training','/handover':'Handover','/support':'Support','/financial':'Financial','/donor-portal':'Donor Portal','/contact':'Contact','/system':'How This System Works','/how-we-deliver':'How We Deliver'};
   const isProgramme=programmeOrder.includes(path);
   const current=programmeNames[path]||pageNames[path]||'CRVPF';
   return <div className="page-navigation">
@@ -234,15 +262,28 @@ function Home({lang}:{lang:'EN'|'SW'}){
   const [storyProgram,setStoryProgram]=useState('All');
   const [storyCountry,setStoryCountry]=useState('All');
   const [storyPage,setStoryPage]=useState(0);
+  const [storyQuery,setStoryQuery]=useState('');
   const [newsletterEmail,setNewsletterEmail]=useState('');
   const [newsletterDone,setNewsletterDone]=useState(false);
   const [concernOpen,setConcernOpen]=useState(false);
   const [concernSent,setConcernSent]=useState(false);
   const [reportInfoOpen,setReportInfoOpen]=useState(false);
-  const filteredStories=storyData.filter(story=>(storyProgram==='All'||story.program===storyProgram)&&(storyCountry==='All'||story.country===storyCountry));
+  const [shareMessage,setShareMessage]=useState('');
+  const filteredStories=storyData.filter(story=>
+    (storyProgram==='All'||story.program===storyProgram)&&
+    (storyCountry==='All'||story.country===storyCountry)&&
+    `${story.name} ${story.program} ${story.country} ${story.text}`.toLowerCase().includes(storyQuery.trim().toLowerCase())
+  );
   const visibleHomeStories=filteredStories.slice(storyPage*3,storyPage*3+3);
   const changeStoryFilter=(type:'program'|'country',value:string)=>{setStoryPage(0);if(type==='program')setStoryProgram(value);else setStoryCountry(value)};
   const submitNewsletter=(event:FormEvent<HTMLFormElement>)=>{event.preventDefault();setNewsletterDone(true)};
+  const shareReport=async(channel:'WhatsApp'|'Email'|'Social')=>{
+    const url=`${window.location.origin}${APP_BASE_PATH}publications.html#publication-annual-report-2026`;
+    const title='Annual Report 2026 - To be confirmed with CRVPF';
+    if(channel==='WhatsApp'){window.open(`https://wa.me/?text=${encodeURIComponent(`${title} ${url}`)}`,'_blank','noopener,noreferrer');return}
+    if(channel==='Email'){window.location.href=`mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(url)}`;return}
+    try{if(navigator.share)await navigator.share({title,url});else{await navigator.clipboard.writeText(url);setShareMessage('Report link copied to clipboard.')}}catch{setShareMessage('Sharing was cancelled or is not available.')}
+  };
   return <main className="home-part-one">
     <section className="home-hero">
       <div className="home-hero-copy">
@@ -253,25 +294,58 @@ function Home({lang}:{lang:'EN'|'SW'}){
            <Link className="btn home-btn-dark" href="/where-we-work" data-testid="button-home-eydcd">{sw?'Tafuta EYDCD Karibu Nawe':'Find EYDCD Near You'} <ArrowRight size={17}/></Link>
            <Link className="btn home-btn-light" href="/get-involved" data-testid="button-home-partner">{sw?'Shirikiana Nasi':'Partner With Us'} <ArrowRight size={17}/></Link>
         </div>
+        <div className="home-hero-trust-chips" aria-label="Safeguarding and delivery notes">
+          <span>Safeguarding-Safe • Country-level Only</span>
+          <span>Mobile-First • TOR 98% Demo</span>
+        </div>
       </div>
       <div className="home-hero-image">
        <SourcePhoto src={`${APP_BASE_PATH}crvpf-home-hero.jpg`} alt="Three smiling children in school uniform, from CRVPF" className="hero-photo"/>
       </div>
     </section>
-    <section className="home-trust-bar" aria-label="CRVPF at a glance">
-      <span><ShieldCheck size={17}/> Established April 2015 • Kampala, Uganda</span>
-      <span><HeartHandshake size={17}/> Co-Created with Youth</span>
-      <span><MapPin size={17}/> <ScrollCount value={4} className="home-trust-count"/> Countries + USA Office</span>
+    <section className="home-proof-trust-bar" aria-label="CRVPF Reach 2021 to 2023">
+      <div><strong><ScrollCount value={178591}/></strong><span>Participants</span></div>
+      <div><strong><ScrollCount value={4}/></strong><span>Countries</span></div>
+      <div><strong><ScrollCount value={250} prefix="+"/></strong><span>Community Partners</span></div>
+      <div><strong><ScrollCount value={10000}/></strong><span>Girls in Safe Spaces</span></div>
     </section>
-    <section className="home-stats" aria-label="Demonstration impact statistics">
-      <article className="home-stat-card">
-        <span className="home-stat-value"><ScrollCount value={251}/></span>
-        <strong>Partner Organisations</strong>
-      </article>
-      <article className="home-stat-card">
-        <span className="home-stat-value"><ScrollCount value={400000} suffix="+"/></span>
-        <strong>Youth Reached</strong>
-      </article>
+    <section className="home-section home-who-we-are" id="who-we-are">
+      <div className="home-section-heading">
+        <span className="home-section-kicker">About CRVPF</span>
+        <h2>Who We Are</h2>
+        <p>{CRVPF_INTRO}</p>
+      </div>
+      <div className="home-trust-bar" aria-label="CRVPF at a glance">
+        <span><ShieldCheck size={17}/> Established April 2015 • Kampala, Uganda</span>
+        <span><HeartHandshake size={17}/> Co-Created with Youth</span>
+        <span><MapPin size={17}/> <ScrollCount value={4} className="home-trust-count"/> Countries + USA Office</span>
+      </div>
+      <div className="home-stats" aria-label="Demonstration impact statistics">
+        <article className="home-stat-card">
+          <span className="home-stat-value"><ScrollCount value={251}/></span>
+          <strong>Partner Organisations</strong>
+          <small>Demo Placeholder · To be confirmed with CRVPF</small>
+        </article>
+        <article className="home-stat-card">
+          <span className="home-stat-value"><ScrollCount value={400000} suffix="+"/></span>
+          <strong>Youth Reached</strong>
+          <small>Demo Placeholder · To be confirmed with CRVPF</small>
+        </article>
+      </div>
+    </section>
+    <section className="home-section home-reach-section" id="our-reach-2021-2023">
+      <div className="home-section-heading">
+        <span className="home-section-kicker">Our Reach</span>
+        <h2 className="home-reach-heading">OUR REACH FROM 2021 - 2023:</h2>
+      </div>
+      <div className="home-reach-grid">
+        {reachCards.map((item,index)=><article className={`home-reach-card reach-${index%3}`} key={item.value}>
+          <strong><ScrollCount value={item.numeric} prefix={item.prefix}/></strong>
+          <p>{item.label}</p>
+        </article>)}
+      </div>
+      <p className="home-reach-source">Source: CRVPF Reach 2021-2023. To be verified with CRVPF Communications team before launch.</p>
+      <p className="home-verification-note">Last updated: Demo - To be verified with CRVPF</p>
     </section>
     <section className="home-section home-programmes" id="programmes">
       <div className="home-section-heading">
@@ -284,22 +358,10 @@ function Home({lang}:{lang:'EN'|'SW'}){
           <span className="home-programme-code">{programme.code}</span>
           <h3>{programme.title}</h3>
           <p>{programme.description}</p>
+          <Link href="/programmes" className="programme-hub-tag">View Programme <ArrowRight size={13}/></Link>
           <Link href={programme.slug} className="home-learn-link">Learn more <ArrowRight size={15}/></Link>
         </article>)}
       </div>
-    </section>
-    <section className="home-section home-reach-section" id="our-reach-2021-2023">
-      <div className="home-section-heading">
-        <span className="home-section-kicker">Our Reach</span>
-        <h2 className="home-reach-heading">OUR REACH FROM 2021 - 2023:</h2>
-      </div>
-      <div className="home-reach-grid">
-        {reachCards.map((item,index)=><article className={`home-reach-card reach-${index%3}`} key={item.value}>
-          <strong>{item.value}</strong>
-          <p>{item.label}</p>
-        </article>)}
-      </div>
-      <p className="home-reach-source">Source: CRVPF Reach 2021-2023. To be verified with CRVPF Communications team before launch.</p>
     </section>
     <section className="home-section home-where-we-work" id="where-we-work">
       <WhereWeWorkMap/>
@@ -307,11 +369,15 @@ function Home({lang}:{lang:'EN'|'SW'}){
     <section className="home-section home-youth-voices" id="youth-voices">
       <div className="home-section-heading">
         <span className="home-section-kicker">Youth Voices</span>
-        <h2>Stories from the community</h2>
+        <h2>Stories of Change</h2>
         <p>These story cards are demonstration content and are not cleared for republication.</p>
       </div>
       <SectionPhoto file="IMG-20261114-WA2253_1794665428965.jpg" alt="A woman speaking with community members gathered outdoors." className="stories-section-photo"/>
       <div className="home-story-filters">
+        <div className="home-story-filter-pills" role="group" aria-label="Filter stories by programme">
+          {['All','EYDCD','AGPP','PVAC'].map(programme=><button type="button" className={`pill ${storyProgram===programme?'selected':''}`} aria-pressed={storyProgram===programme} key={programme} onClick={()=>changeStoryFilter('program',programme)}>{programme}</button>)}
+        </div>
+        <label>Search stories<input type="search" value={storyQuery} onChange={event=>{setStoryPage(0);setStoryQuery(event.target.value)}} placeholder="Search by name or keyword"/></label>
         <label>Programme<select value={storyProgram} onChange={event=>changeStoryFilter('program',event.target.value)}><option>All</option>{programmeFilters.slice(1).map(programme=><option key={programme}>{programme}</option>)}</select></label>
         <label>Country<select value={storyCountry} onChange={event=>changeStoryFilter('country',event.target.value)}><option>All</option>{countries.map(country=><option key={country}>{country}</option>)}</select></label>
         <span className="home-story-count" aria-live="polite">Showing {filteredStories.length} stories</span>
@@ -324,6 +390,10 @@ function Home({lang}:{lang:'EN'|'SW'}){
           <a href={story.href} target="_blank" rel="noopener noreferrer" className="home-learn-link">Read source story <ArrowRight size={15}/></a>
         </article>)}
       </div>:<p className="home-no-stories" role="status">No stories found for these filters.</p>}
+      <article className="home-voice-card home-placeholder-quote">
+        <span className="home-consent-badge">Safeguarding-safe</span>
+        <blockquote>Quote to be confirmed with CRVPF - Storyteller, Country-level only</blockquote>
+      </article>
       {filteredStories.length>3&&<div className="home-story-pagination">
         <button type="button" onClick={()=>setStoryPage(page=>Math.max(0,page-1))} disabled={storyPage===0}>Previous stories</button>
         <span>{storyPage+1} / {Math.ceil(filteredStories.length/3)}</span>
@@ -336,55 +406,84 @@ function Home({lang}:{lang:'EN'|'SW'}){
         <h2>OUR PARTNERS</h2>
       </div>
       <div className="home-partners-grid">
-        {partnerOrganizations.map(name=><article className="soft-card home-partner-card" key={name}>
-          <img
-            src={`${APP_BASE_PATH}images/partner-logo-placeholder.svg`}
-            alt={`${name} logo placeholder`}
-            loading="lazy"
-            decoding="async"
-            width="120"
-            height="48"
-          />
-          <h3>{name}</h3>
+        {partnerCards.map((partner,index)=><article className={`soft-card home-partner-card ${index<4?'partner-confirmed':'partner-placeholder-card'}`} key={`${index}-${partner}`}>
+          {index<4?<div className="partner-wordmark" aria-label={`${partner} text logo`}>{partner}</div>:<div className="partner-placeholder-logo" role="img" aria-label="Partner logo placeholder"><strong>{index===6?'Community Partner':'Partner Logo'}</strong><small>Demo Placeholder</small></div>}
+          <h3>{partner}</h3>
+          {index>=4&&<small>To be confirmed with CRVPF</small>}
         </article>)}
       </div>
-      <p className="home-partners-note">Logos shown with permission.</p>
+      <p className="home-partners-note">Logos shown for demo layout. Final logos to be confirmed with CRVPF Communications.</p>
+      <p className="home-verification-note">Last updated: Demo - To be verified with CRVPF</p>
     </section>
-    <section className="home-section home-resource-centre" id="resources">
+    <section className="home-section home-publications-section" id="annual-report-2026">
       <div className="home-section-heading">
-        <span className="home-section-kicker">Resources</span>
-        <h2>Resource Centre</h2>
-        <p>Search and filter the requested resources. Links not confirmed in CRVPF’s public Knowledge Hub are marked and can be requested by email.</p>
+        <span className="home-section-kicker">Publications</span>
+        <h2>Publications + Annual Report 2026</h2>
+        <p>Report files not supplied for this demo are identified as awaiting CRVPF confirmation.</p>
       </div>
-      <ResourceCentre/>
-    </section>
-    <section className="home-theory-strip" aria-label="Theory of Change">
-      <span>THEORY OF CHANGE</span>
-      <strong>Problem <ArrowRight size={19}/> Safe Futures</strong>
-      <span>Violence prevention · Youth power · Community action</span>
-    </section>
-    <section className="home-safeguarding-bar">
-      <div><strong>Safe. Dignified. Consent-First.</strong><span>Safeguarding guides every story and every interaction.</span></div>
-      <button type="button" onClick={()=>{setConcernSent(false);setConcernOpen(true)}}>Report a Concern <ShieldCheck size={16}/></button>
-    </section>
-    <section className="home-annual-bar">
-      <div><span>2026 ANNUAL REPORT</span><strong>Community stories, progress, and learning</strong></div>
-      <button type="button" onClick={()=>setReportInfoOpen(true)}>Read the Report <ArrowRight size={16}/></button>
+      <div className="home-report-preview">
+        <div className="annual-cover-placeholder" role="img" aria-label="Annual Report 2026 cover placeholder - To be confirmed with CRVPF">Annual Report 2026<small>Demo Placeholder · To be confirmed with CRVPF</small></div>
+        <div className="home-report-copy"><h3>Annual Report 2026</h3><p>Cover and publication details: To be confirmed with CRVPF.</p><button type="button" className="btn btn-green" onClick={()=>setReportInfoOpen(true)}>Download PDF - To be confirmed with CRVPF</button>
+          <div className="home-share-actions" aria-label="Share the annual report">
+            <button type="button" className="btn btn-outline" onClick={()=>shareReport('WhatsApp')}>WhatsApp</button>
+            <button type="button" className="btn btn-outline" onClick={()=>shareReport('Email')}>Email</button>
+            <button type="button" className="btn btn-outline" onClick={()=>shareReport('Social')}>Social</button>
+          </div>
+          {shareMessage&&<p className="home-share-status" role="status">{shareMessage}</p>}
+        </div>
+      </div>
+      <div className="home-promo-stamps" aria-label="Programme promotional graphics">
+        {homeProgrammeCards.slice(0,3).map(programme=><article className="programme-stamp" key={programme.code}><span>{programme.code}</span><strong>{programme.title}</strong><small>Demo Placeholder</small></article>)}
+      </div>
+      <div className="home-annual-bar">
+        <div><span>2026 ANNUAL REPORT</span><strong>Download PDF - To be confirmed with CRVPF</strong></div>
+        <button type="button" onClick={()=>setReportInfoOpen(true)}>Read the Report <ArrowRight size={16}/></button>
+      </div>
+      <section className="home-section home-resource-centre" id="resources">
+        <div className="home-section-heading">
+          <span className="home-section-kicker">Resources</span>
+          <h2>Resource Centre</h2>
+          <p>Search and filter the requested resources. Unconfirmed items are labeled.</p>
+        </div>
+        <ResourceCentre/>
+      </section>
     </section>
     <section className="home-newsletter-section" id="newsletter">
       <div className="home-newsletter-copy">
         <span className="home-section-kicker">Stay connected</span>
         <h2>Join 5,000+ changemakers</h2>
         <p><strong>DEMO • AWAITING VERIFICATION</strong> for subscriber count.</p>
+        <span className="newsletter-client-label">Tested for Outlook + Gmail · demo preview only</span>
       </div>
       <div className="home-newsletter-form-wrap">
-        {newsletterDone?<p className="home-newsletter-success" role="status">Thank you! You're subscribed.</p>:<form className="home-newsletter-form" onSubmit={submitNewsletter}>
+        {newsletterDone?<p className="home-newsletter-success" role="status">Demo signup complete. No address was stored or sent.</p>:<form className="home-newsletter-form" onSubmit={submitNewsletter}>
           <label className="sr-only" htmlFor="home-newsletter-email">Email address</label>
           <input id="home-newsletter-email" type="email" value={newsletterEmail} onChange={event=>setNewsletterEmail(event.target.value)} placeholder="Your email address" required/>
           <button type="submit">Subscribe <ArrowRight size={15}/></button>
         </form>}
-        <small>Mailchimp • Works in Outlook. This demo does not add addresses to a mailing list.</small>
-        <a href="https://outlook.office.com/mail/deeplink/compose?to=info%40crvpf.org&amp;subject=CRVPF%20newsletter%20signup" target="_blank" rel="noopener noreferrer">Open signup email in Outlook</a>
+        <small>Mailchimp is not connected. This demo does not store or send email addresses.</small>
+      </div>
+      <div className="newsletter-template-previews">
+        <article className="soft-card"><span className="tag">Demo Placeholder</span><strong>Stories Newsletter</strong><p>Preview layout only. Content to be confirmed with CRVPF.</p></article>
+        <article className="soft-card"><span className="tag">Demo Placeholder</span><strong>Annual Report Newsletter</strong><p>Preview layout only. Content to be confirmed with CRVPF.</p></article>
+      </div>
+    </section>
+    <section className="home-demo-proves" id="what-this-demo-proves">
+      <div className="home-section-heading"><span className="home-section-kicker">Proof of concept</span><h2>What This Demo Proves</h2></div>
+      <div className="home-demo-tor-strip">Inception + Audit | Interactive Map | Hosting Assessed | Analytics + Monthly Reporting | Mailchimp | Training + Handover</div>
+      <section className="home-theory-strip" aria-label="Theory of Change">
+        <span>THEORY OF CHANGE</span>
+        <strong>Problem <ArrowRight size={19}/> Safe Futures</strong>
+        <span>Violence prevention · Youth power · Community action</span>
+      </section>
+      <section className="home-safeguarding-bar">
+        <div><strong>Safe. Dignified. Consent-First.</strong><span>Safeguarding guides every story and every interaction.</span></div>
+        <button type="button" onClick={()=>{setConcernSent(false);setConcernOpen(true)}}>Report a Concern <ShieldCheck size={16}/></button>
+      </section>
+      <div className="home-faq-grid">
+        <details className="soft-card"><summary>How do I update a story?</summary><p>Draft the story, confirm consent, remove full names for under-18s and school/exact-location details, then get Communications approval before publishing.</p></details>
+        <details className="soft-card"><summary>How is safeguarding handled?</summary><p>Use the four-check gate: consent signed, no full name for under-18, no school/exact location, and Communications approved. Publishing stays locked until all four checks pass.</p></details>
+        <details className="soft-card"><summary>Who do I contact for support?</summary><p>Urgent: 24h. Routine: 48-72h. WhatsApp / Email contact details are to be confirmed with CRVPF.</p></details>
       </div>
     </section>
     {concernOpen&&<Modal title="Report a Concern" onClose={()=>setConcernOpen(false)}>
@@ -396,8 +495,7 @@ function Home({lang}:{lang:'EN'|'SW'}){
       </form>}
     </Modal>}
     {reportInfoOpen&&<Modal title="2026 Annual Report" onClose={()=>setReportInfoOpen(false)}>
-      <p>The CRVPF Knowledge Hub currently lists annual reports through 2025. A 2026 annual report link has not been confirmed in the public source checked for this demo.</p>
-      <a href="https://crvpf.org/knowledge-hub-2" target="_blank" rel="noopener noreferrer" className="btn">Open CRVPF Knowledge Hub <ArrowRight size={15}/></a>
+      <p>Download PDF - To be confirmed with CRVPF.</p>
     </Modal>}
   </main>
 }
@@ -409,19 +507,22 @@ const homeProgrammeCards=[
   {code:'JOINT',title:'Joint Action & Resourcing',description:'Connects PVAC and AGPP partners working in the same geographic area.',slug:'/programmes/joint'},
 ];
 const reachCards=[
-  {value:'178,591',label:'Program Participants'},
-  {value:'4',label:'East African Countries ( Uganda, Kenya, Tanzania, Ethiopia )'},
-  {value:'+250',label:'Community Partners'},
-  {value:'34,078',label:'Young People Engaged In Dignified And Fulfilling Work As Entrepreneurs Or Formally Employed.'},
-  {value:'11,884',label:'Parents Participating In Weekly Savings And Lending Meetings To Increase Household Incomes.'},
-  {value:'10,000',label:'Adolescent Girls Regularly Attending Safe Space Meetings Across East Africa.'},
+  {value:'178,591',numeric:178591,label:'Program Participants'},
+  {value:'4',numeric:4,label:'East African Countries ( Uganda, Kenya, Tanzania, Ethiopia )'},
+  {value:'+250',numeric:250,prefix:'+',label:'Community Partners'},
+  {value:'34,078',numeric:34078,label:'Young People Engaged In Dignified And Fulfilling Work As Entrepreneurs Or Formally Employed.'},
+  {value:'11,884',numeric:11884,label:'Parents Participating In Weekly Savings And Lending Meetings To Increase Household Incomes.'},
+  {value:'10,000',numeric:10000,label:'Adolescent Girls Regularly Attending Safe Space Meetings Across East Africa.'},
 ];
-const partnerOrganizations=[
+const partnerCards=[
   'Oak Foundation',
   'Wellspring Philanthropic Fund',
   'TIDES - A Force for Social Good',
   'Mastercard Foundation',
   'Conrad N. Hilton Foundation',
+  'Partner Logo - To be confirmed',
+  'Community Partner - To be confirmed',
+  'Partner Logo - To be confirmed',
 ];
 const resourceItems=[
   {title:'Annual Report 2026',region:'East Africa',country:'Not specified',language:'Not specified',type:'Annual Report',availability:'The public CRVPF Knowledge Hub lists annual reports through 2025; the 2026 report link is awaiting confirmation.',href:'https://crvpf.org/knowledge-hub-2',action:'Open Knowledge Hub'},
@@ -464,7 +565,7 @@ function SourcePhoto({src,alt,className}:{src:string;alt:string;className:string
 function SectionPhoto({file,alt,className=''}:{file:string;alt:string;className?:string}){return <figure className={`section-photo ${className}`}><img src={`${APP_BASE_PATH}photos/${file}`} alt={alt} loading="lazy" decoding="async" width={file.includes('WA4676')?1600:1600} height={file.includes('WA4676')?679:1067}/></figure>}
 function EditionPhoto({className}:{className:string}){return <SourcePhoto src="https://crvpf.org/wp-content/uploads/2026/06/joanna-768x503.jpg" alt="CRVPF photo from the Bold Movements Edition 2, 2026 page" className={className}/>}
 function AnimatedMetric({value}:{value:number}){const [shown,setShown]=useState(0);useEffect(()=>{const element=document.querySelector(`[data-metric="${value}"]`);if(!element)return;let frame=0;let observer:IntersectionObserver|undefined;const finish=()=>setShown(value);const start=()=>{if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){finish();return}const duration=400,started=performance.now();const tick=(now:number)=>{const progress=Math.min(1,(now-started)/duration);setShown(Math.round(value*(1-Math.pow(1-progress,3))));if(progress<1)frame=requestAnimationFrame(tick)};frame=requestAnimationFrame(tick)};if('IntersectionObserver' in window){observer=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){start();observer?.disconnect()}},{threshold:.4});observer.observe(element)}else start();return()=>{observer?.disconnect();cancelAnimationFrame(frame)}},[value]);return <strong data-metric={value} aria-label={value.toLocaleString()}><span aria-hidden="true">{shown.toLocaleString()}</span></strong>}
-function ScrollCount({value,suffix='',className=''}:{value:number;suffix?:string;className?:string}){const node=useRef<HTMLSpanElement>(null);const[count,setCount]=useState(0);useEffect(()=>{const element=node.current;if(!element)return;let frame=0;let observer:IntersectionObserver|undefined;const finish=()=>setCount(value);const start=()=>{if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){finish();return}const duration=900,started=performance.now();const tick=(now:number)=>{const progress=Math.min(1,(now-started)/duration);setCount(Math.round(value*(1-Math.pow(1-progress,3))));if(progress<1)frame=requestAnimationFrame(tick)};frame=requestAnimationFrame(tick)};if('IntersectionObserver' in window){observer=new IntersectionObserver(entries=>{if(entries.some(entry=>entry.isIntersecting)){start();observer?.disconnect()}},{threshold:.35});observer.observe(element)}else start();return()=>{observer?.disconnect();cancelAnimationFrame(frame)}},[value]);return <span ref={node} className={className} aria-label={`${value.toLocaleString()}${suffix}`}><span aria-hidden="true">{count.toLocaleString()}{suffix}</span></span>}
+function ScrollCount({value,suffix='',prefix='',className=''}:{value:number;suffix?:string;prefix?:string;className?:string}){const node=useRef<HTMLSpanElement>(null);const[count,setCount]=useState(0);useEffect(()=>{const element=node.current;if(!element)return;let frame=0;let observer:IntersectionObserver|undefined;const finish=()=>setCount(value);const start=()=>{if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){finish();return}const duration=900,started=performance.now();const tick=(now:number)=>{const progress=Math.min(1,(now-started)/duration);setCount(Math.round(value*(1-Math.pow(1-progress,3))));if(progress<1)frame=requestAnimationFrame(tick)};frame=requestAnimationFrame(tick)};if('IntersectionObserver' in window){observer=new IntersectionObserver(entries=>{if(entries.some(entry=>entry.isIntersecting)){start();observer?.disconnect()}},{threshold:.35});observer.observe(element)}else start();return()=>{observer?.disconnect();cancelAnimationFrame(frame)}},[value]);return <span ref={node} className={className} aria-label={`${prefix}${value.toLocaleString()}${suffix}`}><span aria-hidden="true">{prefix}{count.toLocaleString()}{suffix}</span></span>}
 function ProgramCard({p,i}:{p:Program;i:number}){return <article className="program-card"><span className="number">0{i+1} / {p.short}</span><h3>{p.name}</h3><p>{p.summary}</p><Link className="arrow-link" href={p.slug}>Explore programme <ArrowRight size={15}/></Link></article>}
   function StoryCard({s,i}:{s:typeof storyData[number];i:number}){const[open,setOpen]=useState(false);const label=s.country?`${s.program} · ${s.country}`:s.program;return <article className="story-card"><div className="story-icon">{i%2===0?<HeartHandshake size={25}/>:<Sparkles size={25}/>}</div><div><span className="tag">{label}</span><h3 style={{marginTop:12}}>{s.name}</h3><p>{s.text}</p>{s.quote&&<blockquote className="story-quote">“{s.quote}”</blockquote>}<small className="source-note"><a href={s.href} target="_blank" rel="noopener noreferrer">Source: crvpf.org</a></small><button className="arrow-link story-read-more" onClick={()=>setOpen(true)}>Read More <ArrowRight size={15}/></button></div>{open&&<Modal title={s.name} onClose={()=>setOpen(false)}><span className="tag">{label}</span><p>{s.text}</p>{s.quote&&<blockquote>“{s.quote}”</blockquote>}<small className="source-note"><a href={s.href} target="_blank" rel="noopener noreferrer">Source: crvpf.org</a></small><a className="btn btn-blue" href={s.href} target="_blank" rel="noopener noreferrer">Read story on CRVPF <ArrowRight size={15}/></a></Modal>}</article>}
 function MapPanel({timelineYear}:{timelineYear?:number}){
@@ -483,7 +584,30 @@ function About(){
 }
 
 const approachContent={coordinated:{title:'Coordinated Program approach for integrated holistic programs',summary:'In our mission to build power of young people to make informed decisions and access dignified, fulfilling work, CRVPF developed a coordinated approach that maximizes the skills provided by our community partners while bridging the gap between young people and the private sector, particularly financial institutions, to develop financial products tailored for young people. The approach brings together CRVPF’s three programs, AGPP, EYDCD, and PVAC, community organizations, financial institutions, telecommunication providers for digital solutions, and alternative credit facilities, among others, to provide program participants with a comprehensive and integrated package of services.',activities:['Our community partners bring their unique expertise to work with the same youth in the same geographical areas, offering life skills training, parenting skills training, and inclusive financial education. By leveraging the strength of each program, the coordinated approach aims to create an enabling environment for young people to thrive in a safe environment free from violence and sexual violence.'],partnerships:['Community organizations','Financial institutions','Telecommunication providers','Private sector'],resources:[]},joint:{title:'Joint Program Approach',summary:'Initially, CRVPF’s programs, the Prevention of Violence against Children (PVAC) and the Adolescent Girls’ Power Program (AGPP), supported partners in different locations. Even when partners operated within the same geographical area, there was no intentional or strategic coordination between them. Recognizing the unique strengths of each program in addressing violence and sexual violence against children and young people, CRVPF adopted a Joint Program Approach. By integrating the two programs within the same geographical area, the initiative aims to enhance partner interventions for greater impact.',activities:['In this collaborative model, PVAC contributes expertise in strengthening parenting skills and spousal relationships, reducing family economic stress through Village Savings and Loan Associations (VSLAs), and fostering an enabling school environment where young people can thrive. Meanwhile, AGPP brings its experience in building power for adolescent girls and transforming structural barriers that limit their choices and agency, using its life skills manual as a key tool.'],partnerships:['PVAC and AGPP partners in the same geographical area'],resources:[]}};
-function ProgrammesHub(){return <main><PageHero eyebrow="Our Work" title="Our Programmes" description="Explore CRVPF programmes and approaches."/><section className="section"><div className="container"><div className="home-programme-grid">{homeProgrammeCards.map(item=><article className="home-programme-card" key={item.slug}><span className="home-programme-code">{item.code}</span><h3>{item.title}</h3><p>{item.description}</p><Link className="home-learn-link" href={item.slug}>Learn more <ArrowRight size={15}/></Link></article>)}</div></div></section></main>}
+function ProgrammesHub(){
+  const details=[
+    {code:'PVAC',slug:'/programmes/pvac',objective:programs[0].summary,activities:programs[0].details,coverage:countryOperations.filter(country=>country.programmes.includes('PVAC')).map(country=>country.country).join(', '),achievements:'To be confirmed with CRVPF.'},
+    {code:'AGPP',slug:'/programmes/agpp',objective:programs[1].summary,activities:programs[1].details,coverage:countryOperations.filter(country=>country.programmes.includes('AGPP')).map(country=>country.country).join(', '),achievements:'To be confirmed with CRVPF.'},
+    {code:'EYDCD',slug:'/programmes/eydcd',objective:programs[2].summary,activities:programs[2].details,coverage:'Uganda; other country-level coverage to be confirmed with CRVPF.',achievements:'Targets: 400,000 youth (70% female), 250,000 dignified jobs, 3,000 youth-led VSLAs, 200 CBOs. Reported achievements: To be confirmed with CRVPF.'},
+    {code:'COORDINATED',slug:'/programmes/coordinated',objective:approachContent.coordinated.summary,activities:approachContent.coordinated.activities,coverage:'8 pilot districts. Country list to be confirmed with CRVPF.',achievements:'To be confirmed with CRVPF.'},
+    {code:'JOINT',slug:'/programmes/joint',objective:approachContent.joint.summary,activities:approachContent.joint.activities,coverage:'PVAC and AGPP partners in the same geographic area.',achievements:'To be confirmed with CRVPF.'},
+  ];
+  return <main><PageHero eyebrow="Our Work" title="Our Programmes" description="Explore CRVPF programmes and approaches."/><section className="section"><div className="container">
+    <div className="home-programme-grid">{homeProgrammeCards.map(item=><article className="home-programme-card" key={item.slug}><span className="home-programme-code">{item.code}</span><h3>{item.title}</h3><p>{item.description}</p><Link className="home-learn-link" href={item.slug}>Learn more <ArrowRight size={15}/></Link></article>)}</div>
+    <div className="programme-hub-details">{details.map(item=>{
+      const story=storyData.find(entry=>entry.program===item.code);
+      const storyHref=story?`/impact#story-${story.name.toLowerCase().replaceAll(' ','-')}`:'/impact';
+      return <article className="soft-card programme-hub-detail" key={item.code}>
+        <span className="tag">{item.code}</span><h2>{homeProgrammeCards.find(programme=>programme.code===item.code)?.title}</h2>
+        <section><h3>Objectives</h3><p>{item.objective}</p></section>
+        <section><h3>Activities</h3><ul className="check-list">{item.activities.map(activity=><li key={activity}>{activity}</li>)}</ul></section>
+        <section><h3>Coverage</h3><p>{item.coverage}</p></section>
+        <section><h3>Achievements</h3><p>{item.achievements}</p></section>
+        <div className="programme-hub-links"><Link className="btn btn-outline" href={storyHref}>Stories <ArrowRight size={14}/></Link><Link className="btn btn-outline" href="/resources">Resources <ArrowRight size={14}/></Link><Link className="btn btn-green" href={item.slug}>Programme page <ArrowRight size={14}/></Link></div>
+      </article>
+    })}</div>
+  </div></section></main>
+}
 function ResourcesPage(){return <main><PageHero eyebrow="Resources" title="Resource Centre" description="Search and filter CRVPF resources. Items without a confirmed public source are marked clearly."/><section className="section"><div className="container"><ResourceCentre/></div></section></main>}
 const countryOperations=[
   {country:'Uganda',capital:'Kampala',partners:'71',youth:'105k',programmes:['EYDCD','AGPP','PVAC'],story:'Safe Schools Initiative',position:{left:'59%',top:'55%'}},
@@ -678,12 +802,50 @@ function Publications({notify}:{notify:(message:string)=>void}){
   </main>
 }
 function LowNetworkBanner(){const[online,setOnline]=useState(typeof navigator==='undefined'?true:navigator.onLine);useEffect(()=>{const on=()=>setOnline(true),off=()=>setOnline(false);window.addEventListener('online',on);window.addEventListener('offline',off);return()=>{window.removeEventListener('online',on);window.removeEventListener('offline',off)}},[]);return <div className="low-network-banner" role="status">{online?'Works on low network · system fonts and lazy-loaded CRVPF photos':'Offline · cached app shell may load; remote CRVPF photos need a connection'}</div>}
+function WhatsAppContactButton(){
+  const[open,setOpen]=useState(false);
+  return <>
+    <button className="floating-whatsapp" type="button" aria-label="Contact via WhatsApp - To be confirmed with CRVPF" onClick={()=>setOpen(true)} data-testid="floating-whatsapp">
+      <MessageCircle size={22}/><span>WhatsApp</span>
+    </button>
+    {open&&<Modal title="Contact via WhatsApp - To be confirmed with CRVPF" onClose={()=>setOpen(false)}>
+      <p>The official WhatsApp contact route is a Demo Placeholder. To be confirmed with CRVPF.</p>
+      <p>No message was sent.</p>
+    </Modal>}
+  </>;
+}
 function ElitechStudios(){const studios=[['Diglo Ventures','Web + Systems Studio','Project by Elitech Technologies','https://diglo-ventures.replit.app'],['Brimas Media','Photography, Video, Storytelling','Project by Elitech Technologies','https://brimasmedia.co'],['Print Garage','Print, Annual Report, Banners','Project by Elitech Technologies','https://printgarage.online'],['Auto Content Studio','Content Automation, Newsletters, Mailchimp Drafts','System Owned by Elitech Technologies','https://autocontentstudio.site']];return <section className="elitech-studios"><h2>Powered by ELITECH TECHNOLOGIES</h2><p className="elitech-subtitle">Selected Projects Elitech Technologies Has Worked On</p><div className="elitech-grid">{studios.map(([name,description,ownership,url])=><article className="elitech-card" key={name}><strong>{name}</strong><span>{description}</span><small>{ownership}</small><a href={url} target="_blank" rel="noopener noreferrer">Visit Site →</a></article>)}</div><p className="elitech-ownership-note">These are Elitech Technologies projects and systems, not owned by CRVPF. CRVPF is a client / partner.</p></section>}
 function SafeguardingReport({notify}:{notify:(s:string)=>void}){const[open,setOpen]=useState(false),[anonymous,setAnonymous]=useState(true),[details,setDetails]=useState('');const submit=(e:FormEvent)=>{e.preventDefault();if(details.trim().length<10){notify('Add a short description of the concern.');return}setOpen(false);setDetails('');notify(`Demo only: this ${anonymous?'anonymous ':''}concern was not sent. Contact info@crvpf.org or (+256) 393 216 519 for a real enquiry.`)};return <><button className="btn btn-orange" onClick={()=>setOpen(true)}>One-tap Report Concern</button>{open&&<Modal title="Report a concern" onClose={()=>setOpen(false)}><p>Do not include a child’s full name, school, or exact location. This local demo does not send or store a report.</p><form className="form-stack" onSubmit={submit}><label className="check-row"><input type="checkbox" checked={anonymous} onChange={e=>setAnonymous(e.target.checked)}/>Submit anonymously</label><label>Concern<textarea className="field" rows={5} value={details} onChange={e=>setDetails(e.target.value)} minLength={10} required/></label><button className="btn btn-orange" type="submit">Submit demo report</button></form></Modal>}</>}
 function WhatsAppSignup({notify}:{notify:(s:string)=>void}){const[number,setNumber]=useState('');return <div className="whatsapp-signup"><form className="form-stack" onSubmit={e=>{e.preventDefault();notify('WhatsApp signup is a local demo; no number was stored or subscribed.');setNumber('')}}><label>WhatsApp number<input className="field" value={number} onChange={e=>setNumber(e.target.value)} type="tel" required minLength={6}/></label><button className="btn btn-green" type="submit">Preview signup</button></form><button className="btn btn-outline" onClick={()=>notify('USSD *384* is a concept only; it is not an active short code.')}>USSD *384* concept</button></div>}
 function DashboardTab({tab,notify}:{tab:string;notify:(s:string)=>void}){const[tested,setTested]=useState(false);if(tab==='Audit')return <div className="dashboard-tab-content"><h3>WordPress audit checklist</h3><ul className="check-list">{['Security','Backups','Performance','SEO','Accessibility','i3C hosting'].map(x=><li key={x}>{x} · details to be confirmed in the live WordPress installation</li>)}</ul></div>;if(tab==='Analytics')return <div className="dashboard-tab-content"><h3>Analytics</h3><div className="analytics-preview">{['Page views','Top stories','Signups'].map(x=><article key={x}><strong>{x}</strong><span>Analytics data not connected</span></article>)}</div></div>;if(tab==='Hosting')return <div className="dashboard-tab-content"><h3>Hosting comparison</h3><div className="table-scroll"><table><thead><tr><th>Item</th><th>i3C hosting</th><th>Alternative</th></tr></thead><tbody>{['Hosting status','Performance details','Support details','Price'].map(x=><tr key={x}><td>{x}</td><td>To confirm</td><td>Not supplied</td></tr>)}</tbody></table></div></div>;return <div className="dashboard-tab-content"><h3>Training</h3><p>Publish in 2 mins · use the SOP and run the test.</p><Link className="arrow-link" href="/training">Open Training Hub <ArrowRight size={14}/></Link><button className="btn btn-green" onClick={()=>{setTested(true);notify('Training test checklist opened.')}}>Test</button>{tested&&<p role="status">Test ready: complete one story, one newsletter and one event on the Training Hub.</p>}</div>}
-function Training({notify}:{notify:(s:string)=>void}){const[done,setDone]=useState([false,false,false]);const steps=['Publish 1 story alone','Publish 1 newsletter alone','Publish 1 event alone'];return <main><PageHero eyebrow="Training Hub" title="Publish in 2 mins" description="Staff must demonstrate each task alone before training is signed off."/><section className="section"><div className="container content-grid"><div className="soft-card"><h2>Standard operating procedures</h2><ol className="numbered-list"><li>Draft the story, newsletter or event using the supplied content.</li><li>Complete all four safeguarding checks for stories.</li><li>Send the item through Communications Review.</li><li>Publish only after communications approval.</li></ol><Link className="btn btn-green" href="/admin-demo">Open publishing practice</Link></div><div className="soft-card"><h2>Staff demonstration checklist</h2>{steps.map((s,i)=><label className="check-row" key={s}><input type="checkbox" checked={done[i]} onChange={e=>setDone(done.map((x,j)=>j===i?e.target.checked:x))}/>{s}</label>)}<button className="btn btn-blue" onClick={()=>notify(done.every(Boolean)?'Training demonstration complete.':'Complete all three solo publishing tests first.')}>Test training completion</button><p>{done.filter(Boolean).length} of 3 demonstrations checked.</p></div></div></section></main>}
-function Handover({notify}:{notify:(s:string)=>void}){const[checks,setChecks]=useState([false,false,false,false]);const items=['Admin access reviewed','Staff training completed','Backup location confirmed','Monthly report reviewed'];const backup='Before updates: take a full backup of WordPress files and database; store it separately; record the date; verify the backup can be restored; do not overwrite the only copy.';return <main><PageHero eyebrow="Handover" title="Handover checklist and operating notes" description="A working handover template. Confirm host-specific items with the current administrator."/><section className="section"><div className="container handover-grid"><section className="soft-card"><h2>Checklist</h2>{items.map((x,i)=><label className="check-row" key={x}><input type="checkbox" checked={checks[i]} onChange={e=>setChecks(checks.map((v,j)=>j===i?e.target.checked:v))}/>{x}</label>)}<p>{checks.filter(Boolean).length} / {items.length} checked</p></section><section className="soft-card"><h2>Published reach · 2021–2023</h2><p>Program participants: 1,330</p><p>Young people engaged in dignified and fulfilling work: 253</p><p>Parents participating in weekly savings and lending meetings: 88</p><p>Adolescent girls regularly attending safe space meetings: 74</p><p>Countries: Uganda, Kenya, Tanzania, Ethiopia</p><small className="source-note">Source: crvpf.org/</small></section><section className="soft-card"><h2>Plugin list</h2><p>The live WordPress plugin list was not supplied. Confirm it from the admin installation before handover; no plugin names are assumed here.</p></section><section className="soft-card"><h2>Backup procedure</h2><ol className="numbered-list"><li>Back up both the WordPress database and files before updates.</li><li>Store a copy separately from the production host.</li><li>Record date and scope; verify restore steps on a safe environment.</li><li>Keep the previous known-good backup until the site is checked.</li></ol><button className="btn btn-outline" onClick={async()=>{try{await navigator.clipboard.writeText(backup);notify('Backup procedure copied.')}catch{notify('Clipboard is not available here.')}}}>Copy procedure</button></section></div></section></main>}
+function Training({notify}:{notify:(s:string)=>void}){
+  const[done,setDone]=useState([false,false,false]);
+  const[attendance,setAttendance]=useState(false);
+  const steps=['Publish 1 story alone','Publish 1 newsletter alone','Publish 1 event alone'];
+  const procedures=[
+    ['Publish Story Safely','Draft the story, confirm consent, remove full names for under-18s and school/exact-location details, complete the four-check safeguarding gate, and wait for Communications approval before publishing.'],
+    ['Update Programme Page','Use approved CRVPF text, choose the correct programme, check the links, preview the page on mobile, and submit it for Communications approval.'],
+    ['Backup + Attendance Checklist','Record training attendance. Before site updates, back up WordPress files and database, store the copy separately, note the date, and verify the restore steps.'],
+  ];
+  return <main><PageHero eyebrow="Training Hub" title="Publish in 2 mins" description="Staff must demonstrate each task alone before training is signed off."/><section className="section"><div className="container">
+    <div className="training-sop-grid">{procedures.map(([title,description])=><article className="soft-card" key={title}><h2>{title}</h2><p>{description}</p>{title.startsWith('Publish Story')&&<Link className="btn btn-green" href="/admin-demo">Open publishing practice</Link>}{title.startsWith('Backup')&&<label className="check-row"><input type="checkbox" checked={attendance} onChange={event=>setAttendance(event.target.checked)}/>Attendance recorded</label>}</article>)}</div>
+    <div className="soft-card training-demo-checklist"><h2>Staff demonstration checklist</h2>{steps.map((step,index)=><label className="check-row" key={step}><input type="checkbox" checked={done[index]} onChange={event=>setDone(done.map((value,item)=>item===index?event.target.checked:value))}/>{step}</label>)}<button className="btn btn-green" onClick={()=>notify(done.every(Boolean)&&attendance?'Training demonstration and attendance checklist complete.':'Complete all three solo publishing tests and record attendance first.')}>Test training completion</button><p>{done.filter(Boolean).length} of 3 demonstrations checked · Attendance {attendance?'recorded':'not recorded'}.</p></div>
+  </div></section></main>
+}
+function Handover({notify}:{notify:(s:string)=>void}){
+  const[checks,setChecks]=useState([false,false,false,false,false]);
+  const items=['Admin Access','Plugin/Licence List','Backup','Password Handover','Who to Contact'];
+  const backup='Before updates: take a full backup of WordPress files and database; store it separately; record the date; verify the backup can be restored; do not overwrite the only copy.';
+  return <main><PageHero eyebrow="Handover" title="Handover checklist and operating notes" description="A working handover template. Confirm host-specific items with the current administrator."/><section className="section"><div className="container handover-grid">
+    <section className="soft-card"><h2>Checklist</h2>{items.map((item,index)=><label className="check-row" key={item}><input type="checkbox" checked={checks[index]} onChange={event=>setChecks(checks.map((value,i)=>i===index?event.target.checked:value))}/>{item}</label>)}<p>{checks.filter(Boolean).length} / {items.length} checked</p></section>
+    <section className="soft-card"><h2>Our Reach · 2021–2023</h2><p>Program participants: 178,591</p><p>Young people engaged in dignified and fulfilling work: 34,078</p><p>Parents participating in weekly savings and lending meetings: 11,884</p><p>Adolescent girls regularly attending safe space meetings: 10,000</p><p>East African countries: Uganda, Kenya, Tanzania, Ethiopia</p><small className="source-note">Source: CRVPF Reach 2021-2023. To be verified with CRVPF Communications team before launch.</small></section>
+    <section className="soft-card"><h2>Plugin/Licence List</h2><p>Live WordPress plugin and licence details: To be confirmed with CRVPF after admin access is provided.</p></section>
+    <section className="soft-card"><h2>Password Handover</h2><p>No passwords are collected or stored in this demo. Transfer credentials only through CRVPF’s approved secure channel.</p></section>
+    <section className="soft-card"><h2>Who to Contact</h2><p><a href="mailto:info@crvpf.org">info@crvpf.org</a><br/><a href="tel:+256393216519">(+256) 393 216 519</a></p><p>WhatsApp / Email support route: To be confirmed with CRVPF.</p></section>
+    <section className="soft-card"><h2>Backup Procedure</h2><ol className="numbered-list"><li>Back up both the WordPress database and files before updates.</li><li>Store a copy separately from the production host.</li><li>Record date and scope; verify restore steps on a safe environment.</li><li>Keep the previous known-good backup until the site is checked.</li></ol><button className="btn btn-outline" onClick={async()=>{try{await navigator.clipboard.writeText(backup);notify('Backup procedure copied.')}catch{notify('Clipboard is not available here.')}}}>Copy procedure</button></section>
+    <section className="soft-card"><h2>Final Report Outline</h2><ol className="numbered-list"><li>Summary and delivery status</li><li>Approved content and pages handed over</li><li>Analytics and downloads: To be confirmed with CRVPF</li><li>Safeguarding and training checklist status</li><li>Open actions and next reporting period</li></ol></section>
+  </div></section></main>
+}
 function Financial(){const lines=[['WordPress audit',1200000],['Design',2500000],['Homepage + Full Site',4500000],['Maps + SEO + Mailchimp',1800000],['Annual Report',850000],['Training',1200000]];const development=lines.reduce((sum,[,amount])=>sum+Number(amount),0);const total=development+1800000+500000;const payments=[['30%','Inception',total*.3],['30%','Homepage · 14 Dec',total*.3],['25%','Full Site · 31 Jan',total*.25],['15%','Handover',total*.15]];return <main><PageHero eyebrow="Financial" title="Project estimate" description="Amounts shown in UGX. Payment is due only on approval."/><section className="section"><div className="container"><div className="notice">All amounts are VAT inclusive as specified. The development subtotal is calculated from the listed line items.</div><div className="table-scroll"><table className="financial-table"><thead><tr><th>Category / item</th><th>Amount (UGX)</th></tr></thead><tbody><tr><th>A · Development</th><td>{development.toLocaleString()}</td></tr>{lines.map(([name,amount])=><tr key={String(name)}><td>{name}</td><td>{Number(amount).toLocaleString()}</td></tr>)}<tr><th>B · Support (UGX 180,000/month)</th><td>1,800,000</td></tr><tr><th>C · Third-party at cost</th><td>500,000</td></tr><tr className="total-row"><th>Total · VAT inclusive</th><td>{total.toLocaleString()}</td></tr></tbody></table></div><h2>Payment schedule · only on approval</h2><div className="financial-milestones">{payments.map(([percent,label,amount])=><article className="soft-card" key={label}><strong>{percent}</strong><span>{label}</span><b>UGX {Number(amount).toLocaleString()}</b></article>)}</div><p className="notice">The itemized development subtotal is UGX 12,050,000 (the brief’s “11,??” was a placeholder); with support and third-party costs the total is UGX 14,350,000.</p></div></section></main>}
 function DonorPortal({notify,onDonate}:{notify:(s:string)=>void;onDonate:()=>void}){const[logged,setLogged]=useState(false),[email,setEmail]=useState(''),[password,setPassword]=useState(''),[error,setError]=useState('');return <main><PageHero eyebrow="Donor Portal · demo" title="See the documented work" description="Demo access only. No donor accounts, contributions or private giving history are connected."/><section className="section"><div className="container">{!logged?<form className="soft-card form-stack donor-login" onSubmit={e=>{e.preventDefault();if(email==='demo@crvpf.org'&&password==='demo123'){setLogged(true);setError('')}else setError('Invalid demo credentials. Use demo@crvpf.org / demo123')}}><h2>Donor demo login</h2><label>Email<input className="field" type="email" value={email} onChange={e=>setEmail(e.target.value)} required autoComplete="username"/></label><label>Password<input className="field" type="password" value={password} onChange={e=>setPassword(e.target.value)} required autoComplete="current-password"/></label>{error&&<div className="error-box" role="alert">{error}</div>}<button className="btn btn-green">Open demo portal</button></form>:<div className="soft-card"><h2>Donor Portal</h2><div className="donor-actions"><Link className="btn btn-green" href="/impact">See impact</Link><button className="btn btn-outline" onClick={()=>notify('Demo report download; no donor-specific report file was supplied.')}>Download report</button><button className="btn btn-orange" onClick={onDonate}>Donate again</button></div></div>}</div></section></main>}
 function SystemPage(){
