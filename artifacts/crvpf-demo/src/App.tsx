@@ -79,6 +79,7 @@ function App(){
   const [year,setYear]=useState(2026),[portalTab,setPortalTab]=useState('My Grants'),[login,setLogin]=useState(false);
   const [adminItems,setAdminItems]=useState<AdminStory[]>(loadAdminStories);
  const [pubModal,setPubModal]=useState('');
+ const bottomTab=path.startsWith('/programmes')?'programmes':path==='/where-we-work'?'map':path==='/impact'?'stories':path==='/get-involved'||path==='/contact'?'contact':'home';
  const notify=(s:string)=>{setToast(s);window.setTimeout(()=>setToast(''),4000)};
   useEffect(()=>{
     const canonicalPath=(pathname:string)=>{
@@ -160,11 +161,11 @@ function App(){
    </Switch>
    {footer}
     <nav className="mobile-bottom" aria-label="Quick navigation">
-      <Link href="/" className={!menu&&path==='/'?'active':''} aria-current={!menu&&path==='/'?'page':undefined} aria-label="Home" data-testid="mobile-home"><HomeIcon size={18}/><span>Home</span></Link>
-      <Link href="/programmes" className={!menu&&path.startsWith('/programmes')?'active':''} aria-current={!menu&&path.startsWith('/programmes')?'page':undefined} aria-label="Programmes" data-testid="mobile-programmes"><BookOpen size={18}/><span>Programmes</span></Link>
-      <Link href="/where-we-work" className={!menu&&path==='/where-we-work'?'active':''} aria-current={!menu&&path==='/where-we-work'?'page':undefined} aria-label="Map" data-testid="mobile-map"><MapPin size={18}/><span>Map</span></Link>
-      <Link href="/impact" className={!menu&&path==='/impact'?'active':''} aria-current={!menu&&path==='/impact'?'page':undefined} aria-label="Stories" data-testid="mobile-stories"><MessageCircle size={18}/><span>Stories</span></Link>
-      <Link href="/get-involved#contact" className={!menu&&(path==='/get-involved'||path==='/contact')?'active':''} aria-current={!menu&&(path==='/get-involved'||path==='/contact')?'page':undefined} aria-label="Contact" data-testid="mobile-contact"><Mail size={18}/><span>Contact</span></Link>
+      <Link href="/" className={bottomTab==='home'?'active':''} aria-current={bottomTab==='home'?'page':undefined} aria-label="Home" data-testid="mobile-home"><HomeIcon size={18}/><span>Home</span></Link>
+      <Link href="/programmes" className={bottomTab==='programmes'?'active':''} aria-current={bottomTab==='programmes'?'page':undefined} aria-label="Programmes" data-testid="mobile-programmes"><BookOpen size={18}/><span>Programmes</span></Link>
+      <Link href="/where-we-work" className={bottomTab==='map'?'active':''} aria-current={bottomTab==='map'?'page':undefined} aria-label="Map" data-testid="mobile-map"><MapPin size={18}/><span>Map</span></Link>
+      <Link href="/impact" className={bottomTab==='stories'?'active':''} aria-current={bottomTab==='stories'?'page':undefined} aria-label="Stories" data-testid="mobile-stories"><MessageCircle size={18}/><span>Stories</span></Link>
+      <Link href="/get-involved#contact" className={bottomTab==='contact'?'active':''} aria-current={bottomTab==='contact'?'page':undefined} aria-label="Contact" data-testid="mobile-contact"><Mail size={18}/><span>Contact</span></Link>
     </nav>
     <nav className="mobile-sticky-cta" aria-label="Quick actions">
       <Link className="btn btn-green" href="/programmes">See Programmes</Link>
@@ -227,7 +228,7 @@ function Footer(){
     </div>
     <div className="footer-grid">
       <div><Link href="/" className="brand footer-brand" aria-label="CRVPF home"><img className="brand-logo" src={CRVPF_LOGO_URL} data-source={CRVPF_LOGO_SOURCE} alt="CRVPF logo" width="11309" height="4010" loading="lazy" decoding="async"/></Link><p style={{maxWidth:300,marginTop:19}}>{CRVPF_INTRO}</p><Link className="btn btn-green" href="/get-involved#donate" aria-label="Donate to CRVPF">Donate</Link></div>
-      <div><h4>Explore</h4><Link href="/about">About CRVPF</Link><Link href="/impact">Impact &amp; stories</Link><Link href="/where-we-work">Where We Work</Link><Link href="/resources">Resource Centre</Link><Link href="/get-involved">Get Involved</Link><Link href="/system">How This System Works</Link><Link href="/how-we-deliver">How We Deliver</Link></div>
+      <div><h4>Explore</h4><Link href="/about">About CRVPF</Link><Link href="/impact">Impact &amp; stories</Link><Link href="/where-we-work">Where We Work</Link><Link href="/resources">Resource Centre</Link><Link href="/publications">Publications</Link><Link href="/annual-report-2026">Annual Report 2026</Link><Link href="/get-involved">Get Involved</Link><Link href="/system">How This System Works</Link><Link href="/how-we-deliver">How We Deliver</Link><Link href="/inception">Inception</Link><Link href="/audit">Audit</Link><Link href="/analytics">Analytics</Link><Link href="/hosting">Hosting</Link><Link href="/training">Training</Link><Link href="/handover">Handover</Link><Link href="/support">Support</Link></div>
       <div><h4>Programmes</h4><Link href="/programmes">All Programmes</Link>{programs.map(p=><Link key={p.slug} href={p.slug}>{p.short}</Link>)}<Link href="/programmes/coordinated">Coordinated</Link><Link href="/programmes/joint">Joint</Link><Link href="/publications">Publications</Link></div>
       <div><h4>Contact</h4><p><a href="tel:+256393216519">(+256) 393 216 519</a><a href="mailto:info@crvpf.org">info@crvpf.org</a>Block 244, Plot 5170, Diplomate Road, Muyenga, Kampala, Uganda</p><a className="btn btn-green whatsapp-link" href="https://wa.me/256393216519" target="_blank" rel="noopener noreferrer">WhatsApp CRVPF</a><Link className="footer-message-link" href="/get-involved#contact">Send a message <ArrowRight size={13}/></Link><Link href="/support">Support</Link></div>
     </div>

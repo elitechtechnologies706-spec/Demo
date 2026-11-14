@@ -2362,3 +2362,22 @@ input::placeholder,textarea::placeholder,::placeholder{color:#555555!important;o
   box-shadow:0 5px 18px rgba(27,122,61,.10)!important;
 }
 .high-contrast h1,.high-contrast h2,.high-contrast h3,.high-contrast h4,.high-contrast a,.high-contrast p,.high-contrast li,.high-contrast small{color:#222222!important}
+.desktop-nav .nav-link.active,.desktop-nav .program-trigger.active,.desktop-nav .nav-link.active:hover,.desktop-nav .program-trigger.active:hover{
+  background:#8BC34A!important;
+  color:#1B7A3D!important;
+}
+.desktop-nav .nav-link:not(.active):hover,.desktop-nav .program-trigger:not(.active):hover,.mobile-bottom a:hover:not(.active){
+  background:#90CAF9!important;
+  color:#1B7A3D!important;
+}
+.header-actions .header-donate,.header-actions .header-donate[data-current="true"],.mobile-drawer .drawer-links a.active,.mobile-drawer .drawer-accordion.active,.mobile-drawer .drawer-actions .btn.active{
+  background:#1B7A3D!important;
+  color:#FFFFFF!important;
+  border-color:#1B7A3D!important;
+}
+.btn:active,.btn:focus,button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.where-map-hotspot:focus-visible{
+  outline:3px solid #90CAF9!important;
+  outline-offset:2px;
+}
+.home-theory-strip svg{color:#1B7A3D!important}
+.site-footer a.btn,.site-footer .btn,.site-footer .whatsapp-link{color:#FFFFFF!important}

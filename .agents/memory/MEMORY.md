@@ -1,2 +1,3 @@
 - [CRVPF logo source mismatch](crvpf-logo-source.md) — use the homepage logo, never the TIDES asset; the user specified the logo backing and header green.
 - [CRVPF Vite entry paths](crvpf-vite-entry-paths.md) — keep multi-page HTML module entries resolvable by Vite; apply the base path to runtime links and static assets instead.
+- [CRVPF contact boundary](crvpf-contact-boundary.md) — keep newsletters and outreach demo-only; do not connect email platforms or send messages to CRVPF.
