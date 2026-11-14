@@ -2891,3 +2891,7 @@ main .btn,main button.btn{margin-top:var(--space-3)}
   .home-faq-grid{width:calc(100% - 32px);padding:0 0 var(--space-3)!important}
   .home-faq-grid details{height:auto;min-height:0}
 }
+@media (min-width:768px){
+  .floating-whatsapp{bottom:140px}
+  .app-shell{padding-bottom:120px}
+}
