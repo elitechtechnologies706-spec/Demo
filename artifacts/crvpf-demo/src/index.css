@@ -2407,8 +2407,12 @@ h1,h2,h3,h4,h5,h6,.section-head h2,.page-title,.home-section-heading h2,.home-ne
   color:var(--green-dark)!important;
   font-weight:800;
 }
+.app-shell main h1,.app-shell main h2,.app-shell main h3,.app-shell main h4,.app-shell main h5,.app-shell main h6,.app-shell main .soft-card h1,.app-shell main .soft-card h2,.app-shell main .soft-card h3,.app-shell main .soft-card h4{
+  color:var(--green-dark)!important;
+  font-weight:800;
+}
 .home-hero-copy h1,.home-hero-copy p{color:var(--ink)!important}
-.page-hero h1,.page-hero p{color:var(--white)!important}
+.page-hero h1,.page-hero h2,.page-hero h3,.page-hero p{color:var(--white)!important}
 p,li,small,label,.home-section-heading p,.home-programme-card p,.home-voice-card p,.home-resource-card p,.home-reach-card p,.programme-hub-detail p,.site-footer p,.footer-operations,.footer-bottom,.elitech-ownership-note{
   color:var(--grey)!important;
 }
