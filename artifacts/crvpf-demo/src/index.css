@@ -2967,3 +2967,23 @@ main .btn,main button.btn{margin-top:var(--space-3)}
 @media(max-width:359px){
   .home-sticky-with-partner .btn{font-size:11px!important}
 }
+.home-performance-note{max-width:1180px;margin:8px auto 0;padding:0 16px;text-align:center;font-size:11px;line-height:1.5}
+.home-performance-note small{display:block}
+.home-partner-testimonials{margin-top:var(--space-3)}
+.home-partner-testimonials .home-voice-card{min-height:120px}
+.home-partner-testimonials blockquote{margin:12px 0 0;color:var(--green-dark);font-weight:800}
+.home-wordpress-proof-note{max-width:900px;margin:var(--space-3) auto 0;text-align:center}
+.evaluator-tour-steps{display:grid;gap:var(--space-2);max-height:70dvh;overflow:auto;padding:2px}
+.evaluator-tour-steps .soft-card{padding:var(--space-2)}
+.evaluator-tour-steps h3{margin:8px 0}
+.evaluator-tour-links{display:flex;flex-wrap:wrap;gap:var(--space-2)}
+.footer-last-updated{margin:8px 0;font-size:11px}
+.footer-cookie-notice{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:var(--space-2) 0;padding:8px 12px}
+.footer-cookie-notice .btn{min-height:40px;margin:0}
+@media(max-width:767px){
+  .footer-cookie-notice{align-items:flex-start;flex-direction:column}
+  .accessibility-strip{flex-wrap:wrap;justify-content:flex-start}
+  .accessibility-strip>span:first-child{flex-basis:100%;margin-right:0}
+  .accessibility-strip>span:nth-child(2){margin-right:auto}
+  .home-performance-note{text-align:left}
+}

@@ -266,11 +266,13 @@ function SocialLinks({className=''}:{className?:string}){return <div className={
 function Footer(){
   const[baseSize,setBaseSize]=useState(16);
   const[highContrast,setHighContrast]=useState(false);
-  useEffect(()=>{document.documentElement.style.fontSize=`${baseSize}px`},[baseSize]);
+  const[cookieAccepted,setCookieAccepted]=useState(()=>{try{return document.cookie.split('; ').some(cookie=>cookie==='crvpf-cookie-accepted=true')}catch{return false}});
+  useEffect(()=>{document.documentElement.style.fontSize=`${baseSize}px`;document.body.style.fontSize=`${15*baseSize/16}px`;return()=>{document.body.style.fontSize=''}},[baseSize]);
   useEffect(()=>{document.documentElement.classList.toggle('high-contrast',highContrast);return()=>document.documentElement.classList.remove('high-contrast')},[highContrast]);
   return <footer className="site-footer"><div className="container">
     <div className="accessibility-strip" aria-label="Accessibility controls">
-      <span>English</span>
+      <span>Language: English | Kiswahili (placeholder)</span>
+      <span>Text Size</span>
       <button type="button" onClick={()=>setBaseSize(size=>Math.max(14,size-1))} aria-label="Decrease text size">A-</button>
       <button type="button" onClick={()=>setBaseSize(size=>Math.min(22,size+1))} aria-label="Increase text size">A+</button>
       <button type="button" aria-pressed={highContrast} onClick={()=>setHighContrast(value=>!value)}>High Contrast</button>
@@ -285,6 +287,11 @@ function Footer(){
     <div className="notice footer-management-note">Final site will be built in WordPress on i3C, using Elementor. How staff will manage it: WordPress + Elementor templates for Programme, Story, Resource, Event. Plugins: Yoast SEO, WPForms, Mailchimp for WP, GA4 + Search Console, UpdraftPlus Backups, Wordfence Security. Roles: Admin (IT) | Editor (Comms) | Author (Programme Staff). Staging for CRVPF approval before live. CRVPF owns everything.</div>
     <ElitechStudios/>
     <p className="footer-sla">Support: Urgent 24h / Routine 48-72h - WhatsApp / Email. Contact details to be confirmed with CRVPF.</p>
+    <p className="footer-last-updated">Last updated: November 2026</p>
+    {!cookieAccepted&&<div className="notice footer-cookie-notice" role="region" aria-label="Cookie notice">
+      <span>We use cookies to improve your experience.</span>
+      <button type="button" className="btn btn-outline" onClick={()=>{try{document.cookie='crvpf-cookie-accepted=true; Max-Age=31536000; Path=/; SameSite=Lax'}catch{}setCookieAccepted(true)}}>Accept</button>
+    </div>}
     <div className="footer-bottom">Demo on Replit | Final on WordPress + Elementor + i3C | Powered by ELITECH TECHNOLOGIES - Building systems that work for real people in Uganda.</div>
      <p className="footer-operations">DEMO — TOR Deliverable 3. Content sourced from crvpf.org; publishing requires CRVPF Communications approval. For content removal or correction requests, contact <a href="mailto:info@crvpf.org">info@crvpf.org</a>.</p>
   </div></footer>
@@ -319,6 +326,9 @@ function Home({lang}:{lang:'EN'|'SW'}){
   const [newsletterDone,setNewsletterDone]=useState(false);
   const [concernOpen,setConcernOpen]=useState(false);
   const [concernSent,setConcernSent]=useState(false);
+  const [tourOpen,setTourOpen]=useState(false);
+  const [partnerOpen,setPartnerOpen]=useState(false);
+  const [partnerSent,setPartnerSent]=useState(false);
   const [reportInfoOpen,setReportInfoOpen]=useState(false);
   const [shareMessage,setShareMessage]=useState('');
   const [faqSearchText,setFaqSearchText]=useState('');
@@ -371,6 +381,7 @@ function Home({lang}:{lang:'EN'|'SW'}){
            <Link className="btn primary-action home-btn-primary" href="/programmes" data-testid="button-home-programmes">{sw?'Programu Zetu':'Explore Programmes'} <ArrowRight size={17}/></Link>
            <Link className="text-action-link hero-text-link" href="/where-we-work" data-testid="link-home-eydcd">{sw?'Tafuta EYDCD Karibu Nawe':'Find EYDCD Near You'} <ArrowRight size={15}/></Link>
            <Link className="text-action-link hero-text-link" href="/get-involved" data-testid="link-home-partner">{sw?'Shirikiana Nasi':'Partner With Us'} <ArrowRight size={15}/></Link>
+            <button type="button" className="text-action-link hero-text-link" onClick={()=>setTourOpen(true)}>10-Min Tour For Evaluators <ArrowRight size={15}/></button>
         </div>
         <div className="home-hero-trust-chips" aria-label="Safeguarding and delivery notes">
            <span>Safeguarding-Safe • Country-Level Only • To Be Verified With CRVPF</span>
@@ -386,6 +397,26 @@ function Home({lang}:{lang:'EN'|'SW'}){
       <div><strong><ScrollCount value={4}/></strong><span>Countries</span></div>
       <div><strong><ScrollCount value={250} prefix="+"/></strong><span>Community Partners</span></div>
       <div><strong><ScrollCount value={10000}/></strong><span>Girls in Safe Spaces</span></div>
+    </section>
+    <p className="home-performance-note"><strong>Performance target (verification pending):</strong> Loads in under 3 seconds on 3G. Images under 200KB. Tested on mobile in Kampala. Low-data mode available. <small>These performance statements have not been independently verified in this demo.</small></p>
+    <section className="home-section home-community-partners" id="community-partners">
+      <div className="home-section-heading">
+        <span className="home-section-kicker">Partnerships</span>
+        <h2>Our Partners &amp; Community</h2>
+      </div>
+      <div className="home-partners-grid">
+        {['Community Organisations','Youth Networks','Donors','Government Partners'].map(item=><article className="soft-card home-partner-card" key={item}>
+          <div className="partner-placeholder-logo" role="img" aria-label={`${item} placeholder`}>Partner category placeholder</div>
+          <h3>{item}</h3>
+        </article>)}
+      </div>
+      <p className="home-partners-note">Logos to be confirmed with CRVPF Communications team.</p>
+      <div className="home-story-grid home-partner-testimonials">
+        {[1,2].map(item=><article className="home-voice-card" key={item}>
+          <span className="home-consent-badge">Quote placeholder</span>
+          <blockquote>Partner quote placeholder</blockquote>
+        </article>)}
+      </div>
     </section>
     <section className="home-section home-who-we-are" id="who-we-are">
       <div className="home-section-heading">
@@ -676,7 +707,7 @@ function Home({lang}:{lang:'EN'|'SW'}){
         <span className="newsletter-client-label">Tested for Outlook + Gmail · demo preview only</span>
       </div>
       <div className="home-newsletter-form-wrap">
-        {newsletterDone?<p className="home-newsletter-success" role="status">Demo signup complete. No address was stored or sent.</p>:<form className="home-newsletter-form" onSubmit={submitNewsletter}>
+        {newsletterDone?<p className="home-newsletter-success" role="status">Thank you! Your newsletter signup is confirmed in this local demo. No address was stored or sent.</p>:<form className="home-newsletter-form" onSubmit={submitNewsletter}>
           <label className="sr-only" htmlFor="home-newsletter-email">Email address</label>
           <input id="home-newsletter-email" type="email" value={newsletterEmail} onChange={event=>setNewsletterEmail(event.target.value)} placeholder="Your email address" required/>
           <button type="submit" className="text-action-link">Subscribe <ArrowRight size={15}/></button>
@@ -719,7 +750,7 @@ function Home({lang}:{lang:'EN'|'SW'}){
         </article>)}
       </div>
       <div className="home-partner-journey-action">
-        <Link className="btn primary-action" href="/get-involved#partner">Start Partnership <ArrowRight size={16}/></Link>
+        <button type="button" className="btn primary-action" onClick={()=>{setPartnerSent(false);setPartnerOpen(true)}}>Start Partnership <ArrowRight size={16}/></button>
       </div>
     </section>
     <section className="home-section home-transparency-section" id="transparency-trust">
@@ -769,6 +800,42 @@ function Home({lang}:{lang:'EN'|'SW'}){
         </details>):<p className="home-no-stories" role="status">No questions match your search.</p>}
       </div>
     </section>
+    <section className="home-section home-wordpress-proof" id="wordpress-proof">
+      <div className="home-section-heading">
+        <span className="home-section-kicker">Staff handover</span>
+        <h2>Built in WordPress - Easy For CRVPF Staff To Manage</h2>
+      </div>
+      <div className="home-resource-grid">
+        {['WordPress Dashboard','Elementor Template','Mobile Preview'].map(item=><article className="home-resource-card" key={item}>
+          <div className="partner-placeholder-logo" role="img" aria-label={`${item} screenshot placeholder`}>Screenshot preview to be confirmed</div>
+          <h3>{item} - Screenshot</h3>
+        </article>)}
+      </div>
+      <p className="home-wordpress-proof-note">Final site: WordPress on i3C, Elementor Pro, Custom Post Types, Roles: Admin / Editor / Author. Staging for CRVPF approval before live.</p>
+    </section>
+    {tourOpen&&<Modal title="CRVPF Evaluator Tour - 10 Minutes" onClose={()=>setTourOpen(false)}>
+      <div className="evaluator-tour-steps">
+        <article className="soft-card"><span className="home-programme-code">1</span><h3>Programmes (All 5)</h3><Link className="home-learn-link" href="/#programmes" onClick={()=>setTourOpen(false)}>Open Programmes <ArrowRight size={14}/></Link></article>
+        <article className="soft-card"><span className="home-programme-code">2</span><h3>Interactive Map (4 countries + USA office)</h3><Link className="home-learn-link" href="/#where-we-work" onClick={()=>setTourOpen(false)}>Open Map <ArrowRight size={14}/></Link></article>
+        <article className="soft-card"><span className="home-programme-code">3</span><h3>Youth Zone</h3><Link className="home-learn-link" href="/#youth-zone" onClick={()=>setTourOpen(false)}>Open Youth Zone <ArrowRight size={14}/></Link></article>
+        <article className="soft-card"><span className="home-programme-code">4</span><h3>Resources (2026 Annual Report)</h3><Link className="home-learn-link" href="/#resources-publications" onClick={()=>setTourOpen(false)}>Open Resources <ArrowRight size={14}/></Link></article>
+        <article className="soft-card"><span className="home-programme-code">5</span><h3>Partner Journey + Transparency</h3><div className="evaluator-tour-links"><Link className="home-learn-link" href="/#partner-journey" onClick={()=>setTourOpen(false)}>Partner Journey <ArrowRight size={14}/></Link><Link className="home-learn-link" href="/#transparency-trust" onClick={()=>setTourOpen(false)}>Transparency <ArrowRight size={14}/></Link></div></article>
+      </div>
+    </Modal>}
+    {partnerOpen&&<Modal title="Partner With Us - Expression of Interest" onClose={()=>setPartnerOpen(false)}>
+      {partnerSent
+        ?<div className="success-box" role="status"><strong>Thank you! CRVPF team will review your expression of interest.</strong><p>This local demo does not send or store your details.</p></div>
+        :<form className="form-stack" onSubmit={event=>{event.preventDefault();if(!event.currentTarget.reportValidity())return;setPartnerSent(true)}}>
+          <label>Organisation Name<input className="field" name="organisation" required minLength={2}/></label>
+          <label>Contact Person<input className="field" name="contact-person" required minLength={2}/></label>
+          <label>Email<input className="field" name="email" type="email" required/></label>
+          <label>Country<select className="field" name="country" defaultValue="" required><option value="" disabled>Select country</option>{['Uganda','Kenya','Tanzania','Ethiopia','USA'].map(country=><option key={country}>{country}</option>)}</select></label>
+          <label>Programme<select className="field" name="programme" defaultValue="" required><option value="" disabled>Select programme</option>{['EYDCD','AGPP','PVAC','Coordinated','Joint'].map(programme=><option key={programme}>{programme}</option>)}</select></label>
+          <label>Message<textarea className="field" name="message" rows={4} required minLength={10}/></label>
+          <button type="submit" className="btn primary-action">Submit</button>
+          <small>Demo only: this form does not send or store personal information.</small>
+        </form>}
+    </Modal>}
     {concernOpen&&<Modal title="Report a Concern" onClose={()=>setConcernOpen(false)}>
       {concernSent?<div className="home-concern-success" role="status"><strong>Demo report recorded in this page only.</strong><p>No report was sent or stored. For a real concern, email <a href="mailto:info@crvpf.org">info@crvpf.org</a> or call <a href="tel:+256393216519">(+256) 393 216 519</a>.</p></div>:<form className="form-stack" onSubmit={event=>{event.preventDefault();setConcernSent(true)}}>
         <p>Do not include a child’s full name, school, or exact location. This demonstration does not transmit reports.</p>
@@ -1167,8 +1234,8 @@ function HowWeDeliver(){
 }
  function Contact({notify}:{notify:(s:string)=>void}){
  const [ok,setOk]=useState(false);
- const submit=(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();const f=e.currentTarget;if(!f.reportValidity())return;setOk(true);f.reset();notify('Your message is confirmed in this local demo. It was not sent.');};
-  return <main><PageHero eyebrow="GET IN TOUCH" title="General Inquiries" description="Children's Rights and Violence Prevention Fund (CRVPF)"/><section className="section"><div className="container contact-grid"><aside className="soft-card"><div className="section-kicker">GET IN TOUCH</div><div className="contact-line"><Phone size={19}/><a href="tel:+256393216519">(+256) 393 216 519</a></div><div className="contact-line"><Mail size={19}/><a href="mailto:info@crvpf.org">info@crvpf.org</a></div><div className="contact-line"><MapPin size={19}/><span>Block 244, Plot 5170, Diplomate Road, Muyenga, Kampala, Uganda</span></div><a className="btn btn-green whatsapp-link" href="https://wa.me/256393216519" target="_blank" rel="noopener noreferrer">WhatsApp CRVPF</a><small className="source-note">Source: crvpf.org/</small><div className="notice">We do not publish children's personal details without consent.</div></aside><div className="soft-card">{ok&&<div className="success-box" role="status" style={{marginBottom:16}}>Thanks for your message. This is a local demo confirmation; no message was sent.</div>}<form className="form-stack" onSubmit={submit}><label>Your name<input className="field" name="name" required minLength={2} data-testid="input-contact-name"/></label><label>Email address<input className="field" name="email" type="email" required data-testid="input-contact-email"/></label><label>Subject<select className="field" name="subject" required defaultValue=""><option value="" disabled>Select a topic</option><option>General enquiry</option><option>Programme enquiry</option><option>Partnership enquiry</option></select></label><label>Message<textarea className="field" name="message" rows={5} required minLength={10} data-testid="input-contact-message"/></label><button className="btn btn-green" type="submit" data-testid="button-contact-submit">Send demo message <ArrowRight size={16}/></button><small>Submitting shows a local confirmation only. No message is sent.</small></form></div></div></section></main>
+  const submit=(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();const f=e.currentTarget;if(!f.reportValidity())return;setOk(true);f.reset();notify('Thank you! Your message is confirmed in this local demo; it was not sent.');};
+   return <main><PageHero eyebrow="GET IN TOUCH" title="General Inquiries" description="Children's Rights and Violence Prevention Fund (CRVPF)"/><section className="section"><div className="container contact-grid"><aside className="soft-card"><div className="section-kicker">GET IN TOUCH</div><div className="contact-line"><Phone size={19}/><a href="tel:+256393216519">(+256) 393 216 519</a></div><div className="contact-line"><Mail size={19}/><a href="mailto:info@crvpf.org">info@crvpf.org</a></div><div className="contact-line"><MapPin size={19}/><span>Block 244, Plot 5170, Diplomate Road, Muyenga, Kampala, Uganda</span></div><a className="btn btn-green whatsapp-link" href="https://wa.me/256393216519" target="_blank" rel="noopener noreferrer">WhatsApp CRVPF</a><small className="source-note">Source: crvpf.org/</small><div className="notice">We do not publish children's personal details without consent.</div></aside><div className="soft-card">{ok&&<div className="success-box" role="status" style={{marginBottom:16}}>Thank you! Your message is confirmed in this local demo; no message was sent.</div>}<form className="form-stack" onSubmit={submit}><label>Your name<input className="field" name="name" required minLength={2} data-testid="input-contact-name"/></label><label>Email address<input className="field" name="email" type="email" required data-testid="input-contact-email"/></label><label>Subject<select className="field" name="subject" required defaultValue=""><option value="" disabled>Select a topic</option><option>General enquiry</option><option>Programme enquiry</option><option>Partnership enquiry</option></select></label><label>Message<textarea className="field" name="message" rows={5} required minLength={10} data-testid="input-contact-message"/></label><button className="btn btn-green" type="submit" data-testid="button-contact-submit">Send demo message <ArrowRight size={16}/></button><small>Submitting shows a local confirmation only. No message is sent.</small></form></div></div></section></main>
 }
 function SearchModal({value,setValue,results,onClose,onStorySelect}:{value:string;setValue:(v:string)=>void;results:readonly {url:string;label:string}[];onClose:()=>void;onStorySelect:()=>void}){
   const inputRef=useRef<HTMLInputElement|null>(null),closeRef=useRef(onClose);
