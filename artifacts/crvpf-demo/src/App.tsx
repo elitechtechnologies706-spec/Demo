@@ -661,17 +661,16 @@ function Home({lang}:{lang:'EN'|'SW'}){
     <section className="home-section home-partners-section" id="our-partners">
       <div className="home-section-heading">
         <span className="home-section-kicker">Community and funding partners</span>
-        <h2>OUR PARTNERS</h2>
+        <h2>Our Partners</h2>
       </div>
       <div className="home-partners-grid">
-        {partnerCards.map((partner,index)=><article className={`soft-card home-partner-card ${index<5?'partner-confirmed':'partner-placeholder-card'}`} key={`${index}-${partner}`}>
-          {index<5?<div className="partner-wordmark" aria-label={`${partner} text logo`}>{partner}</div>:<div className="partner-placeholder-logo" role="img" aria-label="Partner logo placeholder"><strong>{index===6?'Community Partner':'Partner Logo'}</strong></div>}
-          <h3>{partner}</h3>
-          {index>=5&&<small>Demo Placeholder - To be confirmed with CRVPF</small>}
+        {partnerLogos.map(partner=><article className="soft-card home-partner-card partner-confirmed" key={partner.name}>
+          <a className="partner-logo-link" href={partner.href} target="_blank" rel="noopener noreferrer" aria-label={`Visit ${partner.name} website`}>
+            <img src={`${APP_BASE_PATH}${partner.image}`} alt={partner.alt} loading="lazy" decoding="async"/>
+          </a>
         </article>)}
       </div>
-      <p className="home-partners-note">Logos shown for demo layout. Final logos to be confirmed with CRVPF Communications.</p>
-      <p className="home-verification-note">Last updated: Demo - To be verified with CRVPF</p>
+      <p className="home-partners-note">Partners as displayed on current CRVPF website. Final logos to be confirmed with CRVPF Communications team.</p>
     </section>
     <section className="home-section home-publications-section" id="annual-report-2026">
       <div className="home-section-heading">
@@ -903,15 +902,12 @@ const reachCards=[
   {value:'11,884',numeric:11884,label:'Parents Participating In Weekly Savings And Lending Meetings To Increase Household Incomes.'},
   {value:'10,000',numeric:10000,label:'Adolescent Girls Regularly Attending Safe Space Meetings Across East Africa.'},
 ];
-const partnerCards=[
-  'Oak Foundation',
-  'Wellspring Philanthropic Fund',
-  'TIDES - A Force for Social Good',
-  'Mastercard Foundation',
-  'Conrad N. Hilton Foundation',
-  'Partner Logo - To be confirmed',
-  'Community Partner - To be confirmed',
-  'Partner Logo - To be confirmed',
+const partnerLogos=[
+  {name:'Oak Foundation',image:'images/partners/oak.webp',alt:'Oak Foundation logo',href:'https://oakfnd.org'},
+  {name:'Wellspring Philanthropic Fund',image:'images/partners/wellspring.webp',alt:'Wellspring Philanthropic Fund logo',href:'https://wellspringadvisors.com'},
+  {name:'Tides Foundation',image:'images/partners/tides.webp',alt:'Tides Foundation logo',href:'https://www.tides.org'},
+  {name:'Mastercard Foundation',image:'images/partners/mastercard-foundation.webp',alt:'Mastercard Foundation logo',href:'https://mastercardfdn.org'},
+  {name:'Conrad N. Hilton Foundation',image:'images/partners/hilton.webp',alt:'Conrad N. Hilton Foundation logo',href:'https://www.hiltonfoundation.org'},
 ];
 const resourceItems=[
   {title:'Annual Report 2026',region:'East Africa',country:'Not specified',language:'Not specified',type:'Annual Report',categories:['Annual Report','Publication'],programmes:[],availability:'The public CRVPF Knowledge Hub lists annual reports through 2025; the 2026 report link is awaiting confirmation.',href:'https://crvpf.org/knowledge-hub-2',action:'Open Knowledge Hub'},
