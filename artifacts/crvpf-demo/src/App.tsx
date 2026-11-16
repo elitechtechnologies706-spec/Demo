@@ -329,6 +329,13 @@ function Home({lang}:{lang:'EN'|'SW'}){
   const [tourOpen,setTourOpen]=useState(false);
   const [partnerOpen,setPartnerOpen]=useState(false);
   const [partnerSent,setPartnerSent]=useState(false);
+  const [wpMenuItem,setWpMenuItem]=useState('Programmes');
+  const [wpTitle,setWpTitle]=useState('Adolescent Girls Power Program');
+  const [wpDescription,setWpDescription]=useState('Safe Spaces, power and protection for 10,000 Girls...');
+  const [wpCountry,setWpCountry]=useState('Uganda');
+  const [wpImageName,setWpImageName]=useState('');
+  const [wpStatus,setWpStatus]=useState('');
+  const [wpPreview,setWpPreview]=useState({title:'Adolescent Girls Power Program',description:'Safe Spaces, power and protection for 10,000 Girls...',country:'Uganda'});
   const [reportInfoOpen,setReportInfoOpen]=useState(false);
   const [shareMessage,setShareMessage]=useState('');
   const [faqSearchText,setFaqSearchText]=useState('');
@@ -802,16 +809,48 @@ function Home({lang}:{lang:'EN'|'SW'}){
     </section>
     <section className="home-section home-wordpress-proof" id="wordpress-proof">
       <div className="home-section-heading">
-        <span className="home-section-kicker">Staff handover</span>
-        <h2>Built in WordPress - Easy For CRVPF Staff To Manage</h2>
+        <span className="home-section-kicker">Try It</span>
+        <h2>Try It - How CRVPF Staff Will Update The Site</h2>
+        <p>Demo of WordPress workflow. Final site runs on WordPress + Elementor on i3C.</p>
       </div>
-      <div className="home-resource-grid">
-        {['WordPress Dashboard','Elementor Template','Mobile Preview'].map(item=><article className="home-resource-card" key={item}>
-          <div className="partner-placeholder-logo" role="img" aria-label={`${item} screenshot placeholder`}>Screenshot preview to be confirmed</div>
-          <h3>{item} - Screenshot</h3>
-        </article>)}
+      <div className="soft-card wp-workflow-dashboard">
+        <aside className="soft-card wp-workflow-menu">
+          <h3>Menu</h3>
+          <nav className="wp-workflow-menu-list" aria-label="Demo WordPress menu">
+            {['Dashboard','Programmes','Stories','Resources','Media','Users','Settings'].map(item=><button type="button" key={item} aria-pressed={wpMenuItem===item} className={`btn wp-workflow-menu-item ${wpMenuItem===item?'primary-action':'secondary-action'}`} onClick={()=>setWpMenuItem(item)}>{item}</button>)}
+          </nav>
+        </aside>
+        <section className="soft-card wp-workflow-editor">
+          <h3>Edit Programme: AGPP - Adolescent Girls Power Program</h3>
+          <form className="form-stack" onSubmit={event=>{event.preventDefault();if(!event.currentTarget.reportValidity())return;setWpPreview({title:wpTitle,description:wpDescription,country:wpCountry});setWpStatus('Saved! This is a demo. Final version runs on WordPress + Elementor. CRVPF staff can publish without coding.')}}>
+            <label>Title<input className="field" type="text" value={wpTitle} onChange={event=>{setWpTitle(event.target.value);setWpStatus('')}} required/></label>
+            <label>Description<textarea className="field" rows={4} value={wpDescription} onChange={event=>{setWpDescription(event.target.value);setWpStatus('')}} required/></label>
+            <label>Country<select className="field" value={wpCountry} onChange={event=>{setWpCountry(event.target.value);setWpStatus('')}}>{['Uganda','Kenya','Tanzania','Ethiopia'].map(country=><option key={country}>{country}</option>)}</select></label>
+            <label className="wp-workflow-upload" onDragOver={event=>event.preventDefault()} onDrop={event=>{event.preventDefault();const file=event.dataTransfer.files[0];if(file&&file.type.startsWith('image/')){setWpImageName(file.name);setWpStatus('')}}}>
+              <span>{wpImageName?`Selected: ${wpImageName}`:'Upload Image - Drag here'}</span>
+              <input className="sr-only" type="file" accept="image/*" aria-label="Select an image for the demo programme" onChange={event=>{const file=event.currentTarget.files?.[0];if(file){setWpImageName(file.name);setWpStatus('')}}}/>
+            </label>
+            <small>Demo only: selected images are not uploaded or stored.</small>
+            <div className="wp-workflow-actions">
+              <button type="button" className="btn secondary-action" onClick={()=>setWpStatus('Draft saved in this demo; it has not been published.')}>Save Draft</button>
+              <button type="submit" className="btn primary-action">Publish</button>
+            </div>
+            {wpStatus&&<div className="success-box" role="status">{wpStatus}</div>}
+          </form>
+        </section>
+        <aside className="soft-card wp-workflow-preview">
+          <h3>Live Preview</h3>
+          <article className="home-programme-card wp-workflow-preview-card">
+            <span className="home-programme-code">AGPP</span>
+            <h3>{wpPreview.title}</h3>
+            <p>{wpPreview.description}</p>
+            <div className="programme-country-tags"><span className="tag">{wpPreview.country}</span></div>
+            <Link className="btn btn-outline home-programme-view" href="/programmes/agpp">View Programme <ArrowRight size={15}/></Link>
+          </article>
+          <p className="wp-workflow-preview-note">What staff publish appears here instantly on the live site.</p>
+        </aside>
       </div>
-      <p className="home-wordpress-proof-note">Final site: WordPress on i3C, Elementor Pro, Custom Post Types, Roles: Admin / Editor / Author. Staging for CRVPF approval before live.</p>
+      <p className="home-wordpress-proof-note">Live WordPress proof: <a href="https://brimasmedia.co" target="_blank" rel="noopener noreferrer">Brimas Media (https://brimasmedia.co)</a> and <a href="https://printgarage.online" target="_blank" rel="noopener noreferrer">Print Garage (https://printgarage.online)</a> - WordPress sites built by Akol Francis. Final CRVPF site: WordPress on i3C, Elementor templates for Programme / Story / Resource / Event, Custom Post Types, Roles: Admin (IT) | Editor (Comms) | Author (Programme Staff). Staging for CRVPF approval before live. CRVPF owns everything.</p>
     </section>
     {tourOpen&&<Modal title="CRVPF Evaluator Tour - 10 Minutes" onClose={()=>setTourOpen(false)}>
       <div className="evaluator-tour-steps">

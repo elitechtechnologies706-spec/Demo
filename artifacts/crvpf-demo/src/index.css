@@ -2972,7 +2972,23 @@ main .btn,main button.btn{margin-top:var(--space-3)}
 .home-partner-testimonials{margin-top:var(--space-3)}
 .home-partner-testimonials .home-voice-card{min-height:120px}
 .home-partner-testimonials blockquote{margin:12px 0 0;color:var(--green-dark);font-weight:800}
-.home-wordpress-proof-note{max-width:900px;margin:var(--space-3) auto 0;text-align:center}
+.home-wordpress-proof-note{max-width:900px;margin:var(--space-3) auto 0;text-align:center;overflow-wrap:anywhere}
+.wp-workflow-dashboard{display:grid;grid-template-columns:minmax(150px,.72fr) minmax(320px,1.55fr) minmax(220px,1fr);gap:var(--space-2);align-items:start;padding:var(--space-2)}
+.wp-workflow-menu,.wp-workflow-editor,.wp-workflow-preview{min-width:0;height:auto!important;align-self:start;padding:var(--space-2)}
+.wp-workflow-dashboard h3{margin:0 0 var(--space-2);font-size:18px}
+.wp-workflow-menu-list{display:grid;gap:8px}
+.wp-workflow-menu-item{width:100%;min-height:44px;padding:0 10px;font-size:12px}
+.wp-workflow-editor .form-stack{gap:12px}
+.wp-workflow-editor .form-stack label{gap:6px}
+.wp-workflow-editor .field{width:100%;min-width:0}
+.wp-workflow-upload{display:flex!important;align-items:center;justify-content:center;min-height:84px;padding:var(--space-2);border:1px dashed var(--green-dark);border-radius:12px;background:var(--white);text-align:center;font-weight:700;cursor:pointer}
+.wp-workflow-actions{display:flex;flex-wrap:wrap;gap:var(--space-2)}
+.wp-workflow-actions .btn{margin-top:0}
+.wp-workflow-preview-card{height:auto!important;min-height:0;padding:var(--space-2)}
+.wp-workflow-preview-card h3{margin:8px 0}
+.wp-workflow-preview-card .home-programme-view{margin-top:var(--space-2)}
+.wp-workflow-preview-note{margin:var(--space-2) 0 0;font-size:13px}
+.home-wordpress-proof-note a{font-weight:700}
 .evaluator-tour-steps{display:grid;gap:var(--space-2);max-height:70dvh;overflow:auto;padding:2px}
 .evaluator-tour-steps .soft-card{padding:var(--space-2)}
 .evaluator-tour-steps h3{margin:8px 0}
@@ -2981,9 +2997,15 @@ main .btn,main button.btn{margin-top:var(--space-3)}
 .footer-cookie-notice{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:var(--space-2) 0;padding:8px 12px}
 .footer-cookie-notice .btn{min-height:40px;margin:0}
 @media(max-width:767px){
+  .wp-workflow-dashboard{grid-template-columns:minmax(0,1fr)}
+  .wp-workflow-actions{display:grid;grid-template-columns:1fr 1fr}
   .footer-cookie-notice{align-items:flex-start;flex-direction:column}
   .accessibility-strip{flex-wrap:wrap;justify-content:flex-start}
   .accessibility-strip>span:first-child{flex-basis:100%;margin-right:0}
   .accessibility-strip>span:nth-child(2){margin-right:auto}
   .home-performance-note{text-align:left}
+}
+@media(min-width:768px) and (max-width:1023px){
+  .wp-workflow-dashboard{grid-template-columns:minmax(150px,.72fr) minmax(0,1.55fr)}
+  .wp-workflow-preview{grid-column:1/-1}
 }
