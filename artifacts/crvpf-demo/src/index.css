@@ -2895,3 +2895,39 @@ main .btn,main button.btn{margin-top:var(--space-3)}
   .floating-whatsapp{bottom:140px}
   .app-shell{padding-bottom:120px}
 }
+
+/* Additions use the existing homepage cards and header/footer palette. */
+.low-network-banner{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.low-data-toggle{
+  min-height:0!important;
+  height:auto!important;
+  padding:0 4px!important;
+  border:0;
+  background:transparent;
+  color:var(--green-dark);
+  font-family:inherit!important;
+  font-size:11px!important;
+  font-weight:700;
+  line-height:1.3;
+  text-decoration:underline;
+  text-underline-offset:2px;
+}
+.text-only-mode main img:not(.brand-logo){visibility:hidden!important}
+.home-programme-view{align-self:flex-start;margin-top:auto}
+.programme-country-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.home-partner-journey-action{display:flex;justify-content:center;margin-top:var(--space-3)}
+.footer-management-note{margin:var(--space-3) 0;background:var(--white)!important}
+.where-map-usa-card{
+  appearance:none;
+  width:100%;
+  padding:var(--space-3);
+  font:inherit;
+  line-height:1.5;
+  text-align:left;
+  cursor:pointer;
+}
+.where-map-usa-card strong,.where-map-usa-card span,.where-map-usa-card small{display:block}
+.where-map-usa-card span{color:var(--ink)}
+.where-map-country-card.where-map-usa-card.is-selected{border:2px solid var(--green-dark)!important}
+.home-youth-zone .home-resource-card,.home-added-resources .home-resource-card,.home-news-events .home-resource-card{min-height:0}
+.home-added-resources .home-resource-card .btn,.home-news-events .home-resource-card .btn,.home-youth-zone .home-resource-card .btn{margin-top:auto}

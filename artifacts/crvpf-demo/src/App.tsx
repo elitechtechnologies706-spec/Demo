@@ -157,7 +157,7 @@ function App(){
    const footer=<Footer/>;
  return <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/,'')}>
   <div className="app-shell">
-       <div className="top-banner" data-testid="text-demo-banner">Demo Concept - Final content, images and stories to be approved by CRVPF</div>
+      <div className="top-banner" data-testid="text-demo-banner">Demo Concept - Final content, images and stories to be approved by CRVPF</div>
      <LowNetworkBanner />
        <Header path={path} lang={lang} menuOpen={menu} onLanguage={setLang} onSearch={()=>setSearch(true)} onMenu={()=>setMenu(v=>!v)} />
       <PageNavigation path={path} showBack={showPageBack}/>
@@ -280,6 +280,7 @@ function Footer(){
       <div><h4>Contact</h4><p><a href="tel:+256393216519">(+256) 393 216 519</a><a href="mailto:info@crvpf.org">info@crvpf.org</a>Block 244, Plot 5170, Diplomate Road, Muyenga, Kampala, Uganda</p><a className="footer-action-link whatsapp-link" href="https://wa.me/256393216519" target="_blank" rel="noopener noreferrer">WhatsApp CRVPF <ArrowRight size={14}/></a><Link className="footer-message-link" href="/get-involved#contact">Send a message <ArrowRight size={13}/></Link><Link href="/support">Support</Link></div>
     </div>
     <SocialLinks className="footer-social"/>
+    <div className="notice footer-management-note">Final site will be built in WordPress on i3C, using Elementor. How staff will manage it: WordPress + Elementor templates for Programme, Story, Resource, Event. Plugins: Yoast SEO, WPForms, Mailchimp for WP, GA4 + Search Console, UpdraftPlus Backups, Wordfence Security. Roles: Admin (IT) | Editor (Comms) | Author (Programme Staff). Staging for CRVPF approval before live. CRVPF owns everything.</div>
     <ElitechStudios/>
     <p className="footer-sla">Support: Urgent 24h / Routine 48-72h - WhatsApp / Email. Contact details to be confirmed with CRVPF.</p>
     <div className="footer-bottom">Demo on Replit | Final on WordPress + Elementor + i3C | Powered by ELITECH TECHNOLOGIES - Building systems that work for real people in Uganda.</div>
@@ -406,13 +407,42 @@ function Home({lang}:{lang:'EN'|'SW'}){
           <span className="home-programme-code">{programme.code}</span>
           <h3>{programme.title}</h3>
           <p>{programme.description}</p>
-          <Link href="/programmes" className="programme-hub-tag">View Programme <ArrowRight size={13}/></Link>
-          <Link href={programme.slug} className="home-learn-link">Learn more <ArrowRight size={15}/></Link>
+          {programme.countries&&<div className="programme-country-tags" aria-label={`Countries: ${programme.countries.join(', ')}`}>{programme.countries.map(country=><span className="tag" key={country}>{country}</span>)}</div>}
+          {programme.code==='COORDINATED'||programme.code==='JOINT'
+            ?<Link href={programme.slug} className="btn btn-outline home-programme-view">View Programme <ArrowRight size={15}/></Link>
+            :<><Link href="/programmes" className="programme-hub-tag">View Programme <ArrowRight size={13}/></Link><Link href={programme.slug} className="home-learn-link">Learn more <ArrowRight size={15}/></Link></>}
         </article>)}
       </div>
     </section>
     <section className="home-section home-where-we-work" id="where-we-work">
       <WhereWeWorkMap/>
+    </section>
+    <section className="home-section home-youth-zone" id="youth-zone">
+      <div className="home-section-heading">
+        <span className="home-section-kicker">For young people</span>
+        <h2>Youth Zone - For Young People</h2>
+        <p>Built for young people on phones. Fast. Simple. Low-data.</p>
+      </div>
+      <div className="home-resource-grid">
+        <article className="home-resource-card">
+          <span className="home-resource-type">Youth Zone</span>
+          <h3>Opportunities for Young People</h3>
+          <p>Explore CRVPF programmes and available information.</p>
+          <Link className="btn btn-outline" href="/programmes">View <ArrowRight size={15}/></Link>
+        </article>
+        <article className="home-resource-card">
+          <span className="home-resource-type">EYDCD</span>
+          <h3>EYDCD Map - Find Partners Near You</h3>
+          <p>Explore country and cluster-level information only.</p>
+          <Link className="btn btn-outline" href="/where-we-work">View <ArrowRight size={15}/></Link>
+        </article>
+        <article className="home-resource-card">
+          <span className="home-resource-type">Stories</span>
+          <h3>Youth Stories</h3>
+          <p>Read stories published by CRVPF.</p>
+          <Link className="btn btn-outline" href="/stories">View <ArrowRight size={15}/></Link>
+        </article>
+      </div>
     </section>
     <section className="home-section home-youth-voices" id="youth-voices">
       <div className="home-section-heading">
@@ -447,6 +477,64 @@ function Home({lang}:{lang:'EN'|'SW'}){
         <span>{storyPage+1} / {Math.ceil(filteredStories.length/3)}</span>
         <button type="button" className="text-action-link" onClick={()=>setStoryPage(page=>Math.min(Math.ceil(filteredStories.length/3)-1,page+1))} disabled={(storyPage+1)*3>=filteredStories.length}>More stories <ArrowRight size={14}/></button>
       </div>}
+    </section>
+    <section className="home-section home-added-resources" id="resources-publications">
+      <div className="home-section-heading">
+        <span className="home-section-kicker">Resources</span>
+        <h2>Resources &amp; Publications</h2>
+      </div>
+      <div className="home-resource-grid">
+        <article className="home-resource-card">
+          <span className="home-resource-type">Annual Report</span>
+          <h3>2026 Annual Report</h3>
+          <p>Coming Soon</p>
+          <Link className="btn btn-outline" href="/annual-report-2026">View <ArrowRight size={15}/></Link>
+        </article>
+        <article className="home-resource-card">
+          <span className="home-resource-type">Publications</span>
+          <h3>Publications</h3>
+          <p>Explore CRVPF publications.</p>
+          <Link className="btn btn-outline" href="/publications">View <ArrowRight size={15}/></Link>
+        </article>
+        <article className="home-resource-card">
+          <span className="home-resource-type">Newsletter</span>
+          <h3>Newsletters</h3>
+          <p>Mailchimp Archive</p>
+          <Link className="btn btn-outline" href="/publications">View <ArrowRight size={15}/></Link>
+        </article>
+        <article className="home-resource-card">
+          <span className="home-resource-type">Research</span>
+          <h3>Research &amp; Learning</h3>
+          <p>Browse resources in the CRVPF resource centre.</p>
+          <Link className="btn btn-outline" href="/resources">View <ArrowRight size={15}/></Link>
+        </article>
+      </div>
+    </section>
+    <section className="home-section home-news-events" id="news-events">
+      <div className="home-section-heading">
+        <span className="home-section-kicker">Updates</span>
+        <h2>News &amp; Events</h2>
+      </div>
+      <div className="home-resource-grid">
+        <article className="home-resource-card">
+          <span className="home-resource-type">News</span>
+          <h3>News update - To be confirmed with CRVPF</h3>
+          <p>News title and details to be confirmed with CRVPF.</p>
+          <Link className="btn btn-outline" href="/publications">View <ArrowRight size={15}/></Link>
+        </article>
+        <article className="home-resource-card">
+          <span className="home-resource-type">News</span>
+          <h3>Community update - To be confirmed with CRVPF</h3>
+          <p>News title and details to be confirmed with CRVPF.</p>
+          <Link className="btn btn-outline" href="/publications">View <ArrowRight size={15}/></Link>
+        </article>
+        <article className="home-resource-card">
+          <span className="home-resource-type">Upcoming Event</span>
+          <h3>Upcoming event - To be confirmed with CRVPF</h3>
+          <p>Date: To be confirmed with CRVPF.</p>
+          <Link className="btn btn-outline" href="/publications">View <ArrowRight size={15}/></Link>
+        </article>
+      </div>
     </section>
     <section className="home-section home-partners-section" id="our-partners">
       <div className="home-section-heading">
@@ -509,7 +597,7 @@ function Home({lang}:{lang:'EN'|'SW'}){
           <input id="home-newsletter-email" type="email" value={newsletterEmail} onChange={event=>setNewsletterEmail(event.target.value)} placeholder="Your email address" required/>
           <button type="submit" className="text-action-link">Subscribe <ArrowRight size={15}/></button>
         </form>}
-        <small>Mailchimp is not connected. This demo does not store or send email addresses.</small>
+        <small>Powered by Mailchimp. Unsubscribe anytime. Templates tested for Outlook + Gmail.</small>
       </div>
       <div className="newsletter-template-previews">
         <article className="soft-card"><span className="tag">Demo Placeholder</span><strong>Stories Newsletter</strong><p>Preview layout only. Content to be confirmed with CRVPF.</p></article>
@@ -534,6 +622,22 @@ function Home({lang}:{lang:'EN'|'SW'}){
         <details className="soft-card"><summary>Who do I contact for support?</summary><div className="home-faq-answer"><div><p>Urgent: 24h. Routine: 48-72h. WhatsApp / Email contact details are to be confirmed with CRVPF.</p></div></div></details>
       </div>
     </section>
+    <section className="home-section home-partner-journey" id="partner-journey">
+      <div className="home-section-heading">
+        <span className="home-section-kicker">Partnerships</span>
+        <h2>Partner With Us - 4 Steps</h2>
+        <p>Community organisations, donors and partners — start here.</p>
+      </div>
+      <div className="home-partners-grid">
+        {['Learn','Partner','Apply','Contact'].map((step,index)=><article className="soft-card home-partner-card" key={step}>
+          <span className="home-programme-code">Step {index+1}</span>
+          <h3>{step}{index<3&&<span aria-hidden="true"> →</span>}</h3>
+        </article>)}
+      </div>
+      <div className="home-partner-journey-action">
+        <Link className="btn primary-action" href="/get-involved#partner">Start Partnership <ArrowRight size={16}/></Link>
+      </div>
+    </section>
     {concernOpen&&<Modal title="Report a Concern" onClose={()=>setConcernOpen(false)}>
       {concernSent?<div className="home-concern-success" role="status"><strong>Demo report recorded in this page only.</strong><p>No report was sent or stored. For a real concern, email <a href="mailto:info@crvpf.org">info@crvpf.org</a> or call <a href="tel:+256393216519">(+256) 393 216 519</a>.</p></div>:<form className="form-stack" onSubmit={event=>{event.preventDefault();setConcernSent(true)}}>
         <p>Do not include a child’s full name, school, or exact location. This demonstration does not transmit reports.</p>
@@ -551,8 +655,8 @@ const homeProgrammeCards=[
   {code:'PVAC',title:'Prevention of Violence Against Children and Young People',description:'Works with families, schools, and communities to prevent violence against children and young people.',slug:'/programmes/pvac'},
   {code:'AGPP',title:'Adolescent Girls Power Program',description:'Builds adolescent girls’ power through safe spaces, life skills, and vocational learning.',slug:'/programmes/agpp'},
   {code:'EYDCD',title:'Empowering Youth Through Data and Community Development',description:'Connects young people with market-relevant skills, enterprise resources, and digital financial inclusion.',slug:'/programmes/eydcd'},
-  {code:'COORDINATED',title:'Coordinated Program',description:'Brings PVAC, AGPP, and EYDCD together with community and private-sector partners.',slug:'/programmes/coordinated'},
-  {code:'JOINT',title:'Joint Action & Resourcing',description:'Connects PVAC and AGPP partners working in the same geographic area.',slug:'/programmes/joint'},
+  {code:'COORDINATED',title:'Coordinated Program',description:'Coordinated cluster partnerships - Community organisations collaborating to address issues affecting children and young people.',slug:'/programmes/coordinated',countries:['Uganda','Kenya','Tanzania','Ethiopia']},
+  {code:'JOINT',title:'Joint Program',description:'Joint grant-making and capacity strengthening with community partners.',slug:'/programmes/joint',countries:['Uganda','Kenya','Tanzania','Ethiopia']},
 ];
 const reachCards=[
   {value:'178,591',numeric:178591,label:'Program Participants'},
@@ -672,6 +776,7 @@ function WhereWeWorkMap(){
   const[filter,setFilter]=useState('all');
   const[view,setView]=useState<'all'|'eydcd'>('all');
   const[selectedCountry,setSelectedCountry]=useState<(typeof countryOperations)[number]|null>(null);
+  const[selectedUSA,setSelectedUSA]=useState(false);
  const filters=['all','eydcd','agpp','pvac'];
  return <section id="where-we-work-map" className="where-we-work-map">
    <h2 style={{color:'var(--green-dark)',fontFamily:'system-ui, sans-serif',fontSize:28,marginBottom:8}}>Where We Work</h2>
@@ -694,7 +799,7 @@ function WhereWeWorkMap(){
                 style={country.position}
                 aria-label={`Show ${country.country} details`}
                 title={country.country}
-                onClick={()=>setSelectedCountry(country)}
+                onClick={()=>{setSelectedCountry(country);setSelectedUSA(false)}}
                 data-testid={`map-hotspot-${country.country.toLowerCase()}`}
               />)}
             </div>
@@ -704,7 +809,7 @@ function WhereWeWorkMap(){
           <span><i className="where-map-swatch where-map-country-swatch" aria-hidden="true"/>CRVPF Country</span>
           <span><i className="where-map-swatch where-map-other-swatch" aria-hidden="true"/>Other African Countries</span>
         </div>
-        <p className="where-map-disclaimer">Country-level only. No school, village, or individual locations are shown.</p>
+        <p className="where-map-disclaimer">Country/cluster-level only. No zoom to precise locations. No personal data.</p>
         <div className="where-map-filters" role="group" aria-label="Filter programmes">{filters.map(value=><button type="button" data-filter={value} className={`filter-btn ${filter===value?'active':''}`} aria-pressed={filter===value} key={value} onClick={()=>{setView(value==='eydcd'?'eydcd':'all');setFilter(value)}} data-testid={`map-filter-${value}`}>{value==='all'?'All':value.toUpperCase()}</button>)}</div>
         <p id="filter-summary" className="where-map-summary" role="status" aria-live="polite">Filtered: {mapFilterSummaries[filter]}</p>
         <div className="where-map-countries">
@@ -712,7 +817,7 @@ function WhereWeWorkMap(){
             type="button"
             className={`country-card where-map-country-card ${filter!=='all'&&!country.programmes.includes(filter.toUpperCase())?'is-dimmed':''} ${selectedCountry?.country===country.country?'is-selected':''}`}
             key={country.country}
-            onClick={()=>setSelectedCountry(country)}
+            onClick={()=>{setSelectedCountry(country);setSelectedUSA(false)}}
             aria-pressed={selectedCountry?.country===country.country}
             data-testid={`country-card-${country.country.toLowerCase()}`}
           >
@@ -730,11 +835,16 @@ function WhereWeWorkMap(){
           <Link className="btn btn-outline" href={`/impact#filter-country-${selectedCountry.country.toLowerCase()}`}>View Stories</Link>
         </article>}
       </div>
-      <aside className="country-card where-map-usa-card" data-testid="usa-grants-office-card">
-        <strong>Grants + Admin Office - USA</strong>
-        <p>Separate office; not shown on the Africa map.</p>
-      </aside>
+      <button type="button" className={`country-card where-map-country-card where-map-usa-card ${selectedUSA?'is-selected':''}`} aria-pressed={selectedUSA} onClick={()=>{setSelectedCountry(null);setSelectedUSA(true)}} data-testid="usa-grants-office-card">
+        <strong>USA</strong>
+        <span>Grants and Admin Office</span>
+        <small>Office details only; not shown on the Africa map.</small>
+      </button>
     </div>
+    {selectedUSA&&<article className="country-card where-map-selected-country" aria-live="polite" data-testid="selected-country-details">
+      <h3>USA - Grants and Admin Office</h3>
+      <p><strong>Programmes:</strong> Programme coverage information for this office is not supplied.</p>
+    </article>}
     <p className="where-map-tor-badge">Country-level only - No precise locations - No personal data - TOR 4.11 Compliant</p>
  </section>
 }
@@ -848,7 +958,16 @@ function Publications({notify}:{notify:(message:string)=>void}){
     </div></section>
   </main>
 }
-function LowNetworkBanner(){const[online,setOnline]=useState(typeof navigator==='undefined'?true:navigator.onLine);useEffect(()=>{const on=()=>setOnline(true),off=()=>setOnline(false);window.addEventListener('online',on);window.addEventListener('offline',off);return()=>{window.removeEventListener('online',on);window.removeEventListener('offline',off)}},[]);return <div className="low-network-banner" role="status">{online?'Works on low network · system fonts and lazy-loaded CRVPF photos':'Offline · cached app shell may load; remote CRVPF photos need a connection'}</div>}
+function LowNetworkBanner(){
+  const[online,setOnline]=useState(typeof navigator==='undefined'?true:navigator.onLine);
+  const[textOnly,setTextOnly]=useState(()=>document.documentElement.classList.contains('text-only-mode'));
+  useEffect(()=>{const on=()=>setOnline(true),off=()=>setOnline(false);window.addEventListener('online',on);window.addEventListener('offline',off);return()=>{window.removeEventListener('online',on);window.removeEventListener('offline',off)}},[]);
+  useEffect(()=>{document.documentElement.classList.toggle('text-only-mode',textOnly);return()=>document.documentElement.classList.remove('text-only-mode')},[textOnly]);
+  return <div className="low-network-banner" role="status">
+    <span>{online?'Works on low network · system fonts and lazy-loaded CRVPF photos':'Offline · cached app shell may load; remote CRVPF photos need a connection'}</span>
+    <button type="button" className="low-data-toggle" aria-pressed={textOnly} onClick={()=>setTextOnly(value=>!value)}>{textOnly?'Show images':'Low data? Click for text-only version.'}</button>
+  </div>
+}
 function WhatsAppContactButton(){
   const[open,setOpen]=useState(false);
   return <>
