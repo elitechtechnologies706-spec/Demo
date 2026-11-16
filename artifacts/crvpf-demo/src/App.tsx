@@ -158,6 +158,7 @@ function App(){
  return <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/,'')}>
   <div className="app-shell">
       <div className="top-banner" data-testid="text-demo-banner">Demo Concept - Final content, images and stories to be approved by CRVPF</div>
+      <div className="latest-alert-bar low-network-banner"><strong>Latest: 2026 Annual Report Coming Soon</strong><Link href="/resources">→ View Resources</Link></div>
      <LowNetworkBanner />
        <Header path={path} lang={lang} menuOpen={menu} onLanguage={setLang} onSearch={()=>setSearch(true)} onMenu={()=>setMenu(v=>!v)} />
       <PageNavigation path={path} showBack={showPageBack}/>
@@ -210,8 +211,9 @@ function App(){
        <Link href="/map" className={bottomTab==='map'?'active':''} aria-current={bottomTab==='map'?'page':undefined} aria-label="Map" data-testid="mobile-map"><MapPin size={24}/><span>Map</span></Link>
        <Link href="/stories" className={bottomTab==='stories'?'active':''} aria-current={bottomTab==='stories'?'page':undefined} aria-label="Stories" data-testid="mobile-stories"><BookOpen size={24}/><span>Stories</span></Link>
     </nav>
-     {showStickyCta&&<nav className="mobile-sticky-cta" aria-label="Quick actions">
+     {showStickyCta&&<nav className="mobile-sticky-cta home-sticky-with-partner" aria-label="Quick actions">
       <Link className="btn primary-action" href="/programmes">Explore Programmes</Link>
+       <Link className="btn secondary-action" href="/get-involved#partner">Partner With Us</Link>
      </nav>}
     <WhatsAppContactButton/>
     {search&&<SearchModal value={searchText} setValue={setSearchText} results={filteredPages} onStorySelect={()=>{setSelectedCountry('All');setSelectedProgram('All')}} onClose={()=>{setSearch(false);setSearchText('')}}/>}
@@ -309,6 +311,7 @@ function SectionHead({eyebrow,title,description}:{eyebrow:string;title:string;de
 function Home({lang}:{lang:'EN'|'SW'}){
   const sw=lang==='SW';
   const [storyProgram,setStoryProgram]=useState('All');
+  const [storyCategory,setStoryCategory]=useState('All');
   const [storyCountry,setStoryCountry]=useState('All');
   const [storyPage,setStoryPage]=useState(0);
   const [storyQuery,setStoryQuery]=useState('');
@@ -318,13 +321,27 @@ function Home({lang}:{lang:'EN'|'SW'}){
   const [concernSent,setConcernSent]=useState(false);
   const [reportInfoOpen,setReportInfoOpen]=useState(false);
   const [shareMessage,setShareMessage]=useState('');
+  const [faqSearchText,setFaqSearchText]=useState('');
+  const [faqSearch,setFaqSearch]=useState('');
+  const [urgentUpdateOn,setUrgentUpdateOn]=useState(()=>{try{return localStorage.getItem('crvpf-urgent-update-enabled')==='true'}catch{return false}});
   const filteredStories=storyData.filter(story=>
     (storyProgram==='All'||story.program===storyProgram)&&
+    (storyCategory==='All'||story.program===storyCategory||storyCategory==='Story')&&
     (storyCountry==='All'||story.country===storyCountry)&&
     `${story.name} ${story.program} ${story.country} ${story.text}`.toLowerCase().includes(storyQuery.trim().toLowerCase())
   );
   const visibleHomeStories=filteredStories.slice(storyPage*3,storyPage*3+3);
-  const changeStoryFilter=(type:'program'|'country',value:string)=>{setStoryPage(0);if(type==='program')setStoryProgram(value);else setStoryCountry(value)};
+  const changeStoryFilter=(type:'program'|'country',value:string)=>{setStoryPage(0);if(type==='program'){setStoryProgram(value);if(['EYDCD','AGPP','PVAC','Coordinated','Joint'].includes(storyCategory))setStoryCategory('All')}else setStoryCountry(value)};
+  const changeStoryCategory=(value:string)=>{setStoryPage(0);setStoryCategory(value);setStoryProgram(['EYDCD','AGPP','PVAC','Coordinated','Joint'].includes(value)?value:'All')};
+  const toggleUrgentUpdate=()=>setUrgentUpdateOn(value=>{const next=!value;try{localStorage.setItem('crvpf-urgent-update-enabled',String(next))}catch{}return next});
+  const faqs=[
+    {question:'What does CRVPF do?',answer:'CRVPF partners with community organisations to prevent violence and advance children’s rights.'},
+    {question:'How do I partner with CRVPF?',answer:'CRVPF works with community organisations through cluster partnerships. Contact CRVPF to discuss partnering.'},
+    {question:'Where does CRVPF work?',answer:'CRVPF operates in Uganda, Kenya, Tanzania and Ethiopia.'},
+    {question:'How do I apply for a grant?',answer:'Grant application details are not available in this demo. Contact CRVPF for current information.'},
+    {question:'How does CRVPF protect children and young people?',answer:'CRVPF prioritises consent, safeguarding checks and Communications approval before stories are published.'},
+  ];
+  const visibleFaqs=faqs.filter(item=>`${item.question} ${item.answer}`.toLowerCase().includes(faqSearch.trim().toLowerCase()));
   const submitNewsletter=(event:FormEvent<HTMLFormElement>)=>{event.preventDefault();setNewsletterDone(true)};
   const shareReport=async(channel:'WhatsApp'|'Email'|'Social')=>{
     const url=`${window.location.origin}${APP_BASE_PATH}publications.html#publication-annual-report-2026`;
@@ -334,6 +351,18 @@ function Home({lang}:{lang:'EN'|'SW'}){
     try{if(navigator.share)await navigator.share({title,url});else{await navigator.clipboard.writeText(url);setShareMessage('Report link copied to clipboard.')}}catch{setShareMessage('Sharing was cancelled or is not available.')}
   };
   return <main className="home-part-one">
+    <div className="home-urgent-update-wrap">
+      {urgentUpdateOn
+        ?<section className="soft-card home-urgent-update-slot" aria-live="polite">
+          <div><strong>Urgent Update: [Placeholder text]</strong><Link className="text-action-link" href="/resources">→ Learn More</Link><small>Staff can update this in WordPress.</small></div>
+          <button type="button" className="text-action-link" aria-pressed="true" onClick={toggleUrgentUpdate}>Turn off demo preview</button>
+        </section>
+        :<div className="home-urgent-update-off">
+          <small>Urgent update: Off</small>
+          <button type="button" className="text-action-link" aria-pressed="false" onClick={toggleUrgentUpdate}>Staff preview: Enable</button>
+          <small>Staff can update this in WordPress.</small>
+        </div>}
+    </div>
     <section className="home-hero">
       <div className="home-hero-copy">
          <h1>{sw?'Kuzuia Ukatili. Kujenga Nguvu. Kuunda Mustakabali Salama.':'Preventing Violence. Building Power. Creating Safe Futures.'}</h1>
@@ -414,8 +443,32 @@ function Home({lang}:{lang:'EN'|'SW'}){
         </article>)}
       </div>
     </section>
+    <section className="home-section home-grant-making" id="how-grant-making-works">
+      <div className="home-section-heading">
+        <span className="home-section-kicker">Partnership approach</span>
+        <h2>How Grant-Making Works</h2>
+        <p>CRVPF resources community organisations led by and for children and young people.</p>
+      </div>
+      <div className="home-programme-grid home-grant-steps">
+        {['Apply','Partner','Grow'].map((step,index)=><article className="home-programme-card" key={step}>
+          <span className="home-programme-code">Step {index+1}</span>
+          <h3>{step}</h3>
+        </article>)}
+      </div>
+      <div className="home-partner-journey-action"><Link className="btn primary-action" href="/get-involved#partner">Partner With Us <ArrowRight size={16}/></Link></div>
+    </section>
     <section className="home-section home-where-we-work" id="where-we-work">
       <WhereWeWorkMap/>
+    </section>
+    <section className="home-section home-data-hub" id="crvpf-data-hub">
+      <div className="home-section-heading">
+        <span className="home-section-kicker">Country-level information</span>
+        <h2>CRVPF Data Hub</h2>
+      </div>
+      <div className="home-proof-trust-bar home-data-hub-strip" aria-label="CRVPF country-level data">
+        {countries.map(country=><div key={country}><strong>{country}</strong><span>Programmes: 5 | Focus: Children &amp; Youth</span></div>)}
+      </div>
+      <p className="home-verification-note">Country-level data only. No precise locations. Data to be verified by CRVPF.</p>
     </section>
     <section className="home-section home-youth-zone" id="youth-zone">
       <div className="home-section-heading">
@@ -452,15 +505,15 @@ function Home({lang}:{lang:'EN'|'SW'}){
       </div>
       <SectionPhoto file="IMG-20261114-WA2253_1794665428965.jpg" alt="A woman speaking with community members gathered outdoors." className="stories-section-photo"/>
       <div className="home-story-filters">
-        <div className="home-story-filter-pills" role="group" aria-label="Filter stories by programme">
-          {['All','EYDCD','AGPP','PVAC'].map(programme=><button type="button" className={`pill ${storyProgram===programme?'selected':''}`} aria-pressed={storyProgram===programme} key={programme} onClick={()=>changeStoryFilter('program',programme)}>{programme}</button>)}
+        <div className="home-story-filter-pills" role="group" aria-label="Filter stories">
+          {['All','Story','News','Thought Leadership','EYDCD','AGPP','PVAC','Coordinated','Joint'].map(category=><button type="button" className={`pill ${storyCategory===category?'selected':''}`} aria-pressed={storyCategory===category} key={category} onClick={()=>changeStoryCategory(category)}>{category}</button>)}
         </div>
         <label>Search stories<input type="search" value={storyQuery} onChange={event=>{setStoryPage(0);setStoryQuery(event.target.value)}} placeholder="Search by name or keyword"/></label>
         <label>Programme<select value={storyProgram} onChange={event=>changeStoryFilter('program',event.target.value)}><option>All</option>{programmeFilters.slice(1).map(programme=><option key={programme}>{programme}</option>)}</select></label>
         <label>Country<select value={storyCountry} onChange={event=>changeStoryFilter('country',event.target.value)}><option>All</option>{countries.map(country=><option key={country}>{country}</option>)}</select></label>
         <span className="home-story-count" aria-live="polite">Showing {filteredStories.length} stories</span>
       </div>
-      {visibleHomeStories.length?<div className="home-story-grid" key={`${storyProgram}-${storyCountry}-${storyQuery}`}>
+      {visibleHomeStories.length?<div className="home-story-grid" key={`${storyProgram}-${storyCategory}-${storyCountry}-${storyQuery}`}>
         {visibleHomeStories.map(story=><article className="home-voice-card" key={story.name}>
           <span className="home-voice-meta">{story.program} · {story.country||'Country not specified in source'}</span>
           <h3>{story.name==='The Dar-Girls'?'The Dar Girls':story.name}</h3>
@@ -477,6 +530,23 @@ function Home({lang}:{lang:'EN'|'SW'}){
         <span>{storyPage+1} / {Math.ceil(filteredStories.length/3)}</span>
         <button type="button" className="text-action-link" onClick={()=>setStoryPage(page=>Math.min(Math.ceil(filteredStories.length/3)-1,page+1))} disabled={(storyPage+1)*3>=filteredStories.length}>More stories <ArrowRight size={14}/></button>
       </div>}
+    </section>
+    <section className="home-section home-youth-voice-quotes" id="youth-voice-quotes">
+      <div className="home-section-heading">
+        <span className="home-section-kicker">Youth Voices</span>
+        <h2>Youth Voices</h2>
+      </div>
+      <div className="home-story-grid">
+        {[
+          ['“In a Safe Space, I learned I have power.”','AGPP Youth Participant'],
+          ['“The map helped me find partners near me.”','EYDCD Youth Leader'],
+          ['“Our community now protects children together.”','PVAC Community Member'],
+        ].map(([quote,role])=><article className="home-voice-card" key={role}>
+          <span className="home-consent-badge">Shared with consent.</span>
+          <blockquote className="home-youth-quote">{quote}</blockquote>
+          <span className="home-voice-meta">{role}</span>
+        </article>)}
+      </div>
     </section>
     <section className="home-section home-added-resources" id="resources-publications">
       <div className="home-section-heading">
@@ -508,6 +578,20 @@ function Home({lang}:{lang:'EN'|'SW'}){
           <p>Browse resources in the CRVPF resource centre.</p>
           <Link className="btn btn-outline" href="/resources">View <ArrowRight size={15}/></Link>
         </article>
+      </div>
+    </section>
+    <section className="home-section home-careers-section" id="careers-opportunities">
+      <div className="home-section-heading">
+        <span className="home-section-kicker">Opportunities</span>
+        <h2>Careers &amp; Opportunities</h2>
+      </div>
+      <div className="home-resource-grid">
+        {['Jobs','Consultancies','Volunteer / Partner'].map(item=><article className="home-resource-card" key={item}>
+          <span className="home-resource-type">Opportunities</span>
+          <h3>{item}</h3>
+          <p>Current openings will be listed here. CRVPF is an equal opportunity organisation.</p>
+          <Link className="btn btn-outline" href="/get-involved#contact">View <ArrowRight size={15}/></Link>
+        </article>)}
       </div>
     </section>
     <section className="home-section home-news-events" id="news-events">
@@ -638,6 +722,53 @@ function Home({lang}:{lang:'EN'|'SW'}){
         <Link className="btn primary-action" href="/get-involved#partner">Start Partnership <ArrowRight size={16}/></Link>
       </div>
     </section>
+    <section className="home-section home-transparency-section" id="transparency-trust">
+      <div className="home-section-heading">
+        <span className="home-section-kicker">Public information</span>
+        <h2>Transparency &amp; Trust</h2>
+      </div>
+      <div className="home-resource-grid">
+        {[
+          ['2026 Annual Report','/annual-report-2026'],
+          ['Safeguarding Policy','/safeguarding'],
+          ['Financials','/financial'],
+          ['Our Partners','/#our-partners'],
+        ].map(([title,href])=><article className="home-resource-card" key={title}>
+          <span className="home-resource-type">Transparency</span><h3>{title}</h3>
+          <Link className="btn btn-outline" href={href}>View <ArrowRight size={15}/></Link>
+        </article>)}
+      </div>
+    </section>
+    <section className="home-section home-report-concern" id="need-help">
+      <div className="home-section-heading">
+        <span className="home-section-kicker">Safeguarding</span>
+        <h2>Need Help / Report a Concern?</h2>
+        <p>If you have a safeguarding concern, you can report safely and confidentially.</p>
+      </div>
+      <div className="soft-card home-report-concern-card">
+        <div className="home-report-concern-actions">
+          <button type="button" className="btn primary-action" onClick={()=>{setConcernSent(false);setConcernOpen(true)}}>Report a Concern <ShieldCheck size={16}/></button>
+          <Link className="btn btn-outline" href="/safeguarding">Safeguarding Policy <ArrowRight size={15}/></Link>
+        </div>
+        <p>No personal data is shown on this site. Reports go directly to CRVPF Safeguarding Focal Point.</p>
+        <small>Demo only: this prototype does not transmit reports. For a real concern, contact <a href="mailto:info@crvpf.org">info@crvpf.org</a>.</small>
+      </div>
+    </section>
+    <section className="home-section home-search-faq-section" id="frequently-asked-questions">
+      <div className="home-section-heading">
+        <span className="home-section-kicker">Help and information</span>
+        <h2>Frequently Asked Questions</h2>
+      </div>
+      <form className="home-story-filters home-faq-search" onSubmit={event=>{event.preventDefault();setFaqSearch(faqSearchText)}}>
+        <label>Search CRVPF...<input className="field" type="search" value={faqSearchText} onChange={event=>setFaqSearchText(event.target.value)} placeholder="Search CRVPF..."/></label>
+        <button className="btn btn-outline" type="submit">Search <Search size={15}/></button>
+      </form>
+      <div className="home-faq-grid home-searchable-faqs">
+        {visibleFaqs.length?visibleFaqs.map(item=><details className="soft-card" key={item.question}>
+          <summary>{item.question}</summary><div className="home-faq-answer"><div><p>{item.answer}</p></div></div>
+        </details>):<p className="home-no-stories" role="status">No questions match your search.</p>}
+      </div>
+    </section>
     {concernOpen&&<Modal title="Report a Concern" onClose={()=>setConcernOpen(false)}>
       {concernSent?<div className="home-concern-success" role="status"><strong>Demo report recorded in this page only.</strong><p>No report was sent or stored. For a real concern, email <a href="mailto:info@crvpf.org">info@crvpf.org</a> or call <a href="tel:+256393216519">(+256) 393 216 519</a>.</p></div>:<form className="form-stack" onSubmit={event=>{event.preventDefault();setConcernSent(true)}}>
         <p>Do not include a child’s full name, school, or exact location. This demonstration does not transmit reports.</p>
@@ -677,10 +808,10 @@ const partnerCards=[
   'Partner Logo - To be confirmed',
 ];
 const resourceItems=[
-  {title:'Annual Report 2026',region:'East Africa',country:'Not specified',language:'Not specified',type:'Annual Report',availability:'The public CRVPF Knowledge Hub lists annual reports through 2025; the 2026 report link is awaiting confirmation.',href:'https://crvpf.org/knowledge-hub-2',action:'Open Knowledge Hub'},
-  {title:'Safeguarding Toolkit',region:'East Africa',country:'Not specified',language:'Not specified',type:'Toolkit',availability:'No matching toolkit was confirmed in the public Knowledge Hub. Request the official resource from CRVPF.',href:'mailto:info@crvpf.org?subject=CRVPF%20Safeguarding%20Toolkit%20request',action:'Request resource'},
-  {title:'Case Study Ethiopia',region:'East Africa',country:'Ethiopia',language:'Not specified',type:'Case Study',availability:'A case study link was not confirmed in the public Knowledge Hub. Request the official resource from CRVPF.',href:'mailto:info@crvpf.org?subject=CRVPF%20Ethiopia%20case%20study%20request',action:'Request resource'},
-  {title:'EYDCD Data Brief',region:'East Africa',country:'Not specified',language:'Not specified',type:'Data Brief',availability:'A data brief link was not confirmed in the public Knowledge Hub. Request the official resource from CRVPF.',href:'mailto:info@crvpf.org?subject=CRVPF%20EYDCD%20data%20brief%20request',action:'Request resource'},
+  {title:'Annual Report 2026',region:'East Africa',country:'Not specified',language:'Not specified',type:'Annual Report',categories:['Annual Report','Publication'],programmes:[],availability:'The public CRVPF Knowledge Hub lists annual reports through 2025; the 2026 report link is awaiting confirmation.',href:'https://crvpf.org/knowledge-hub-2',action:'Open Knowledge Hub'},
+  {title:'Safeguarding Toolkit',region:'East Africa',country:'Not specified',language:'Not specified',type:'Toolkit',categories:[],programmes:[],availability:'No matching toolkit was confirmed in the public Knowledge Hub. Request the official resource from CRVPF.',href:'mailto:info@crvpf.org?subject=CRVPF%20Safeguarding%20Toolkit%20request',action:'Request resource'},
+  {title:'Case Study Ethiopia',region:'East Africa',country:'Ethiopia',language:'Not specified',type:'Case Study',categories:['Research'],programmes:[],availability:'A case study link was not confirmed in the public Knowledge Hub. Request the official resource from CRVPF.',href:'mailto:info@crvpf.org?subject=CRVPF%20Ethiopia%20case%20study%20request',action:'Request resource'},
+  {title:'EYDCD Data Brief',region:'East Africa',country:'Not specified',language:'Not specified',type:'Data Brief',categories:['Research'],programmes:['EYDCD'],availability:'A data brief link was not confirmed in the public Knowledge Hub. Request the official resource from CRVPF.',href:'mailto:info@crvpf.org?subject=CRVPF%20EYDCD%20data%20brief%20request',action:'Request resource'},
 ];
 function ResourceCentre(){
   const[query,setQuery]=useState('');
@@ -688,15 +819,27 @@ function ResourceCentre(){
   const[country,setCountry]=useState('All');
   const[language,setLanguage]=useState('All');
   const[type,setType]=useState('All');
+  const[typeCategory,setTypeCategory]=useState('All');
+  const[programmeCategory,setProgrammeCategory]=useState('All');
   const visible=resourceItems.filter(item=>
     (region==='All'||item.region===region)&&
     (country==='All'||item.country===country)&&
     (language==='All'||item.language===language)&&
     (type==='All'||item.type===type)&&
+    (typeCategory==='All'||item.categories.includes(typeCategory))&&
+    (programmeCategory==='All'||item.programmes.includes(programmeCategory))&&
     `${item.title} ${item.region} ${item.country} ${item.language} ${item.type} ${item.availability}`.toLowerCase().includes(query.trim().toLowerCase())
   );
   return <div className="home-resource-hub">
     <SectionPhoto file="IMG-20261114-WA6630_1794665428907.jpg" alt="A staff member reviewing printed documents in an office." className="resource-section-photo"/>
+    <div className="filter-toolbar home-resource-extra-filters" aria-label="Filter resources">
+      <div><strong>Filter by Type:</strong><div className="pill-row" role="group" aria-label="Filter resources by type">
+        {['All','Annual Report','Publication','Newsletter','Research'].map(value=><button type="button" className={`pill ${typeCategory===value?'selected':''}`} aria-pressed={typeCategory===value} key={value} onClick={()=>setTypeCategory(value)}>{value}</button>)}
+      </div></div>
+      <div><strong>Filter by Programme:</strong><div className="pill-row" role="group" aria-label="Filter resources by programme">
+        {['EYDCD','AGPP','PVAC','Coordinated','Joint'].map(value=><button type="button" className={`pill ${programmeCategory===value?'selected':''}`} aria-pressed={programmeCategory===value} key={value} onClick={()=>setProgrammeCategory(current=>current===value?'All':value)}>{value}</button>)}
+      </div><small>Programme associations are shown only where supplied.</small></div>
+    </div>
     <div className="home-resource-filters">
       <label>Search resources<input type="search" value={query} onChange={event=>setQuery(event.target.value)} placeholder="Search title or keyword"/></label>
       <label>Region<select value={region} onChange={event=>setRegion(event.target.value)}><option>All</option><option>East Africa</option></select></label>
