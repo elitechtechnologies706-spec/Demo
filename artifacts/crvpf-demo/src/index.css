@@ -3144,10 +3144,11 @@ main .btn,main button.btn{margin-top:var(--space-3)}
   .drawer-social{gap:16px!important}
 }
 
-/* Floating mobile controls were removed; do not reserve space for them. */
-.mobile-bottom,.mobile-sticky-cta,.floating-whatsapp{display:none!important}
-.app-shell{padding-bottom:0!important}
+/* Keep the existing bottom navigation and chat; remove only the sticky CTA bar. */
+.mobile-sticky-cta{display:none!important}
+.app-shell{padding-bottom:120px!important}
 @media(max-width:767px){
-  main{padding-bottom:16px!important}
-  .site-footer{padding-bottom:16px!important}
+  .app-shell{padding-bottom:calc(220px + env(safe-area-inset-bottom))!important}
+  main{padding-bottom:80px!important}
+  .site-footer{padding-bottom:var(--space-3)!important}
 }

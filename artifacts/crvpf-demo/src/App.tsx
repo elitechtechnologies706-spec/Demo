@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type AnchorHTMLAttributes, type FormEvent } from 'react';
 import { Route, Router as WouterRouter, Switch, useLocation } from 'wouter';
 import {
-  ArrowRight, ChevronDown, HandHeart, HeartHandshake, MapPin, Menu,
+  ArrowRight, BookOpen, ChevronDown, HandHeart, HeartHandshake, Home as HomeIcon, LayoutGrid, MapPin, Menu, MessageCircle,
   Search, Shield, ShieldCheck, Sparkles, Users, X, Mail, Phone,
 } from 'lucide-react';
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaXTwitter, FaYoutube } from 'react-icons/fa6';
@@ -80,6 +80,7 @@ function App(){
   const [year,setYear]=useState(2026),[portalTab,setPortalTab]=useState('My Grants'),[login,setLogin]=useState(false);
   const [adminItems,setAdminItems]=useState<AdminStory[]>(loadAdminStories);
  const [pubModal,setPubModal]=useState('');
+  const bottomTab=path==='/'?'home':path.startsWith('/programmes')?'programmes':path==='/map'||path==='/where-we-work'?'map':path==='/stories'||path==='/impact'?'stories':null;
  const notify=(s:string)=>{setToast(s);window.setTimeout(()=>setToast(''),4000)};
   useEffect(()=>{
     const canonicalPath=(pathname:string)=>{
@@ -195,6 +196,13 @@ function App(){
     <Route><NotFound /></Route>
    </Switch>
    {footer}
+    <nav className="mobile-bottom" aria-label="Quick navigation">
+      <Link href="/" className={bottomTab==='home'?'active':''} aria-current={bottomTab==='home'?'page':undefined} aria-label="Home" data-testid="mobile-home"><HomeIcon size={24}/><span>Home</span></Link>
+      <Link href="/programmes" className={bottomTab==='programmes'?'active':''} aria-current={bottomTab==='programmes'?'page':undefined} aria-label="Programmes" data-testid="mobile-programmes"><LayoutGrid size={24}/><span>Programmes</span></Link>
+      <Link href="/map" className={bottomTab==='map'?'active':''} aria-current={bottomTab==='map'?'page':undefined} aria-label="Map" data-testid="mobile-map"><MapPin size={24}/><span>Map</span></Link>
+      <Link href="/stories" className={bottomTab==='stories'?'active':''} aria-current={bottomTab==='stories'?'page':undefined} aria-label="Stories" data-testid="mobile-stories"><BookOpen size={24}/><span>Stories</span></Link>
+    </nav>
+    <WhatsAppContactButton/>
     {search&&<SearchModal value={searchText} setValue={setSearchText} results={filteredPages} onStorySelect={()=>{setSelectedCountry('All');setSelectedProgram('All')}} onClose={()=>{setSearch(false);setSearchText('')}}/>}
    {donate&&<DonateModal onClose={()=>setDonate(false)} notify={notify}/>}
     {pubModal&&<Modal title={pubModal} onClose={()=>setPubModal('')}><p>You selected “{pubModal}”. This standalone demo identifies the publication but does not provide a downloadable file.</p><div className="notice">No report download or publication action is available in this demo.</div></Modal>}
@@ -1195,6 +1203,55 @@ function Publications({notify}:{notify:(message:string)=>void}){
       <a className="arrow-link" href="https://crvpf.org/knowledge-hub-2/" target="_blank" rel="noopener noreferrer">Open CRVPF Knowledge Hub <ArrowRight size={14}/></a>
     </div></section>
   </main>
+}
+function WhatsAppContactButton(){
+  const[open,setOpen]=useState(false);
+  const[obstructed,setObstructed]=useState(false);
+  const buttonRef=useRef<HTMLButtonElement|null>(null);
+  useEffect(()=>{
+    let frame=0;
+    const update=()=>{
+      cancelAnimationFrame(frame);
+      frame=requestAnimationFrame(()=>{
+        const button=buttonRef.current;
+        if(!button){setObstructed(false);return}
+        const target=button.getBoundingClientRect();
+        const overlaps=[...document.querySelectorAll<HTMLElement>('h1,h2,h3,h4,p,li,small,strong,span,label,a,button,input,select,textarea')]
+          .some(element=>{
+            if(element===button||button.contains(element)||element.closest('.mobile-bottom,.site-header,.modal-backdrop,.floating-whatsapp'))return false;
+            const style=getComputedStyle(element);
+            if(style.display==='none'||style.visibility==='hidden'||style.opacity==='0')return false;
+            const intersects=(rect:DOMRect)=>rect.width>0&&rect.height>0&&rect.right>target.left&&rect.left<target.right&&rect.bottom>target.top&&rect.top<target.bottom;
+            if(['A','BUTTON','INPUT','SELECT','TEXTAREA'].includes(element.tagName))return intersects(element.getBoundingClientRect());
+            const walker=document.createTreeWalker(element,NodeFilter.SHOW_TEXT);
+            let node:Node|null;
+            while((node=walker.nextNode())){
+              const range=document.createRange();
+              range.selectNodeContents(node);
+              if([...range.getClientRects()].some(intersects))return true;
+            }
+            return false;
+          });
+        setObstructed(current=>current===overlaps?current:overlaps);
+      });
+    };
+    update();
+    window.addEventListener('scroll',update,{passive:true});
+    window.addEventListener('resize',update,{passive:true});
+    document.addEventListener('load',update,true);
+    const observer=new MutationObserver(update);
+    observer.observe(document.querySelector('.app-shell')||document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style','hidden']});
+    return()=>{cancelAnimationFrame(frame);window.removeEventListener('scroll',update);window.removeEventListener('resize',update);document.removeEventListener('load',update,true);observer.disconnect()};
+  },[]);
+  return <>
+    <button ref={buttonRef} className={`floating-whatsapp ${obstructed?'is-obstructed':''}`} type="button" aria-label="Contact via WhatsApp - To be confirmed with CRVPF" aria-hidden={obstructed} tabIndex={obstructed?-1:0} onClick={()=>setOpen(true)} data-testid="floating-whatsapp">
+      <MessageCircle size={22}/><span>WhatsApp</span>
+    </button>
+    {open&&<Modal title="Contact via WhatsApp - To be confirmed with CRVPF" onClose={()=>setOpen(false)}>
+      <p>The official WhatsApp contact route is a Demo Placeholder. To be confirmed with CRVPF.</p>
+      <p>No message was sent.</p>
+    </Modal>}
+  </>;
 }
 function ElitechStudios(){const studios=[['Diglo Ventures','Web + Systems Studio','Project by Elitech Technologies','https://diglo-ventures.replit.app'],['Brimas Media','Photography, Video, Storytelling','Project by Elitech Technologies','https://brimasmedia.co'],['Print Garage','Print, Annual Report, Banners','Project by Elitech Technologies','https://printgarage.online'],['Auto Content Studio','Content Automation, Newsletters, Mailchimp Drafts','System Owned by Elitech Technologies','https://autocontentstudio.site']];return <section className="elitech-studios"><h2>Powered by ELITECH TECHNOLOGIES</h2><p className="elitech-subtitle">Selected Projects Elitech Technologies Has Worked On</p><div className="elitech-grid">{studios.map(([name,description,ownership,url])=><article className="elitech-card" key={name}><strong>{name}</strong><span>{description}</span><small>{ownership}</small><a href={url} target="_blank" rel="noopener noreferrer">Visit Site →</a></article>)}</div><p className="elitech-ownership-note">These are Elitech Technologies projects and systems, not owned by CRVPF. CRVPF is a client / partner.</p></section>}
 function SafeguardingReport({notify}:{notify:(s:string)=>void}){const[open,setOpen]=useState(false),[anonymous,setAnonymous]=useState(true),[details,setDetails]=useState('');const submit=(e:FormEvent)=>{e.preventDefault();if(details.trim().length<10){notify('Add a short description of the concern.');return}setOpen(false);setDetails('');notify(`Demo only: this ${anonymous?'anonymous ':''}concern was not sent. Contact info@crvpf.org or (+256) 393 216 519 for a real enquiry.`)};return <><button className="btn btn-orange" onClick={()=>setOpen(true)}>One-tap Report Concern</button>{open&&<Modal title="Report a concern" onClose={()=>setOpen(false)}><p>Do not include a child’s full name, school, or exact location. This local demo does not send or store a report.</p><form className="form-stack" onSubmit={submit}><label className="check-row"><input type="checkbox" checked={anonymous} onChange={e=>setAnonymous(e.target.checked)}/>Submit anonymously</label><label>Concern<textarea className="field" rows={5} value={details} onChange={e=>setDetails(e.target.value)} minLength={10} required/></label><button className="btn btn-orange" type="submit">Submit demo report</button></form></Modal>}</>}
