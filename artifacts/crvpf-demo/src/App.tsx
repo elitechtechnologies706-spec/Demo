@@ -19,7 +19,7 @@ const pageFiles:Record<string,string>={
   '/':'index.html','/about':'about.html','/programmes':'programmes.html',
   '/programmes/pvac':'pvac.html','/programmes/agpp':'agpp.html','/programmes/eydcd':'eydcd.html',
   '/programmes/coordinated':'coordinated.html','/programmes/joint':'joint.html',
-  '/impact':'impact.html','/where-we-work':'where-we-work.html','/resources':'resources.html','/get-involved':'get-involved.html',
+   '/impact':'impact.html','/where-we-work':'where-we-work.html','/resources':'resources.html','/get-involved':'get-involved.html','/contact':'contact.html',
    '/publications':'publications.html','/inception':'inception.html','/audit':'audit.html','/analytics':'analytics.html','/hosting':'hosting.html',
    '/training':'training.html','/handover':'handover.html','/support':'support.html',
 };
@@ -154,12 +154,14 @@ function App(){
    const q=searchText.trim().toLowerCase();return q?source.filter(x=>x.text.toLowerCase().includes(q)).filter((x,i,a)=>a.findIndex(y=>y.url===x.url&&y.label===x.label)===i):pages.map(([url,label])=>({url,label}));
  },[searchText]);
  const donateAction=()=>setDonate(true);
-   const footer=<Footer/>;
+    const footer=<Footer lang={lang} onLanguage={setLang}/>;
  return <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/,'')}>
   <div className="app-shell">
-      <div className="top-banner" data-testid="text-demo-banner">Demo Concept - Final content, images and stories to be approved by CRVPF</div>
-      <div className="latest-alert-bar low-network-banner"><strong>Latest: 2026 Annual Report Coming Soon</strong><Link href="/resources">→ View Resources</Link></div>
-     <LowNetworkBanner />
+       <div className="top-banner" data-testid="text-demo-banner">
+        <span>Demo Concept - Final content to be approved by CRVPF</span>
+        <span className="top-banner-separator" aria-hidden="true">|</span>
+        <span className="top-banner-latest">Latest: 2026 Annual Report Coming Soon <Link href="/resources">→ View Resources</Link></span>
+       </div>
        <Header path={path} lang={lang} menuOpen={menu} onLanguage={setLang} onSearch={()=>setSearch(true)} onMenu={()=>setMenu(v=>!v)} />
       <PageNavigation path={path} showBack={showPageBack}/>
       {menu&&<MobileDrawer path={path} lang={lang} onLanguage={setLang} onClose={()=>setMenu(false)} onSearch={()=>{setMenu(false);setSearch(true)}}/>}
@@ -257,21 +259,32 @@ function MobileDrawer({path,onClose,onSearch,lang,onLanguage}:{path:string;onClo
      <button className={`drawer-accordion ${path.startsWith('/programmes')?'active':''}`} aria-current={path.startsWith('/programmes')?'page':undefined} onClick={()=>setOpen(!open)} aria-expanded={open} data-testid="drawer-programmes">{sw?'Programu':'Programmes'} <ChevronDown size={18}/></button>{open&&<div className="drawer-sub"><Link href="/programmes" onClick={onClose}>All Programmes</Link>{[...programs.map(p=>({url:p.slug,label:`${p.short} — ${p.name}`})),{url:'/programmes/coordinated',label:'Coordinated Program'},{url:'/programmes/joint',label:'Joint Action & Resourcing'}].map(p=><Link key={p.url} href={p.url} onClick={onClose}>{p.label}</Link>)}</div>}
      <Link href="/map" className={path==='/map'||path==='/where-we-work'?'active':''} aria-current={path==='/map'||path==='/where-we-work'?'page':undefined} onClick={onClose} data-testid="drawer-map">{sw?'Ramani':'Map'}</Link>
      <Link href="/stories" className={path==='/stories'||path==='/impact'?'active':''} aria-current={path==='/stories'||path==='/impact'?'page':undefined} onClick={onClose} data-testid="drawer-stories">{sw?'Hadithi':'Stories'}</Link>
+      <Link href="/get-involved" className={path==='/get-involved'?'active':''} aria-current={path==='/get-involved'?'page':undefined} onClick={onClose} data-testid="drawer-get-involved">Get Involved</Link>
+      <Link href="/resources" className={path==='/resources'?'active':''} aria-current={path==='/resources'?'page':undefined} onClick={onClose} data-testid="drawer-resources">Resources</Link>
+      <Link href="/about" className={path==='/about'?'active':''} aria-current={path==='/about'?'page':undefined} onClick={onClose} data-testid="drawer-about">About</Link>
+      <Link href="/#youth-zone" onClick={onClose} data-testid="drawer-youth-zone">Youth Zone</Link>
+      <Link href="/#careers-opportunities" onClick={onClose} data-testid="drawer-careers">Careers</Link>
      <Link href="/contact" className={path==='/contact'?'active':''} aria-current={path==='/contact'?'page':undefined} onClick={onClose} data-testid="drawer-contact">{sw?'Mawasiliano':'Contact'}</Link>
     </div>
      <div className="drawer-actions"><Link className={`drawer-donate-link ${path==='/get-involved'?'active':''}`} href="/get-involved#donate" onClick={onClose} aria-current={path==='/get-involved'?'page':undefined} aria-label="Donate to CRVPF">{sw?'Changia':'Donate'} <HandHeart size={16}/></Link><div className="lang-toggle"><button className={lang==='EN'?'selected':''} onClick={()=>onLanguage('EN')}>EN</button><button className={lang==='SW'?'selected':''} onClick={()=>onLanguage('SW')}>SW</button></div></div><SocialLinks className="drawer-social"/>
  </div>
 }
 function SocialLinks({className=''}:{className?:string}){return <div className={`social-links ${className}`}>{socialLinks.map(({name,url,icon:Icon})=><a key={name} href={url} target="_blank" rel="noopener noreferrer" aria-label={`CRVPF on ${name}`} title={name}><Icon size={16}/></a>)}</div>}
-function Footer(){
+function Footer({lang,onLanguage}:{lang:'EN'|'SW';onLanguage:(value:'EN'|'SW')=>void}){
   const[baseSize,setBaseSize]=useState(16);
   const[highContrast,setHighContrast]=useState(false);
+  const[textOnly,setTextOnly]=useState(()=>document.documentElement.classList.contains('text-only-mode'));
   const[cookieAccepted,setCookieAccepted]=useState(()=>{try{return document.cookie.split('; ').some(cookie=>cookie==='crvpf-cookie-accepted=true')}catch{return false}});
   useEffect(()=>{document.documentElement.style.fontSize=`${baseSize}px`;document.body.style.fontSize=`${15*baseSize/16}px`;return()=>{document.body.style.fontSize=''}},[baseSize]);
   useEffect(()=>{document.documentElement.classList.toggle('high-contrast',highContrast);return()=>document.documentElement.classList.remove('high-contrast')},[highContrast]);
+  useEffect(()=>{document.documentElement.classList.toggle('text-only-mode',textOnly);return()=>document.documentElement.classList.remove('text-only-mode')},[textOnly]);
   return <footer className="site-footer"><div className="container">
     <div className="accessibility-strip" aria-label="Accessibility controls">
-      <span>Language: English | Kiswahili (placeholder)</span>
+      <span>Language</span>
+      <div className="footer-language-controls" role="group" aria-label="Choose language">
+        <button type="button" className={lang==='EN'?'selected':''} aria-pressed={lang==='EN'} onClick={()=>onLanguage('EN')}>EN</button>
+        <button type="button" className={lang==='SW'?'selected':''} aria-pressed={lang==='SW'} onClick={()=>onLanguage('SW')}>SW</button>
+      </div>
       <span>Text Size</span>
       <button type="button" onClick={()=>setBaseSize(size=>Math.max(14,size-1))} aria-label="Decrease text size">A-</button>
       <button type="button" onClick={()=>setBaseSize(size=>Math.min(22,size+1))} aria-label="Increase text size">A+</button>
@@ -288,6 +301,7 @@ function Footer(){
     <ElitechStudios/>
     <p className="footer-sla">Support: Urgent 24h / Routine 48-72h - WhatsApp / Email. Contact details to be confirmed with CRVPF.</p>
     <p className="footer-last-updated">Last updated: November 2026</p>
+    <button type="button" className="low-data-toggle footer-low-data-toggle" aria-pressed={textOnly} onClick={()=>setTextOnly(value=>!value)}>{textOnly?'Show images':'Low data? Click for text-only version.'}</button>
     {!cookieAccepted&&<div className="notice footer-cookie-notice" role="region" aria-label="Cookie notice">
       <span>We use cookies to improve your experience.</span>
       <button type="button" className="btn btn-outline" onClick={()=>{try{document.cookie='crvpf-cookie-accepted=true; Max-Age=31536000; Path=/; SameSite=Lax'}catch{}setCookieAccepted(true)}}>Accept</button>
@@ -1100,13 +1114,15 @@ function WhereWeWorkPage(){
 }
 function PartnerEnquiryForm({programme,notify}:{programme:string;notify:(message:string)=>void}){
   const[sent,setSent]=useState(false);
+  const programmeOptions=['EYDCD','AGPP','PVAC','Coordinated','Joint'];
+  const defaultProgramme=programmeOptions.includes(programme)?programme:'';
   const submit=(event:FormEvent<HTMLFormElement>)=>{event.preventDefault();setSent(true);notify('Demo enquiry only. No partner message was sent.')};
-  return <section className="soft-card partner-enquiry"><h2>Partner enquiry</h2>{sent?<div className="success-box" role="status">Thank you. This demo did not send your enquiry. Contact <a href="mailto:info@crvpf.org">info@crvpf.org</a> for a real enquiry.</div>:<form className="form-stack" onSubmit={submit}><input type="hidden" name="programme" value={programme}/><label>Organisation<input className="field" name="organisation" required/></label><label>Contact email<input className="field" type="email" name="email" required/></label><label>Message<textarea className="field" name="message" rows={4} required minLength={10}/></label><button className="btn" type="submit">Send demo enquiry</button><small>This form validates locally and does not send personal information.</small></form>}</section>
+  return <section className="soft-card partner-enquiry"><h2>Partner enquiry</h2>{sent?<div className="success-box" role="status">Thank you! This demo did not send your enquiry. Contact <a href="mailto:info@crvpf.org">info@crvpf.org</a> for a real enquiry.</div>:<form className="form-stack" onSubmit={submit}><label>Organisation<input className="field" name="organisation" required minLength={2}/></label><label>Contact email<input className="field" type="email" name="email" required/></label><label>Country<select className="field" name="country" defaultValue="" required><option value="" disabled>Select country</option>{[...countries,'USA'].map(value=><option key={value}>{value}</option>)}</select></label><label>Programme<select className="field" name="programme" defaultValue={defaultProgramme} required><option value="" disabled>Select programme</option>{programmeOptions.map(value=><option key={value}>{value}</option>)}</select></label><label>Message<textarea className="field" name="message" rows={4} required minLength={10}/></label><button className="btn" type="submit">Send demo enquiry</button><small>This form validates locally and does not send personal information.</small></form>}</section>
 }
 function GetInvolved({onDonate,notify}:{onDonate:()=>void;notify:(message:string)=>void}){
   const[email,setEmail]=useState('');
   const[newsletterDone,setNewsletterDone]=useState(false);
-  return <main><PageHero eyebrow="Get Involved" title="Get Involved" description="Explore ways to connect with CRVPF. Demo forms do not send or store your information."/><section className="section"><div className="container"><div className="home-programme-grid involved-grid">
+   return <main className="get-involved-page"><PageHero eyebrow="Get Involved" title="Get Involved" description="Explore ways to connect with CRVPF. Demo forms do not collect or store your information."/><section className="section"><div className="container"><div className="home-programme-grid involved-grid">
           <article className="home-programme-card" id="donate"><SectionPhoto file="IMG-20261114-WA3865_1794665428598.jpg" alt="Community members joining hands together." className="involved-card-photo"/><span className="home-programme-code">Donate</span><h3>Support the work</h3><p>Open the demo donation flow. No payment will be collected.</p><button type="button" className="btn" aria-label="Open donation options" onClick={onDonate}>Donate</button></article>
     <article className="home-programme-card" id="partner"><span className="home-programme-code">Partner</span><h3>Partner With Us</h3><p>Send a demo partnership enquiry. The form does not transmit or store personal information.</p><PartnerEnquiryForm programme="General partnership enquiry" notify={notify}/><Link className="home-learn-link" href="/partners">Open Partner Portal <ArrowRight size={15}/></Link></article>
     <article className="home-programme-card"><span className="home-programme-code">Volunteer</span><h3>Volunteer</h3><p>Contact CRVPF to ask about volunteer opportunities.</p><a className="home-learn-link" href="mailto:info@crvpf.org?subject=Volunteer%20enquiry">Email CRVPF <ArrowRight size={15}/></a></article>
@@ -1203,20 +1219,47 @@ function Publications({notify}:{notify:(message:string)=>void}){
     </div></section>
   </main>
 }
-function LowNetworkBanner(){
-  const[online,setOnline]=useState(typeof navigator==='undefined'?true:navigator.onLine);
-  const[textOnly,setTextOnly]=useState(()=>document.documentElement.classList.contains('text-only-mode'));
-  useEffect(()=>{const on=()=>setOnline(true),off=()=>setOnline(false);window.addEventListener('online',on);window.addEventListener('offline',off);return()=>{window.removeEventListener('online',on);window.removeEventListener('offline',off)}},[]);
-  useEffect(()=>{document.documentElement.classList.toggle('text-only-mode',textOnly);return()=>document.documentElement.classList.remove('text-only-mode')},[textOnly]);
-  return <div className="low-network-banner" role="status">
-    <span>{online?'Works on low network · system fonts and lazy-loaded CRVPF photos':'Offline · cached app shell may load; remote CRVPF photos need a connection'}</span>
-    <button type="button" className="low-data-toggle" aria-pressed={textOnly} onClick={()=>setTextOnly(value=>!value)}>{textOnly?'Show images':'Low data? Click for text-only version.'}</button>
-  </div>
-}
 function WhatsAppContactButton(){
   const[open,setOpen]=useState(false);
+  const[obstructed,setObstructed]=useState(false);
+  const buttonRef=useRef<HTMLButtonElement|null>(null);
+  useEffect(()=>{
+    let frame=0;
+    const update=()=>{
+      cancelAnimationFrame(frame);
+      frame=requestAnimationFrame(()=>{
+        const button=buttonRef.current;
+        if(!button){setObstructed(false);return}
+        const target=button.getBoundingClientRect();
+        const overlaps=[...document.querySelectorAll<HTMLElement>('h1,h2,h3,h4,p,li,small,strong,span,label,a,button,input,select,textarea')]
+          .some(element=>{
+            if(element===button||button.contains(element)||element.closest('.mobile-bottom,.site-header,.modal-backdrop,.floating-whatsapp'))return false;
+            const style=getComputedStyle(element);
+            if(style.display==='none'||style.visibility==='hidden'||style.opacity==='0')return false;
+            const intersects=(rect:DOMRect)=>rect.width>0&&rect.height>0&&rect.right>target.left&&rect.left<target.right&&rect.bottom>target.top&&rect.top<target.bottom;
+            if(['A','BUTTON','INPUT','SELECT','TEXTAREA'].includes(element.tagName))return intersects(element.getBoundingClientRect());
+            const walker=document.createTreeWalker(element,NodeFilter.SHOW_TEXT);
+            let node:Node|null;
+            while((node=walker.nextNode())){
+              const range=document.createRange();
+              range.selectNodeContents(node);
+              if([...range.getClientRects()].some(intersects))return true;
+            }
+            return false;
+          });
+        setObstructed(current=>current===overlaps?current:overlaps);
+      });
+    };
+    update();
+    window.addEventListener('scroll',update,{passive:true});
+    window.addEventListener('resize',update,{passive:true});
+    document.addEventListener('load',update,true);
+    const observer=new MutationObserver(update);
+    observer.observe(document.querySelector('.app-shell')||document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style','hidden']});
+    return()=>{cancelAnimationFrame(frame);window.removeEventListener('scroll',update);window.removeEventListener('resize',update);document.removeEventListener('load',update,true);observer.disconnect()};
+  },[]);
   return <>
-    <button className="floating-whatsapp" type="button" aria-label="Contact via WhatsApp - To be confirmed with CRVPF" onClick={()=>setOpen(true)} data-testid="floating-whatsapp">
+    <button ref={buttonRef} className={`floating-whatsapp ${obstructed?'is-obstructed':''}`} type="button" aria-label="Contact via WhatsApp - To be confirmed with CRVPF" aria-hidden={obstructed} tabIndex={obstructed?-1:0} onClick={()=>setOpen(true)} data-testid="floating-whatsapp">
       <MessageCircle size={22}/><span>WhatsApp</span>
     </button>
     {open&&<Modal title="Contact via WhatsApp - To be confirmed with CRVPF" onClose={()=>setOpen(false)}>

@@ -26,7 +26,7 @@ ROUTE_FILES = {
     "/stories": "impact.html",
     "/map": "where-we-work.html",
     "/where-we-work": "where-we-work.html",
-    "/contact": "get-involved.html",
+    "/contact": "contact.html",
     "/resources": "resources.html",
     "/get-involved": "get-involved.html",
     "/publications": "publications.html",

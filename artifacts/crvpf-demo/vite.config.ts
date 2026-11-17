@@ -40,6 +40,7 @@ const pageEntries = {
   whereWeWork: 'where-we-work.html',
   resources: 'resources.html',
   getInvolved: 'get-involved.html',
+  contact: 'contact.html',
   publications: 'publications.html',
   inception: 'inception.html',
   audit: 'audit.html',

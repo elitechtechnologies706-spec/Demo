@@ -3021,3 +3021,125 @@ main .btn,main button.btn{margin-top:var(--space-3)}
   .home-partners-section .home-partners-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
   .home-partners-section .home-partner-card{min-height:130px!important;padding:var(--space-2)!important}
 }
+
+/* Layout corrections for the shared banner, mobile drawer, and fixed controls. */
+.top-banner{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  padding:8px 16px!important;
+  white-space:nowrap;
+  overflow:hidden;
+  line-height:1.4;
+}
+.top-banner-latest{display:inline-flex;align-items:center;gap:4px}
+.top-banner-separator{display:inline}
+.top-banner-latest a{display:inline-flex;align-items:center;min-height:24px;color:var(--white)!important;font-weight:700}
+.drawer-links{gap:0!important}
+.drawer-links>a,.drawer-links>.drawer-accordion{
+  width:100%;
+  min-height:48px;
+  padding:12px 12px;
+  border-bottom:1px solid var(--green-tint);
+}
+.drawer-sub a{display:flex;align-items:center;min-height:44px;border-bottom:1px solid var(--green-tint)}
+.drawer-actions{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr);
+  gap:12px!important;
+  align-items:center;
+  justify-items:stretch;
+  padding-top:12px!important;
+}
+.drawer-actions .drawer-donate-link{
+  position:static!important;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  min-height:48px;
+  margin:0;
+}
+.drawer-actions .lang-toggle{
+  justify-self:center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:32px;
+  height:32px;
+  padding:0 4px;
+}
+.drawer-actions .lang-toggle button{
+  width:auto;
+  min-width:40px;
+  min-height:32px!important;
+  height:32px!important;
+  padding:0 10px!important;
+  font-size:14px!important;
+}
+.drawer-social{justify-content:center;gap:16px!important;padding:12px 0!important}
+.drawer-social a{width:40px;min-width:40px!important;height:40px;min-height:40px!important}
+.footer-language-controls{display:flex;align-items:center;gap:4px}
+.footer-language-controls button{min-width:40px;min-height:36px;padding:0 10px}
+.footer-language-controls button.selected{background:var(--green-dark);color:var(--white)}
+.footer-low-data-toggle{display:block;margin:8px 0 12px!important}
+.floating-whatsapp{bottom:90px!important}
+.floating-whatsapp.is-obstructed{visibility:hidden!important;pointer-events:none!important}
+.get-involved-page>.page-hero p{padding-inline:16px;line-height:1.6}
+
+@media(max-width:767px){
+  .top-banner-separator{display:none!important}
+  .top-banner{
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    justify-items:center;
+    gap:0;
+    white-space:nowrap;
+    padding:6px 16px!important;
+    font-size:clamp(8px,2.3vw,8.8px)!important;
+    line-height:1.4;
+  }
+  .top-banner>span{display:block;max-width:100%;white-space:nowrap}
+  .top-banner-latest{display:block!important;white-space:nowrap}
+  .top-banner-latest a{display:inline!important;min-height:0;white-space:nowrap}
+  .drawer-actions{margin-top:auto!important}
+  .drawer-social{flex-wrap:nowrap!important}
+  .mobile-sticky-cta{
+    bottom:calc(128px + env(safe-area-inset-bottom))!important;
+    padding-right:80px!important;
+  }
+  .floating-whatsapp{
+    right:16px!important;
+    bottom:calc(90px + env(safe-area-inset-bottom))!important;
+    z-index:41!important;
+  }
+  .app-shell{padding-bottom:calc(220px + env(safe-area-inset-bottom))!important}
+  main{padding-bottom:80px!important}
+  .modal-backdrop{
+    display:flex!important;
+    align-items:flex-start!important;
+    justify-content:center!important;
+    overflow-y:auto;
+    padding:12px 12px calc(12px + env(safe-area-inset-bottom))!important;
+  }
+  .modal{
+    width:100%!important;
+    max-height:calc(100dvh - 24px - env(safe-area-inset-bottom))!important;
+    margin:auto 0;
+    padding:20px!important;
+    overflow:auto;
+    overscroll-behavior:contain;
+  }
+  .get-involved-page>.page-hero p{padding-inline:16px!important}
+  .accessibility-strip{justify-content:center!important;gap:8px!important}
+  .accessibility-strip>span:first-child{flex-basis:auto!important;margin-right:0!important}
+  .accessibility-strip>span:nth-child(2){margin-right:0!important}
+  .footer-language-controls{gap:2px}
+}
+@media(max-width:359px){
+  .drawer-head{margin-bottom:12px}
+  .mobile-drawer{padding:16px}
+  .drawer-links>a,.drawer-links>.drawer-accordion{padding-inline:8px}
+  .drawer-social{gap:16px!important}
+}
