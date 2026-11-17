@@ -146,11 +146,12 @@ function App(){
     const footer=<Footer lang={lang} onLanguage={setLang}/>;
  return <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/,'')}>
   <div className="app-shell">
-       <div className="top-banner" data-testid="text-demo-banner">
-        <span>Demo Concept - Final content to be approved by CRVPF</span>
-        <span className="top-banner-separator" aria-hidden="true">|</span>
-        <span className="top-banner-latest">Latest: 2026 Annual Report Coming Soon <Link href="/resources">→ View Resources</Link></span>
-       </div>
+        <div className="top-banner" data-testid="text-demo-banner">
+         Demo Concept - Final content, images and stories to be approved by CRVPF
+        </div>
+        <Link href="/resources/annual-report-2026" className="announcement-strip" data-testid="link-annual-report-announcement">
+         Latest: 2026 Annual Report Coming Soon → View Resources
+        </Link>
        <Header path={path} lang={lang} menuOpen={menu} onLanguage={setLang} onSearch={()=>setSearch(true)} onMenu={()=>setMenu(v=>!v)} />
       <PageNavigation path={path} showBack={showPageBack}/>
       {menu&&<MobileDrawer path={path} lang={lang} onLanguage={setLang} onClose={()=>setMenu(false)} onSearch={()=>{setMenu(false);setSearch(true)}}/>}
@@ -168,6 +169,7 @@ function App(){
      <Route path="/where-we-work"><WhereWeWorkPage /></Route>
       <Route path="/map"><WhereWeWorkPage /></Route>
      <Route path="/resources"><ResourcesPage /></Route>
+      <Route path="/resources/annual-report-2026"><Annual notify={notify}/></Route>
      <Route path="/get-involved"><GetInvolved onDonate={donateAction} notify={notify}/></Route>
      <Route path="/inception"><InceptionPage /></Route>
      <Route path="/audit"><AuditPage /></Route>

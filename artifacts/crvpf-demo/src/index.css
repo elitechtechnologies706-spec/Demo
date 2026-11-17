@@ -3152,4 +3152,70 @@ main .btn,main button.btn{margin-top:var(--space-3)}
   main{padding-bottom:80px!important}
   .site-footer{padding-bottom:var(--space-3)!important}
 }
-.top-banner{background-color:var(--green-dark)!important}
+.top-banner{
+  display:block!important;
+  width:100%;
+  box-sizing:border-box;
+  background-color:#0B5E2E!important;
+  color:#FFFFFF!important;
+  text-align:center;
+  font-size:14px!important;
+  font-weight:700;
+  letter-spacing:normal;
+  line-height:1.4;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  padding:12px 16px!important;
+}
+.announcement-strip{
+  display:block;
+  width:100%;
+  box-sizing:border-box;
+  background-color:#FFF8E7!important;
+  color:#0B5E2E!important;
+  text-align:center;
+  font-size:13px;
+  font-weight:600;
+  line-height:1.4;
+  text-decoration:none!important;
+  overflow-wrap:anywhere;
+  padding:10px 16px;
+  border-bottom:1px solid #E8DDC0;
+}
+.announcement-strip:hover,.announcement-strip:focus-visible{
+  color:#0B5E2E!important;
+  text-decoration:none!important;
+  background-color:#FFF8E7!important;
+}
+.site-header{
+  background-color:#0B5E2E!important;
+  border-top:2px solid #FFFFFF!important;
+  border-bottom:1px solid #FFFFFF!important;
+  box-shadow:0 3px 8px rgba(0,0,0,.08);
+}
+.site-header .brand{
+  background-color:#A8D46A!important;
+}
+.site-header .desktop-nav .nav-link,
+.site-header .desktop-nav .program-trigger,
+.site-header .header-actions .icon-btn:not(.menu-toggle){
+  color:#FFFFFF!important;
+}
+.site-header .desktop-nav .nav-link.active,
+.site-header .desktop-nav .program-trigger.active{
+  color:#0B5E2E!important;
+}
+.site-header .header-actions{gap:8px!important}
+.site-header .header-actions .header-donate{
+  background-color:#FFFFFF!important;
+  color:#0B5E2E!important;
+  border:1px solid #FFFFFF!important;
+}
+.site-header .header-actions .menu-toggle{
+  background-color:#FFFFFF!important;
+  color:#1A1A1A!important;
+  border:1px solid #FFFFFF!important;
+}
+.hero:not(.page-hero),.hero-copy{
+  background-color:#F2F8F0!important;
+}
