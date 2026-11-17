@@ -3280,3 +3280,62 @@ main .btn,main button.btn{margin-top:var(--space-3)}
   line-height:1.35;
   overflow-wrap:anywhere;
 }
+
+/* Part B: compact safeguarding card, searchable FAQ, and updated footer/editor. */
+.home-report-concern-card{
+  width:min(760px,100%);
+  height:auto!important;
+  margin:0 auto;
+  padding:20px!important;
+  background:var(--white)!important;
+  text-align:center;
+}
+.home-report-concern-card h2{font-size:20px!important;font-weight:800!important;margin:8px 0 12px!important}
+.home-report-concern-card>p{color:var(--ink);font-size:15px!important;line-height:1.6;margin:0 0 12px!important}
+.home-report-concern-icon{width:26px;height:26px;color:var(--green-dark)}
+.home-report-concern-button{display:flex;width:max-content;min-width:220px;min-height:52px;margin:12px auto 8px;align-items:center;justify-content:center}
+.home-report-policy-link{display:flex;width:max-content;min-height:44px;margin:0 auto;align-items:center;justify-content:center;gap:6px;color:var(--green-dark);font-weight:700}
+.home-report-concern-card .home-report-concern-note{margin:8px 0 0!important;font-size:12px!important;color:var(--ink)}
+.home-searchable-faqs{width:100%!important;grid-template-columns:minmax(0,1fr)!important;padding:0!important;margin:0!important}
+.home-searchable-faqs details{height:auto!important;min-height:0}
+.home-faq-summary{display:grid;grid-template-columns:22px minmax(0,1fr) 20px;align-items:center;gap:10px;list-style:none;font-weight:700;cursor:pointer}
+.home-faq-summary::-webkit-details-marker{display:none}
+.home-faq-summary::marker{content:""}
+.home-faq-summary>svg:first-child{width:18px;height:18px;color:var(--green-dark)}
+.home-faq-summary .faq-chevron{width:18px;height:18px;transition:transform 250ms ease;color:var(--green-dark)}
+.home-searchable-faqs details[open] .faq-chevron{transform:rotate(180deg)}
+.wp-workflow-menu-item{display:flex;align-items:center;justify-content:flex-start;gap:8px;text-align:left}
+.wp-workflow-upload{gap:10px}
+.wp-workflow-upload svg{flex:0 0 22px;color:var(--green-dark)}
+.wp-workflow-upload span{overflow-wrap:anywhere}
+.home-card-icon,.home-card-icon-row svg{width:24px;height:24px;color:var(--green-dark)}
+.home-card-icon{margin:0 0 8px}
+.home-card-icon-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.home-wordpress-proof-note{font-size:13px;line-height:1.6;color:var(--green-dark)}
+.home-wordpress-proof-note .wp-proof-link{color:var(--green-dark)!important;font-size:13px;text-decoration:underline!important;text-underline-offset:2px}
+.concern-contact-card{max-width:760px;margin-inline:auto}
+.concern-contact-card>svg{width:26px;height:26px;color:var(--green-dark)}
+.concern-contact-card>.arrow-link{display:inline-flex;margin-top:var(--space-2)}
+.footer-grid.footer-grid-final,.site-footer .footer-grid.footer-grid-final{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:var(--space-4)!important}
+.site-footer .footer-grid.footer-grid-final .footer-brand-column{display:flex;flex-direction:column;align-items:flex-start}
+.footer-description{max-width:320px;margin:0;color:var(--white);line-height:1.5}
+.site-footer .footer-grid.footer-grid-final .footer-social{display:flex;gap:16px;margin:0;padding:8px 0}
+.site-footer .footer-grid.footer-grid-final .footer-social a{display:grid;place-items:center;min-width:36px;min-height:36px}
+.footer-programmes-contact-column{display:flex!important;flex-direction:column;gap:var(--space-3)!important}
+.footer-programmes-contact-column>section{display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-1)}
+.footer-programmes-contact-column p{margin:0;overflow-wrap:anywhere}
+.footer-programmes-contact-column small{color:var(--white)}
+.footer-bottom{border-top:1px solid color-mix(in srgb,var(--white) 30%,transparent);margin-top:var(--space-3);padding-top:var(--space-2);font-size:13px;color:var(--white);text-align:center}
+.evaluator-tour-page-steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-2);margin-bottom:var(--space-3)}
+.career-detail-actions{display:flex;flex-wrap:wrap;gap:var(--space-2);align-items:center}
+@media(min-width:768px) and (max-width:1023px){
+  .footer-grid.footer-grid-final,.site-footer .footer-grid.footer-grid-final{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:767px){
+  .home-report-concern-card{padding:20px!important}
+  .home-report-concern-button{width:100%;min-width:0;min-height:52px}
+  .footer-grid.footer-grid-final,.site-footer .footer-grid.footer-grid-final{grid-template-columns:minmax(0,1fr)!important}
+  .footer-programmes-contact-column{gap:var(--space-2)!important}
+  .evaluator-tour-page-steps{grid-template-columns:minmax(0,1fr)}
+  .home-wordpress-proof-note{font-size:13px}
+}
