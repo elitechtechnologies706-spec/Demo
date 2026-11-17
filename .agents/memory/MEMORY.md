@@ -2,3 +2,4 @@
 - [CRVPF Vite entry paths](crvpf-vite-entry-paths.md) — keep multi-page HTML module entries resolvable by Vite; apply the base path to runtime links and static assets instead.
 - [CRVPF contact boundary](crvpf-contact-boundary.md) — keep newsletters and outreach demo-only; do not connect email platforms or send messages to CRVPF.
 - [CRVPF v4 UI constraints](crvpf-v4-ui-constraints.md) — preserve the current layout and use the locked palette, CTA hierarchy, and four motion patterns.
+- [CRVPF story safeguarding](crvpf-story-safeguarding.md) — anonymize people in stories and keep displayed locations at country level.

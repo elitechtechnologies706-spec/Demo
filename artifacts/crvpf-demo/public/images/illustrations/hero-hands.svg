@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" role="img" aria-labelledby="title desc">
+  <title id="title">Hands together over a landscape</title>
+  <desc id="desc">A simple illustration of hands joining over rolling hills and a rising sun.</desc>
+  <rect width="900" height="620" fill="#F2F8F0"/>
+  <circle cx="690" cy="150" r="66" fill="#8BC34A"/>
+  <path d="M0 400c130-65 230-72 355-20 125 52 238 59 355 2 70-34 130-47 190-35v273H0z" fill="#A8D46A"/>
+  <path d="M0 480c160-73 296-59 428 4 150 71 295 57 472-19v155H0z" fill="#1B7A3D"/>
+  <path d="M0 235h238l159 137-89 72L0 323z" fill="#8BC34A"/>
+  <path d="M900 235H662L503 372l89 72 308-121z" fill="#8BC34A"/>
+  <path d="M235 235h162l116 100-74 61-138-99z" fill="#1B7A3D"/>
+  <path d="M665 235H503L387 335l74 61 138-99z" fill="#1B7A3D"/>
+  <path d="M350 286l58 42 51-17 47 30 45-30 43 21 37-42 44 28-67 76-91 37-80-34-96-71z" fill="#FFFBF0" stroke="#1B7A3D" stroke-width="12" stroke-linejoin="round"/>
+  <path d="M409 328l52 37 46-16 53 29m-117 13 51 32 47-16m-96-70-34 42m133-30 27 32" fill="none" stroke="#1B7A3D" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

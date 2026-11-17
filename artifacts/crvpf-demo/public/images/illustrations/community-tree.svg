@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" role="img" aria-labelledby="title desc">
+  <title id="title">Community tree beside a safe space</title>
+  <desc id="desc">A simple illustration of a tree and an open community doorway, with no people shown.</desc>
+  <rect width="900" height="560" fill="#F2F8F0"/>
+  <path d="M0 430c180-63 332-39 465 13 140 55 286 24 435-23v140H0z" fill="#A8D46A"/>
+  <rect x="466" y="178" width="292" height="252" rx="10" fill="#FFFBF0" stroke="#1B7A3D" stroke-width="14"/>
+  <path d="M508 430V254a104 104 0 0 1 208 0v176" fill="#8BC34A" stroke="#1B7A3D" stroke-width="12"/>
+  <circle cx="680" cy="345" r="8" fill="#1B7A3D"/>
+  <path d="M225 418V268" stroke="#1B7A3D" stroke-width="30" stroke-linecap="round"/>
+  <path d="M225 270c-118-5-141-92-80-142 57-47 109-5 113 30 39-91 147-65 149 10 2 73-76 103-182 102z" fill="#8BC34A" stroke="#1B7A3D" stroke-width="12"/>
+  <path d="M167 285c22 23 44 34 67 36m69-116c-16 33-24 62-24 91m-83-110c27 12 50 31 66 56" fill="none" stroke="#F2F8F0" stroke-width="10" stroke-linecap="round"/>
+</svg>
