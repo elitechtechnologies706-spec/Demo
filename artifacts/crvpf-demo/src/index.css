@@ -3339,3 +3339,127 @@ main .btn,main button.btn{margin-top:var(--space-3)}
   .evaluator-tour-page-steps{grid-template-columns:minmax(0,1fr)}
   .home-wordpress-proof-note{font-size:13px}
 }
+
+/* CRVPF homepage programme and safeguarding-safe coverage additions. */
+.home-country-trust-strip{
+  padding:16px max(20px,calc((100% - 1160px)/2));
+  background:var(--leaf-tint);
+  color:var(--green-dark);
+  text-align:center;
+  font-weight:700;
+  line-height:1.5;
+}
+.home-programmes .home-programme-card-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  align-items:stretch;
+}
+.home-programmes .home-programme-card{
+  overflow:hidden;
+  min-height:0;
+  padding:0 16px 18px;
+}
+.home-programme-card-image,.home-programme-card-placeholder{
+  width:calc(100% + 32px);
+  height:180px;
+  margin:0 -16px 14px;
+  object-fit:cover;
+}
+.home-programme-card-image{display:block}
+.home-programme-card-placeholder{
+  display:grid;
+  place-items:center;
+  background:var(--leaf-tint);
+  color:var(--green-dark);
+}
+.home-programmes .home-programme-card .home-programme-code,
+.home-programmes .home-programme-card h3,
+.home-programmes .home-programme-card p,
+.home-programmes .home-programme-card .programme-country-tags,
+.home-programmes .home-programme-card .home-learn-link{
+  margin-left:0;
+  margin-right:0;
+}
+.home-programmes .home-programme-card .programme-country-tags{
+  display:flex;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.home-programmes .home-programme-card .tag{
+  line-height:1.4;
+  white-space:normal;
+}
+.home-programmes .home-programme-card h3{min-height:2.4em}
+.home-programmes .home-programme-card p{min-height:1.5em}
+.safe-country-buttons{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:10px;
+  margin:18px auto;
+}
+.safe-country-buttons .filter-btn{
+  min-height:48px;
+  padding:10px 18px;
+}
+.safe-country-detail{
+  max-width:760px;
+  margin:0 auto;
+  padding:20px;
+  background:var(--white);
+  border:1px solid var(--leaf-border);
+  border-top:3px solid var(--leaf);
+  text-align:left;
+}
+.safe-country-detail h3{margin:0 0 8px}
+.safe-country-detail p{margin:0;line-height:1.6}
+.where-we-work-map>.where-map-disclaimer{
+  margin:12px auto 0;
+  max-width:760px;
+  line-height:1.5;
+}
+.home-cluster-partner-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+}
+.home-cluster-partners .cluster-placeholder-card{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  min-height:190px;
+  gap:9px;
+  padding:20px;
+  background:var(--white);
+  border:1px solid var(--leaf-border);
+  border-top:3px solid var(--leaf);
+}
+.home-cluster-partners .cluster-placeholder-card h3,
+.home-cluster-partners .cluster-placeholder-card p{margin:0}
+.home-stories-placeholder-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.home-story-placeholder-card{min-width:0}
+.home-story-photo-placeholder{
+  display:grid;
+  min-height:150px;
+  place-items:center;
+  background:var(--leaf-tint);
+  border:1px dashed var(--leaf-border);
+  color:var(--grey);
+  font-size:14px;
+  font-weight:700;
+  text-align:center;
+}
+.home-story-placeholder-card h3{overflow-wrap:anywhere}
+.home-story-placeholder-card p{line-height:1.55}
+@media(max-width:767px){
+  .home-country-trust-strip{padding:14px 16px}
+  .home-programmes .home-programme-card-grid,
+  .home-cluster-partner-grid,
+  .home-stories-placeholder-grid{grid-template-columns:minmax(0,1fr)}
+  .home-programmes .home-programme-card h3,
+  .home-programmes .home-programme-card p{min-height:0}
+  .safe-country-buttons{display:grid;grid-template-columns:1fr;gap:8px}
+  .safe-country-buttons .filter-btn{width:100%}
+}
+@media(min-width:768px) and (max-width:1023px){
+  .home-programmes .home-programme-card-grid,
+  .home-cluster-partner-grid,
+  .home-stories-placeholder-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}

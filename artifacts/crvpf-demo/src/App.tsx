@@ -399,7 +399,7 @@ function Home({lang}:{lang:'EN'|'SW'}){
     <section className="home-hero">
       <div className="home-hero-copy">
          <h1>{sw?'Kuzuia Ukatili. Kujenga Nguvu. Kuunda Mustakabali Salama.':'Preventing Violence. Building Power. Creating Safe Futures.'}</h1>
-         <p>{sw?'Tunawawezesha wasichana na vijana kuongoza katika kuzuia ukatili Afrika Mashariki — kwa kutumia data, utetezi na hatua za pamoja ili kuwalinda watoto na kumaliza ukatili.':'We resource girls and youth to lead violence prevention across East Africa — using data, advocacy, and collective action to protect children and end violence for good.'}</p>
+          <p>{sw?'Tunawawezesha wasichana na vijana kuongoza katika kuzuia ukatili Afrika Mashariki — kwa kutumia data, utetezi na hatua za pamoja ili kuwalinda watoto na kumaliza ukatili.':"Protection is a two-way street. We don't just fund programmes; we stand with communities protecting children."}</p>
         <div className="home-hero-actions">
             <Link className="text-action-link hero-text-link" href="/map?programme=eydcd" data-testid="link-home-eydcd">{sw?'Tafuta EYDCD Karibu Nawe':'Find EYDCD Near You'} <ArrowRight size={15}/></Link>
              <Link className="text-action-link hero-text-link" href="/evaluator-tour">10-Min Tour <ArrowRight size={15}/></Link>
@@ -413,6 +413,9 @@ function Home({lang}:{lang:'EN'|'SW'}){
        <SourcePhoto src={`${APP_BASE_PATH}photos/IMG-20261114-WA3406_1794665428643.jpg`} alt="Community members gathered in a circle under a tree." className="hero-photo"/>
       </div>
     </section>
+    <div className="home-country-trust-strip" role="note">
+      Grants and capacity strengthening for community organisations in Uganda, Kenya, Tanzania and Ethiopia.
+    </div>
     <section className="home-proof-trust-bar" aria-label="CRVPF Reach 2021 to 2023">
       <div><strong><ScrollCount value={178591}/></strong><span>Participants</span></div>
       <div><strong><ScrollCount value={4}/></strong><span>Countries</span></div>
@@ -486,17 +489,26 @@ function Home({lang}:{lang:'EN'|'SW'}){
     <section className="home-section home-programmes" id="programmes">
       <div className="home-section-heading">
         <span className="home-section-kicker">Our work</span>
-        <h2>What We Fund</h2>
-        <p>Five ways CRVPF and community partners work to prevent violence and build young people’s power.</p>
+        <h2>Which programme will you follow?</h2>
       </div>
-      <div className="home-programme-grid">
-        {homeProgrammeCards.map(programme=><article className="home-programme-card" key={programme.slug}>
+      <div className="home-programme-grid home-programme-card-grid">
+        {homeProgrammeDisplayCards.map(programme=><article className="home-programme-card" key={programme.code}>
+          <img className="home-programme-card-image" src={`${APP_BASE_PATH}photos/${programme.image}`} alt={programme.imageAlt} loading="lazy" decoding="async"/>
           <span className="home-programme-code">{programme.code}</span>
+          <div className="programme-country-tags" aria-label="Regional coverage">
+            <span className="tag">Uganda • Kenya • Tanzania • Ethiopia</span>
+          </div>
           <h3>{programme.title}</h3>
-          <p>{programme.description}</p>
-          {programme.countries&&<div className="programme-country-tags" aria-label={`Countries: ${programme.countries.join(', ')}`}>{programme.countries.map(country=><span className="tag" key={country}>{country}</span>)}</div>}
-          <Link href={programme.slug} className="home-learn-link">View Programme <ArrowRight size={15}/></Link>
+          <p>[Description to be confirmed by CRVPF]</p>
+          <Link href={programme.slug} className="home-learn-link">Read more <ArrowRight size={15}/></Link>
         </article>)}
+        <article className="home-programme-card home-opportunities-card">
+          <div className="home-programme-card-placeholder" aria-hidden="true"><HandHeart size={38}/></div>
+          <span className="home-programme-code">Opportunities</span>
+          <h3>Community organisations</h3>
+          <p>Are you a community organisation? See opportunities, grants, learning &amp; resources.</p>
+          <Link href="/get-involved" className="home-learn-link">Explore opportunities <ArrowRight size={15}/></Link>
+        </article>
       </div>
     </section>
     <section className="home-section home-grant-making" id="how-grant-making-works">
@@ -521,6 +533,35 @@ function Home({lang}:{lang:'EN'|'SW'}){
     </section>
     <section className="home-section home-where-we-work" id="where-we-work">
       <WhereWeWorkMap/>
+    </section>
+    <section className="home-section home-cluster-partners" id="cluster-partners">
+      <div className="home-section-heading">
+        <span className="home-section-kicker">Partnerships</span>
+        <h2>Our partners — cluster model</h2>
+        <p>Partner details will be populated with verified CRVPF data after approval. No placeholder data will be published.</p>
+      </div>
+      <div className="home-programme-grid home-cluster-partner-grid">
+        {[1,2,3].map(item=><article className="home-partner-card cluster-placeholder-card" key={item}>
+          <h3>[Partner / Cluster Name — To be confirmed by CRVPF]</h3>
+          <p>[Country — To be confirmed]</p>
+          <p>[Impact data — To be provided by CRVPF]</p>
+          <p>[Milestone — To be provided by CRVPF]</p>
+        </article>)}
+      </div>
+    </section>
+    <section className="home-section home-stories-placeholder-section" id="stories-that-move-people">
+      <div className="home-section-heading">
+        <span className="home-section-kicker">Stories</span>
+        <h2>Stories that move people</h2>
+      </div>
+      <div className="home-story-grid home-story-placeholder-grid">
+        {[1,2,3].map(item=><article className="home-voice-card home-story-placeholder-card" key={item}>
+          <div className="home-story-photo-placeholder" role="img" aria-label="Photo placeholder — to be confirmed by CRVPF">Photo placeholder</div>
+          <h3>[Story Title — To be confirmed by CRVPF]</h3>
+          <p>[Story to be provided and approved by CRVPF — no identifying details for children will be published without consent]</p>
+          <Link className="home-learn-link" href="/impact">Read story <ArrowRight size={15}/></Link>
+        </article>)}
+      </div>
     </section>
     <section className="home-section home-data-hub" id="crvpf-data-hub">
       <div className="home-section-heading">
@@ -892,6 +933,13 @@ const homeProgrammeCards=[
   {code:'COORDINATED',title:'Coordinated Program',description:'Coordinated cluster partnerships - Community organisations collaborating to address issues affecting children and young people.',slug:'/programmes/coordinated',countries:['Uganda','Kenya','Tanzania','Ethiopia']},
   {code:'JOINT',title:'Joint Program',description:'Joint grant-making and capacity strengthening with community partners.',slug:'/programmes/joint',countries:['Uganda','Kenya','Tanzania','Ethiopia']},
 ];
+const homeProgrammeDisplayCards=[
+  {code:'PVAC',title:'Prevention of Violence Against Children and Young People',slug:'/programmes/pvac',image:'IMG-20261114-WA9390_1794665428559.jpg',imageAlt:'Community representatives meeting around a table.'},
+  {code:'AGPP',title:'Adolescent Girls Power Program',slug:'/programmes/agpp',image:'IMG-20261114-WA6776_1794665428683.jpg',imageAlt:'Participants in a vocational training workshop.'},
+  {code:'EYDCD',title:'Empowering Youth Through Data and Community Development Program',slug:'/programmes/eydcd',image:'IMG-20261114-WA5634_1794665428817.jpg',imageAlt:'Young people using digital devices in a market.'},
+  {code:'COORDINATED',title:'Coordinated Program',slug:'/programmes/coordinated',image:'IMG-20261114-WA3406_1794665428643.jpg',imageAlt:'Community members meeting together.'},
+  {code:'JOINT',title:'Joint Program',slug:'/programmes/joint',image:'IMG-20261114-WA3865_1794665428598.jpg',imageAlt:'Community members joining hands together.'},
+];
 const reachCards=[
   {value:'178,591',numeric:178591,label:'Program Participants'},
   {value:'4',numeric:4,label:'East African Countries ( Uganda, Kenya, Tanzania, Ethiopia )'},
@@ -1018,80 +1066,30 @@ const mapFilterSummaries:Record<string,string>={
   pvac:'PVAC in Uganda, Kenya and Ethiopia',
 };
 function WhereWeWorkMap(){
-   const initialEydcd=new URLSearchParams(window.location.search).get('programme')?.toLowerCase()==='eydcd';
-   const[filter,setFilter]=useState(initialEydcd?'eydcd':'all');
-   const[view,setView]=useState<'all'|'eydcd'>(initialEydcd?'eydcd':'all');
-  const[selectedCountry,setSelectedCountry]=useState<(typeof countryOperations)[number]|null>(null);
-  const[selectedUSA,setSelectedUSA]=useState(false);
- const filters=['all','eydcd','agpp','pvac'];
+  const[selectedCountry,setSelectedCountry]=useState('Uganda');
+  const countryDetails:Record<string,string>={
+    Uganda:'CRVPF works through a cluster partnership model in Uganda. Specific clusters and partners to be confirmed by CRVPF.',
+    Kenya:'CRVPF works through a cluster partnership model in Kenya. Specific clusters and partners to be confirmed by CRVPF.',
+    Tanzania:'CRVPF works through a cluster partnership model in Tanzania. Specific clusters and partners to be confirmed by CRVPF.',
+    Ethiopia:'CRVPF works through a cluster partnership model in Ethiopia. Specific clusters and partners to be confirmed by CRVPF.',
+    'USA — Grants & Admin':'Grants and Admin office. No programme locations shown.',
+  };
  return <section id="where-we-work-map" className="where-we-work-map">
-   <h2 style={{color:'var(--green-dark)',fontFamily:'system-ui, sans-serif',fontSize:28,marginBottom:8}}>Where We Work</h2>
-   <p className="where-map-intro">We work in 4 East African countries through 251 community partners.</p>
-    <div className="where-map-layout">
-      <div className="where-map-main">
-        <div className="where-map-view-tabs" role="tablist" aria-label="Map view">
-          <button type="button" role="tab" aria-selected={view==='all'} className={`filter-btn ${view==='all'?'active':''}`} onClick={()=>{setView('all');setFilter('all')}} data-testid="map-tab-all-programmes">All Programmes</button>
-          <button type="button" role="tab" aria-selected={view==='eydcd'} className={`filter-btn ${view==='eydcd'?'active':''}`} onClick={()=>{setView('eydcd');setFilter('eydcd')}} data-testid="map-tab-eydcd">EYDCD Map</button>
-        </div>
-        {view==='eydcd'&&<p className="where-map-eydcd-note" role="status">EYDCD in Uganda - Find Partners / Opportunities by Country. No village, school, or child names are shown.</p>}
-        <div className="where-map-image-wrap">
-          <div className="where-map-image-stage">
-            <img src={`${APP_BASE_PATH}images/crvpf-map-static.jpg`} alt="Map of Africa highlighting Uganda, Kenya, Tanzania and Ethiopia" loading="lazy" decoding="async" width="1024" height="682"/>
-            <div className="where-map-hotspots" aria-label="Select an operating country">
-              {countryOperations.map(country=><button
-                type="button"
-                key={country.country}
-                className={`where-map-hotspot ${filter!=='all'&&!country.programmes.includes(filter.toUpperCase())?'is-dimmed':''}`}
-                style={country.position}
-                aria-label={`Show ${country.country} details`}
-                title={country.country}
-                onClick={()=>{setSelectedCountry(country);setSelectedUSA(false)}}
-                data-testid={`map-hotspot-${country.country.toLowerCase()}`}
-              />)}
-            </div>
-          </div>
-        </div>
-        <div className="where-map-legend">
-          <span><i className="where-map-swatch where-map-country-swatch" aria-hidden="true"/>CRVPF Country</span>
-          <span><i className="where-map-swatch where-map-other-swatch" aria-hidden="true"/>Other African Countries</span>
-        </div>
-        <p className="where-map-disclaimer">Country/cluster-level only. No zoom to precise locations. No personal data.</p>
-        <div className="where-map-filters" role="group" aria-label="Filter programmes">{filters.map(value=><button type="button" data-filter={value} className={`filter-btn ${filter===value?'active':''}`} aria-pressed={filter===value} key={value} onClick={()=>{setView(value==='eydcd'?'eydcd':'all');setFilter(value)}} data-testid={`map-filter-${value}`}>{value==='all'?'All':value.toUpperCase()}</button>)}</div>
-        <p id="filter-summary" className="where-map-summary" role="status" aria-live="polite">Filtered: {mapFilterSummaries[filter]}</p>
-        <div className="where-map-countries">
-          {countryOperations.map(country=><button
-            type="button"
-            className={`country-card where-map-country-card ${filter!=='all'&&!country.programmes.includes(filter.toUpperCase())?'is-dimmed':''} ${selectedCountry?.country===country.country?'is-selected':''}`}
-            key={country.country}
-            onClick={()=>{setSelectedCountry(country);setSelectedUSA(false)}}
-            aria-pressed={selectedCountry?.country===country.country}
-            data-testid={`country-card-${country.country.toLowerCase()}`}
-          >
-            <strong>{country.country}</strong>
-            <span className="where-map-country-programmes">{country.programmes.join(' • ')}</span>
-            <small>{country.partners} partners · {country.youth} youth</small>
-          </button>)}
-        </div>
-        {selectedCountry&&<article className="country-card where-map-selected-country" aria-live="polite" data-testid="selected-country-details">
-          <h3>{selectedCountry.country}</h3>
-          <p><strong>Capital:</strong> {selectedCountry.capital}</p>
-          <p><strong>Partners:</strong> {selectedCountry.partners} · <strong>Youth:</strong> {selectedCountry.youth}</p>
-          <p><strong>Programmes:</strong> {selectedCountry.programmes.join(' · ')}</p>
-          {selectedCountry.story&&<p><strong>Story:</strong> {selectedCountry.story}</p>}
-          <Link className="btn btn-outline" href={`/impact#filter-country-${selectedCountry.country.toLowerCase()}`}>View Stories</Link>
-        </article>}
-      </div>
-      <button type="button" className={`country-card where-map-country-card where-map-usa-card ${selectedUSA?'is-selected':''}`} aria-pressed={selectedUSA} onClick={()=>{setSelectedCountry(null);setSelectedUSA(true)}} data-testid="usa-grants-office-card">
-        <strong>USA</strong>
-         <span>Grants/Admin Office</span>
-        <small>Office details only; not shown on the Africa map.</small>
-      </button>
+    <h2>Where We Work</h2>
+    <div className="safe-country-buttons" role="group" aria-label="Select a country or office">
+      {Object.keys(countryDetails).map(country=><button
+        type="button"
+        className={`filter-btn ${selectedCountry===country?'active':''}`}
+        aria-pressed={selectedCountry===country}
+        key={country}
+        onClick={()=>setSelectedCountry(country)}
+      >{country}</button>)}
     </div>
-    {selectedUSA&&<article className="country-card where-map-selected-country" aria-live="polite" data-testid="selected-country-details">
-       <h3>USA - Grants/Admin Office</h3>
-      <p><strong>Programmes:</strong> Programme coverage information for this office is not supplied.</p>
-    </article>}
-    <p className="where-map-tor-badge">Country-level only - No precise locations - No personal data - TOR 4.11 Compliant</p>
+    <article className="safe-country-detail" aria-live="polite">
+      <h3>{selectedCountry}</h3>
+      <p>{countryDetails[selectedCountry]}</p>
+    </article>
+    <p className="where-map-disclaimer">Country / Cluster level only. No zoom to precise locations. No personal data. No sensitive locations.</p>
  </section>
 }
 function WhereWeWorkPage(){
