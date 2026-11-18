@@ -3649,7 +3649,7 @@ main .btn,main button.btn{margin-top:var(--space-3)}
   overflow:hidden;
   border:1px solid rgba(0,0,0,.14);
   border-radius:24px;
-  background:rgba(255,255,255,.97);
+  background:var(--white);
   box-shadow:0 2px 8px rgba(0,0,0,.16);
   touch-action:manipulation;
 }
@@ -3661,7 +3661,7 @@ main .btn,main button.btn{margin-top:var(--space-3)}
   justify-content:center;
   padding:0 14px;
   border:0;
-  background:transparent;
+  background:var(--white);
   color:var(--ink);
   font-size:14px;
   font-weight:650;
@@ -3670,6 +3670,17 @@ main .btn,main button.btn{margin-top:var(--space-3)}
 .crvpf-map-type-control button.is-active{
   background:var(--green-dark);
   color:var(--white);
+}
+.where-we-work-map .crvpf-map-type-control{
+  background-color:var(--white)!important;
+  opacity:1!important;
+}
+.where-we-work-map .crvpf-map-type-control button{
+  background-color:var(--white)!important;
+  opacity:1!important;
+}
+.where-we-work-map .crvpf-map-type-control button.is-active{
+  background-color:var(--green-dark)!important;
 }
 .crvpf-map-type-control>span{
   width:1px;
@@ -3684,7 +3695,7 @@ main .btn,main button.btn{margin-top:var(--space-3)}
   display:grid;
   place-items:center;
   border:1px solid rgba(0,0,0,.14);
-  background:rgba(255,255,255,.97);
+  background:var(--white);
   color:var(--ink);
   box-shadow:0 2px 8px rgba(0,0,0,.16);
 }
@@ -3698,6 +3709,12 @@ main .btn,main button.btn{margin-top:var(--space-3)}
   line-height:1;
   cursor:pointer;
   touch-action:manipulation;
+}
+.where-we-work-map .crvpf-map-fullscreen,
+.where-we-work-map .crvpf-map-zoom-toggle,
+.where-we-work-map .crvpf-map-pegman{
+  background-color:var(--white)!important;
+  opacity:1!important;
 }
 .crvpf-map-zoom-toggle{
   top:50%;
@@ -3755,9 +3772,12 @@ main .btn,main button.btn{margin-top:var(--space-3)}
 .crvpf-map-stage:fullscreen .crvpf-leaflet-map,
 .crvpf-map-stage:-webkit-full-screen .crvpf-leaflet-map{height:100vh}
 .crvpf-leaflet-map .leaflet-popup-content-wrapper{
+  background:var(--white)!important;
+  opacity:1!important;
   border-radius:12px;
   box-shadow:0 3px 12px rgba(0,0,0,.18);
 }
+.crvpf-leaflet-map .leaflet-popup-tip{background:var(--white)!important;opacity:1!important}
 .crvpf-leaflet-map .leaflet-popup-content{margin:14px 16px;max-width:280px}
 .crvpf-leaflet-map .leaflet-popup-close-button{
   width:30px!important;
