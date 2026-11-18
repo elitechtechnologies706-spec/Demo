@@ -1061,11 +1061,11 @@ const countryOperations=[
 ];
 type MapLocation={id:string;number:number;title:string;description:string;lat:number;lng:number};
 const mapLocations:MapLocation[]=[
-  {id:'uganda',number:1,title:'Uganda',description:'CRVPF works through a cluster partnership model in Uganda. Specific clusters and partners to be confirmed by CRVPF.',lat:0.3476,lng:32.5825},
-  {id:'kenya',number:2,title:'Kenya',description:'CRVPF works through a cluster partnership model in Kenya. Specific clusters and partners to be confirmed by CRVPF.',lat:-1.2921,lng:36.8219},
-  {id:'tanzania',number:3,title:'Tanzania',description:'CRVPF works through a cluster partnership model in Tanzania. Specific clusters and partners to be confirmed by CRVPF.',lat:-6.7924,lng:39.2083},
-  {id:'ethiopia',number:4,title:'Ethiopia',description:'CRVPF works through a cluster partnership model in Ethiopia. Specific clusters and partners to be confirmed by CRVPF.',lat:9.0054,lng:38.7636},
-  {id:'usa',number:5,title:'USA Grants & Admin',description:'Grants & Admin Office. Grants management & administration. No programme locations shown.',lat:38.9072,lng:-77.0369},
+  {id:'uganda',number:1,title:'Uganda — Cluster Partnership Model',description:'CRVPF works through a cluster partnership model in Uganda. Specific clusters and partners to be confirmed by CRVPF. Grants + capacity strengthening for community organisations.',lat:0.3476,lng:32.5825},
+  {id:'kenya',number:2,title:'Kenya — Cluster Partnership Model',description:'CRVPF works through a cluster partnership model in Kenya. Specific clusters and partners to be confirmed by CRVPF. Preventing violence, building power, creating safe environments.',lat:-1.2921,lng:36.8219},
+  {id:'tanzania',number:3,title:'Tanzania — Cluster Partnership Model',description:'CRVPF works through a cluster partnership model in Tanzania. Specific clusters and partners to be confirmed by CRVPF.',lat:-6.7924,lng:39.2083},
+  {id:'ethiopia',number:4,title:'Ethiopia — Cluster Partnership Model',description:'CRVPF works through a cluster partnership model in Ethiopia. Specific clusters and partners to be confirmed by CRVPF.',lat:9.0054,lng:38.7636},
+  {id:'usa',number:5,title:'USA — Grants & Admin Office',description:'Grants management & administration. No programme locations shown. Contact via official CRVPF channels.',lat:38.9072,lng:-77.0369},
 ];
 type LeafletGlobal=Window&{L?:any};
 let leafletLoadPromise:Promise<any>|null=null;
@@ -1093,9 +1093,14 @@ function loadLeaflet():Promise<any>{
 }
 function WhereWeWorkMap(){
   const[selectedCountry,setSelectedCountry]=useState('uganda');
+  const[mapMode,setMapMode]=useState<'map'|'satellite'>('map');
+  const[zoomLevel,setZoomLevel]=useState(5);
   const mapElement=useRef<HTMLDivElement|null>(null);
+  const mapStage=useRef<HTMLDivElement|null>(null);
   const mapRef=useRef<any>(null);
   const markerRefs=useRef<Record<string,any>>({});
+  const tileLayers=useRef<Record<'map'|'satellite',any>>({map:null,satellite:null});
+  const activeTileLayer=useRef<any>(null);
   const selectedCountryRef=useRef(selectedCountry);
   const[mapStatus,setMapStatus]=useState('Loading map…');
   const markerIcon=(leaflet:any,location:MapLocation,active:boolean)=>{
@@ -1123,17 +1128,28 @@ function WhereWeWorkMap(){
     let map:any=null;
     loadLeaflet().then(leaflet=>{
       if(disposed||!mapElement.current)return;
-      map=leaflet.map(element,{center:[1.0,32.5],zoom:5,minZoom:5,maxZoom:5,scrollWheelZoom:false,doubleClickZoom:false,touchZoom:false,boxZoom:false,zoomControl:false,preferCanvas:true});
+      map=leaflet.map(element,{center:[1.0,32.5],zoom:5,minZoom:5,maxZoom:10,scrollWheelZoom:false,doubleClickZoom:false,touchZoom:false,boxZoom:false,zoomControl:false,attributionControl:false,keyboard:true,preferCanvas:true});
       mapRef.current=map;
-      leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+      const openStreetMap=leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
         attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>',
-        maxZoom:5,
-        maxNativeZoom:5,
+        maxZoom:10,
+        maxNativeZoom:10,
         updateWhenIdle:true,
         keepBuffer:1,
-      }).addTo(map);
+      });
+      const satellite=leaflet.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
+        attribution:'Tiles &copy; Esri',
+        maxZoom:10,
+        maxNativeZoom:10,
+        updateWhenIdle:true,
+        keepBuffer:1,
+      });
+      tileLayers.current={map:openStreetMap,satellite};
+      activeTileLayer.current=openStreetMap;
+      openStreetMap.addTo(map);
       map.on('tileerror',()=>setMapStatus('Some map tiles could not load. The location list below is still available.'));
       map.on('tileload',()=>setMapStatus(''));
+      map.on('zoomend',()=>setZoomLevel(map.getZoom()));
       for(const location of mapLocations){
         const popup=document.createElement('div');
         popup.className='crvpf-map-popup';
@@ -1145,9 +1161,10 @@ function WhereWeWorkMap(){
         const marker=leaflet.marker([location.lat,location.lng],{
           icon:markerIcon(leaflet,location,selectedCountryRef.current===location.id),
           title:location.title,
+          alt:`Location ${location.number}: ${location.title}`,
           keyboard:true,
         }).addTo(map);
-        marker.bindPopup(popup,{closeButton:true,closeButtonTitle:'Close popup',autoPan:true,maxWidth:280});
+        marker.bindPopup(popup,{closeButton:true,closeButtonTitle:'Close popup',autoPan:true,maxWidth:310});
         marker.on('click',()=>setSelectedCountry(location.id));
         markerRefs.current[location.id]=marker;
       }
@@ -1160,21 +1177,77 @@ function WhereWeWorkMap(){
       disposed=true;
       if(map){map.remove();mapRef.current=null}
       markerRefs.current={};
+      tileLayers.current={map:null,satellite:null};
+      activeTileLayer.current=null;
     };
   },[]);
+  useEffect(()=>{
+    const onFullscreenChange=()=>{
+      window.setTimeout(()=>mapRef.current?.invalidateSize(),100);
+    };
+    document.addEventListener('fullscreenchange',onFullscreenChange);
+    return()=>document.removeEventListener('fullscreenchange',onFullscreenChange);
+  },[]);
+  const changeMapMode=(mode:'map'|'satellite')=>{
+    const map=mapRef.current;
+    const nextLayer=tileLayers.current[mode];
+    if(map&&nextLayer&&activeTileLayer.current!==nextLayer){
+      if(activeTileLayer.current)map.removeLayer(activeTileLayer.current);
+      nextLayer.addTo(map);
+      activeTileLayer.current=nextLayer;
+    }
+    setMapMode(mode);
+  };
+  const toggleMapZoom=()=>{
+    const map=mapRef.current;
+    if(!map)return;
+    const nextZoom=map.getZoom()===5?6:5;
+    map.setZoom(nextZoom,{animate:false});
+    setZoomLevel(nextZoom);
+  };
+  const toggleFullscreen=async()=>{
+    const stage=mapStage.current;
+    if(!stage)return;
+    try{
+      if(document.fullscreenElement===stage)await document.exitFullscreen();
+      else if(stage.requestFullscreen)await stage.requestFullscreen();
+      else setMapStatus('Fullscreen is not available in this browser.');
+    }catch{
+      setMapStatus('Fullscreen could not be opened. You can continue using the map below.');
+    }
+  };
+  const stopMapGesture=(event:React.SyntheticEvent)=>event.stopPropagation();
   const openLocation=(location:MapLocation)=>{
     setSelectedCountry(location.id);
+    selectedCountryRef.current=location.id;
     const map=mapRef.current;
     const marker=markerRefs.current[location.id];
     if(!map||!marker)return;
-    mapElement.current?.scrollIntoView({behavior:'smooth',block:'center'});
-    map.setView([location.lat,location.lng],5,{animate:false});
+    mapStage.current?.scrollIntoView({behavior:'smooth',block:'center'});
+    map.setView([location.lat,location.lng],Math.min(Math.max(map.getZoom(),5),10),{animate:false});
     marker.openPopup();
   };
  return <section id="where-we-work-map" className="where-we-work-map">
-    <h2>Where We Work</h2>
-    <p className="where-map-disclaimer">Country / Cluster level only. No zoom to precise locations. No personal data. No sensitive locations.</p>
-    <div className="crvpf-leaflet-map" ref={mapElement} aria-label="Interactive map of CRVPF country-level locations"/>
+    <h2 className="where-map-heading">WHERE WE WORK</h2>
+    <p className="where-map-disclaimer">Country / Cluster level only — No zoom to precise locations. No personal data. No sensitive locations. Pins show country capitals only, not villages / schools / partner sites.</p>
+    <div className="crvpf-map-stage" ref={mapStage}>
+      <div className="crvpf-leaflet-map" ref={mapElement} role="application" aria-label="Interactive map of CRVPF country-level locations"/>
+      <div className="crvpf-map-type-control" aria-label="Map style" onMouseDown={stopMapGesture} onTouchStart={stopMapGesture} onClick={stopMapGesture}>
+        <button type="button" className={mapMode==='map'?'is-active':''} aria-pressed={mapMode==='map'} onClick={()=>changeMapMode('map')}>Map</button>
+        <span aria-hidden="true"/>
+        <button type="button" className={mapMode==='satellite'?'is-active':''} aria-pressed={mapMode==='satellite'} onClick={()=>changeMapMode('satellite')}>Satellite</button>
+      </div>
+      <button type="button" className="crvpf-map-fullscreen" aria-label="Toggle map fullscreen" title="Toggle fullscreen" onMouseDown={stopMapGesture} onTouchStart={stopMapGesture} onClick={event=>{stopMapGesture(event);void toggleFullscreen()}}>⛶</button>
+      <button type="button" className="crvpf-map-zoom-toggle" aria-label={zoomLevel===5?'Zoom map in to level 6':'Return map to level 5'} title={zoomLevel===5?'Zoom in to level 6':'Return to level 5'} onMouseDown={stopMapGesture} onTouchStart={stopMapGesture} onClick={event=>{stopMapGesture(event);toggleMapZoom()}}>↔</button>
+      <span className="crvpf-map-pegman" aria-hidden="true" title="Decorative map icon">🚶</span>
+      <div className="crvpf-map-attribution">
+        <a href="https://leafletjs.com/" target="_blank" rel="noopener noreferrer">Leaflet</a>
+        <span aria-hidden="true">|</span>
+        <span title="Tab to focus map controls and markers; use Enter to activate.">Keyboard shortcuts</span>
+        <span aria-hidden="true">|</span>
+        {mapMode==='map'?<><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">Map data ©2026 OpenStreetMap</a><span aria-hidden="true">|</span><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">Terms</a></>:<><a href="https://www.esri.com/en-us/legal/terms/full-master-agreement" target="_blank" rel="noopener noreferrer">Imagery © Esri</a><span aria-hidden="true">|</span><a href="https://www.esri.com/en-us/legal/terms/full-master-agreement" target="_blank" rel="noopener noreferrer">Terms</a></>}
+      </div>
+    </div>
     <p className="crvpf-map-status" role="status" aria-live="polite">{mapStatus}</p>
     <div className="crvpf-map-list" aria-label="Country and office locations">
       {mapLocations.map(location=><button
@@ -1186,11 +1259,11 @@ function WhereWeWorkMap(){
         onClick={()=>openLocation(location)}
       >
         <span className="crvpf-map-photo-placeholder" role="img" aria-label="[Image to be provided by CRVPF]">[Image to be provided by CRVPF]</span>
-        <span className="crvpf-map-number">{location.number}</span>
         <span className="crvpf-map-list-copy">
-          <strong>{location.title}</strong>
+          <span className="crvpf-map-title-row"><span className="crvpf-map-number">{location.number}</span><strong>{location.title}</strong></span>
           <span>{location.description}</span>
         </span>
+        <span className="crvpf-map-arrow" aria-hidden="true">›</span>
       </button>)}
     </div>
  </section>
