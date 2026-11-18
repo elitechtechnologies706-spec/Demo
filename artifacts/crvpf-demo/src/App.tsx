@@ -1059,37 +1059,140 @@ const countryOperations=[
   {country:'Tanzania',capital:'Dodoma',partners:'40',youth:'85k',programmes:['EYDCD','AGPP'],story:'Youth Council Launched — Dar es Salaam',position:{left:'62%',top:'62%'}},
   {country:'Ethiopia',capital:'Addis Ababa',partners:'62',youth:'92k',programmes:['EYDCD','PVAC'],story:'',position:{left:'67%',top:'43%'}},
 ];
-const mapFilterSummaries:Record<string,string>={
-  all:'All Programmes across Uganda, Kenya, Tanzania and Ethiopia',
-  eydcd:'EYDCD in Uganda, Tanzania and Ethiopia',
-  agpp:'AGPP in Uganda, Kenya and Tanzania',
-  pvac:'PVAC in Uganda, Kenya and Ethiopia',
-};
+type MapLocation={id:string;number:number;title:string;description:string;lat:number;lng:number};
+const mapLocations:MapLocation[]=[
+  {id:'uganda',number:1,title:'Uganda',description:'CRVPF works through a cluster partnership model in Uganda. Specific clusters and partners to be confirmed by CRVPF.',lat:0.3476,lng:32.5825},
+  {id:'kenya',number:2,title:'Kenya',description:'CRVPF works through a cluster partnership model in Kenya. Specific clusters and partners to be confirmed by CRVPF.',lat:-1.2921,lng:36.8219},
+  {id:'tanzania',number:3,title:'Tanzania',description:'CRVPF works through a cluster partnership model in Tanzania. Specific clusters and partners to be confirmed by CRVPF.',lat:-6.7924,lng:39.2083},
+  {id:'ethiopia',number:4,title:'Ethiopia',description:'CRVPF works through a cluster partnership model in Ethiopia. Specific clusters and partners to be confirmed by CRVPF.',lat:9.0054,lng:38.7636},
+  {id:'usa',number:5,title:'USA Grants & Admin',description:'Grants & Admin Office. Grants management & administration. No programme locations shown.',lat:38.9072,lng:-77.0369},
+];
+type LeafletGlobal=Window&{L?:any};
+let leafletLoadPromise:Promise<any>|null=null;
+function loadLeaflet():Promise<any>{
+  const current=(window as LeafletGlobal).L;
+  if(current)return Promise.resolve(current);
+  if(leafletLoadPromise)return leafletLoadPromise;
+  if(!document.querySelector('link[data-crvpf-leaflet]')){
+    const stylesheet=document.createElement('link');
+    stylesheet.rel='stylesheet';
+    stylesheet.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    stylesheet.dataset.crvpfLeaflet='true';
+    document.head.appendChild(stylesheet);
+  }
+  leafletLoadPromise=new Promise((resolve,reject)=>{
+    const script=document.createElement('script');
+    script.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    script.async=true;
+    script.dataset.crvpfLeaflet='true';
+    script.onload=()=>{const leaflet=(window as LeafletGlobal).L;if(leaflet)resolve(leaflet);else reject(new Error('Leaflet loaded without its map library'))};
+    script.onerror=()=>{script.remove();leafletLoadPromise=null;reject(new Error('Leaflet could not be downloaded'))};
+    document.head.appendChild(script);
+  });
+  return leafletLoadPromise;
+}
 function WhereWeWorkMap(){
-  const[selectedCountry,setSelectedCountry]=useState('Uganda');
-  const countryDetails:Record<string,string>={
-    Uganda:'CRVPF works through a cluster partnership model in Uganda. Specific clusters and partners to be confirmed by CRVPF.',
-    Kenya:'CRVPF works through a cluster partnership model in Kenya. Specific clusters and partners to be confirmed by CRVPF.',
-    Tanzania:'CRVPF works through a cluster partnership model in Tanzania. Specific clusters and partners to be confirmed by CRVPF.',
-    Ethiopia:'CRVPF works through a cluster partnership model in Ethiopia. Specific clusters and partners to be confirmed by CRVPF.',
-    'USA — Grants & Admin':'Grants and Admin office. No programme locations shown.',
+  const[selectedCountry,setSelectedCountry]=useState('uganda');
+  const mapElement=useRef<HTMLDivElement|null>(null);
+  const mapRef=useRef<any>(null);
+  const markerRefs=useRef<Record<string,any>>({});
+  const selectedCountryRef=useRef(selectedCountry);
+  const[mapStatus,setMapStatus]=useState('Loading map…');
+  const markerIcon=(leaflet:any,location:MapLocation,active:boolean)=>{
+    const activeClass=active?' is-active':'';
+    return leaflet.divIcon({
+      className:'crvpf-leaflet-marker',
+      html:`<span class="crvpf-number-pin${activeClass}" aria-hidden="true">${location.number}</span>`,
+      iconSize:[38,38],
+      iconAnchor:[19,19],
+    });
+  };
+  useEffect(()=>{
+    selectedCountryRef.current=selectedCountry;
+    const leaflet=(window as LeafletGlobal).L;
+    if(!leaflet)return;
+    for(const location of mapLocations){
+      const marker=markerRefs.current[location.id];
+      if(marker)marker.setIcon(markerIcon(leaflet,location,selectedCountry===location.id));
+    }
+  },[selectedCountry]);
+  useEffect(()=>{
+    const element=mapElement.current;
+    if(!element)return;
+    let disposed=false;
+    let map:any=null;
+    loadLeaflet().then(leaflet=>{
+      if(disposed||!mapElement.current)return;
+      map=leaflet.map(element,{center:[1.0,32.5],zoom:5,minZoom:5,maxZoom:5,scrollWheelZoom:false,doubleClickZoom:false,touchZoom:false,boxZoom:false,zoomControl:false,preferCanvas:true});
+      mapRef.current=map;
+      leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+        attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>',
+        maxZoom:5,
+        maxNativeZoom:5,
+        updateWhenIdle:true,
+        keepBuffer:1,
+      }).addTo(map);
+      map.on('tileerror',()=>setMapStatus('Some map tiles could not load. The location list below is still available.'));
+      map.on('tileload',()=>setMapStatus(''));
+      for(const location of mapLocations){
+        const popup=document.createElement('div');
+        popup.className='crvpf-map-popup';
+        const title=document.createElement('strong');
+        title.textContent=location.title;
+        const description=document.createElement('p');
+        description.textContent=location.description;
+        popup.append(title,description);
+        const marker=leaflet.marker([location.lat,location.lng],{
+          icon:markerIcon(leaflet,location,selectedCountryRef.current===location.id),
+          title:location.title,
+          keyboard:true,
+        }).addTo(map);
+        marker.bindPopup(popup,{closeButton:true,closeButtonTitle:'Close popup',autoPan:true,maxWidth:280});
+        marker.on('click',()=>setSelectedCountry(location.id));
+        markerRefs.current[location.id]=marker;
+      }
+      window.setTimeout(()=>{if(!disposed)map.invalidateSize()},100);
+      setMapStatus('');
+    }).catch(()=>{
+      if(!disposed)setMapStatus('The interactive map could not load right now. Use the country list below to view the same verified information.');
+    });
+    return()=>{
+      disposed=true;
+      if(map){map.remove();mapRef.current=null}
+      markerRefs.current={};
+    };
+  },[]);
+  const openLocation=(location:MapLocation)=>{
+    setSelectedCountry(location.id);
+    const map=mapRef.current;
+    const marker=markerRefs.current[location.id];
+    if(!map||!marker)return;
+    mapElement.current?.scrollIntoView({behavior:'smooth',block:'center'});
+    map.setView([location.lat,location.lng],5,{animate:false});
+    marker.openPopup();
   };
  return <section id="where-we-work-map" className="where-we-work-map">
     <h2>Where We Work</h2>
-    <div className="safe-country-buttons" role="group" aria-label="Select a country or office">
-      {Object.keys(countryDetails).map(country=><button
-        type="button"
-        className={`filter-btn ${selectedCountry===country?'active':''}`}
-        aria-pressed={selectedCountry===country}
-        key={country}
-        onClick={()=>setSelectedCountry(country)}
-      >{country}</button>)}
-    </div>
-    <article className="safe-country-detail" aria-live="polite">
-      <h3>{selectedCountry}</h3>
-      <p>{countryDetails[selectedCountry]}</p>
-    </article>
     <p className="where-map-disclaimer">Country / Cluster level only. No zoom to precise locations. No personal data. No sensitive locations.</p>
+    <div className="crvpf-leaflet-map" ref={mapElement} aria-label="Interactive map of CRVPF country-level locations"/>
+    <p className="crvpf-map-status" role="status" aria-live="polite">{mapStatus}</p>
+    <div className="crvpf-map-list" aria-label="Country and office locations">
+      {mapLocations.map(location=><button
+        key={location.id}
+        type="button"
+        className={`crvpf-map-list-item ${selectedCountry===location.id?'is-selected':''}`}
+        aria-label={`Open map popup for ${location.title}`}
+        aria-pressed={selectedCountry===location.id}
+        onClick={()=>openLocation(location)}
+      >
+        <span className="crvpf-map-photo-placeholder" role="img" aria-label="[Image to be provided by CRVPF]">[Image to be provided by CRVPF]</span>
+        <span className="crvpf-map-number">{location.number}</span>
+        <span className="crvpf-map-list-copy">
+          <strong>{location.title}</strong>
+          <span>{location.description}</span>
+        </span>
+      </button>)}
+    </div>
  </section>
 }
 function WhereWeWorkPage(){
