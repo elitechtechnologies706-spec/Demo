@@ -71,7 +71,7 @@ export default defineConfig(async ({ command }) => {
     },
     root: path.resolve(import.meta.dirname),
     build: {
-      outDir: path.resolve(import.meta.dirname, 'dist/public'),
+      outDir: path.resolve(import.meta.dirname, 'dist'),
       emptyOutDir: true,
       rollupOptions: {
         input: Object.fromEntries(

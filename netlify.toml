@@ -1,0 +1,9 @@
+[build]
+  base = "artifacts/crvpf-demo"
+  publish = "dist"
+  command = "pnpm --filter @workspace/crvpf-demo... run build"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
