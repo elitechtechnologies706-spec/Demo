@@ -5,13 +5,10 @@ import { defineConfig } from 'vite';
 
 import runtimeErrorOverlay from '@replit/vite-plugin-runtime-error-modal';
 
-const basePath = process.env.BASE_PATH;
-
-if (!basePath) {
-  throw new Error(
-    'BASE_PATH environment variable is required but was not provided.',
-  );
-}
+const basePath = process.env.BASE_PATH || '/';
+const host = process.env.HOST || '0.0.0.0';
+const nodeEnv = process.env.NODE_ENV || 'production';
+const replId = process.env.REPL_ID || '';
 
 const pageEntries = {
   index: 'index.html',
@@ -47,8 +44,7 @@ export default defineConfig(async ({ command }) => {
       react(),
       tailwindcss(),
       runtimeErrorOverlay(),
-      ...(process.env.NODE_ENV !== 'production' &&
-      process.env.REPL_ID !== undefined
+      ...(nodeEnv !== 'production' && replId
         ? [
             await import('@replit/vite-plugin-cartographer').then((m) =>
               m.cartographer({
@@ -89,7 +85,7 @@ export default defineConfig(async ({ command }) => {
     server: {
       port,
       strictPort: true,
-      host: '0.0.0.0',
+      host,
       allowedHosts: true,
       fs: {
         strict: true,
@@ -97,7 +93,7 @@ export default defineConfig(async ({ command }) => {
     },
     preview: {
       port,
-      host: '0.0.0.0',
+      host,
       allowedHosts: true,
     },
   };
